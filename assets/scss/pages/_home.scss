@@ -11,6 +11,10 @@
     color: #fff;
     text-align: left;
     padding: 200px 2.5rem;
+
+    @media screen and (max-width: 768px) {
+      padding:3.5rem 2.5rem;
+    }
     
     .container {
       position: relative;

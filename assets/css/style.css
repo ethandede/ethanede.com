@@ -302,6 +302,11 @@ p {
   text-align: left;
   padding: 200px 2.5rem;
 }
+@media screen and (max-width: 768px) {
+  #home .hero {
+    padding: 3.5rem 2.5rem;
+  }
+}
 #home .hero .container {
   position: relative;
   z-index: 1;
