@@ -1,24 +1,26 @@
 <?php
 // Add theme support
-function ee_theme_setup() {
-    add_theme_support('title-tag');
-    add_theme_support('post-thumbnails');
-    add_theme_support('custom-logo');
-}
-add_action('after_setup_theme', 'ee_theme_setup');
-
-// Enqueue styles and scripts
 function ee_enqueue_assets() {
-    // Enqueue your compiled CSS from assets/css
+    $manifest_path = get_template_directory() . '/assets/css/rev-manifest.json';
+    $style_file = 'style.css';
+
+    if ( file_exists( $manifest_path ) ) {
+        $manifest = json_decode( file_get_contents( $manifest_path ), true );
+        if ( isset( $manifest[ $style_file ] ) ) {
+            $style_file = $manifest[ $style_file ];
+        }
+    }
+
     wp_enqueue_style(
         'ee-style',
-        get_template_directory_uri() . '/assets/css/style.css',
+        get_template_directory_uri() . '/assets/css/' . $style_file,
         [],
-        '1.0.0',
+        null, // version can be null because the filename changes
         'all'
     );
 }
 add_action('wp_enqueue_scripts', 'ee_enqueue_assets');
+
 
 // Register menus
 function ee_register_menus() {
@@ -54,6 +56,3 @@ function enqueue_custom_scripts() {
     wp_enqueue_script( 'helpers', get_template_directory_uri() . '/assets/js/helpers.js', array(), '1.0', true );
   }
   add_action( 'wp_enqueue_scripts', 'enqueue_custom_scripts' );
-  
-?>
-
