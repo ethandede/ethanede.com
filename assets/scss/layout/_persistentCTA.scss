@@ -33,10 +33,17 @@
       font-weight: bold;
       font-size: 1.5rem;
       color: #333;
+    }
 
       @media screen and (max-width:768px) {
-        display:none;
+        h3 {
+          font-size: 1rem;
+        }
+        .cta-button {
+          font-size: 0.83rem;
+          padding: 7px 15px;
+        }
+
       }
-    }
   }
 }
