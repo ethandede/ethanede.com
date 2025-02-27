@@ -13,6 +13,9 @@ bower_components/
 dist/
 build/
 
+#Images
+assets/img/
+
 # Sass cache (if applicable)
 .sass-cache/
 
