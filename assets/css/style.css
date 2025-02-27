@@ -252,13 +252,18 @@ p {
 }
 
 #color-controls {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem;
   background: rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+}
+@media screen and (min-width: 1024px) {
+  #color-controls {
+    display: flex;
+  }
 }
 #color-controls label {
   display: flex;
