@@ -25,6 +25,13 @@
       font-family: vars.$header-font;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
+
+    .rotating-word-break {
+      @media screen and (min-width: 1024px) {
+        display:none;
+        
+      }
+    }
     
     .rotating-word {
       color: var(--highlight-color);

@@ -28,6 +28,7 @@ get_header();
       <h4>My name is Ethan Ede.</h4>
       <h1>
         I build marketing websites <br>that
+        <span class=rotating-word-break><br></span>
         <span class="rotating-word"></span>
     </h1>
       <a href="/contact" class="hero-button cta-button">Let's work together <i class="fa fa-arrow-right"></i></a>
