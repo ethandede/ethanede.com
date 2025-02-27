@@ -134,11 +134,16 @@ p {
   justify-content: space-between;
   width: 100%;
 }
-.persistent-cta h3 {
+.persistent-cta .container h3 {
   margin: 0;
   font-weight: bold;
   font-size: 1.5rem;
   color: #333;
+}
+@media screen and (max-width: 768px) {
+  .persistent-cta .container h3 {
+    display: none;
+  }
 }
 
 .site-footer {
