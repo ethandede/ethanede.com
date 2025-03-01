@@ -14,6 +14,11 @@
   font-family: vars.$header-font;
   transition: background-color 0.3s ease;
 
+  &.sm {
+    font-size: 0.83rem;
+    padding: 7px 15px;
+  }
+
   i {
     margin-left: 0.5rem;
     transition: transform 0.3s ease-in-out;

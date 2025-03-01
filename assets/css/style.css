@@ -248,6 +248,10 @@ p {
   font-family: "Roboto", sans-serif;
   transition: background-color 0.3s ease;
 }
+.cta-button.sm {
+  font-size: 0.83rem;
+  padding: 7px 15px;
+}
 .cta-button i {
   margin-left: 0.5rem;
   transition: transform 0.3s ease-in-out;
@@ -264,7 +268,7 @@ p {
   display: none;
   flex-wrap: wrap;
   gap: 1rem;
-  padding: 1rem;
+  padding: 1rem 0;
   background: rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
@@ -284,8 +288,8 @@ p {
 #color-controls label input[type=color] {
   border: none;
   background: transparent;
-  width: 2rem;
-  height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
   padding: 0;
   cursor: pointer;
   -webkit-appearance: none;
@@ -309,18 +313,18 @@ p {
   overflow: hidden;
   color: #fff;
   text-align: left;
-  padding: 200px 2.5rem;
+  padding: 200px 0;
 }
 @media screen and (max-width: 768px) {
   #home .hero {
-    padding: 3.5rem 2.5rem;
+    padding: 3.5rem 0;
   }
 }
 #home .hero .container {
   position: relative;
   z-index: 1;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0;
 }
 #home .hero h1 {
   font-size: 3rem;
@@ -355,7 +359,7 @@ p {
 }
 
 .what-i-do {
-  padding: 0 35px 50px;
+  padding: 0 0 50px;
   background: transparent;
   color: #fff;
   z-index: 1;
@@ -393,7 +397,7 @@ p {
 }
 
 .clients {
-  padding: 60px 35px;
+  padding: 60px 0;
 }
 .clients h2 {
   text-align: left;
@@ -406,7 +410,7 @@ p {
 }
 
 .portfolio {
-  padding: 60px 35px;
+  padding: 60px 0;
   color: #fff;
 }
 .portfolio .portfolio-grid {
@@ -604,6 +608,10 @@ p {
   width: 100%;
   text-align: center;
   cursor: pointer;
+}
+.contact-page .contact-form-container .wpcf7-form .wpcf7-submit.sm {
+  font-size: 0.83rem;
+  padding: 7px 15px;
 }
 .contact-page .contact-form-container .wpcf7-form .wpcf7-submit i {
   margin-left: 0.5rem;

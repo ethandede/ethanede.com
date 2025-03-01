@@ -10,17 +10,17 @@
     overflow: hidden;
     color: #fff;
     text-align: left;
-    padding: 200px 2.5rem;
+    padding: 200px 0;
 
     @media screen and (max-width: 768px) {
-      padding:3.5rem 2.5rem;
+      padding:3.5rem 0;
     }
     
     .container {
       position: relative;
       z-index: 1;
       max-width: 1200px;
-      margin: 0 auto;
+      margin: 0;
     }
     
     h1 {

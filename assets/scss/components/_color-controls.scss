@@ -7,7 +7,7 @@
   }
   flex-wrap: wrap;
   gap: 1rem;
-  padding: 1rem;
+  padding: 1rem 0;
   background: rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
@@ -22,8 +22,8 @@
     input[type="color"] {
       border: none;
       background: transparent;
-      width: 2rem;
-      height: 2rem;
+      width: 1.5rem;
+      height: 1.5rem;
       padding: 0;
       cursor: pointer;
       -webkit-appearance: none;

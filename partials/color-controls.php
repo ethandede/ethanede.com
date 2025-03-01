@@ -7,6 +7,6 @@
     Highlight Color:
     <input type="color" id="highlightColor" value="#BF3978">
   </label>
-  <button id="resetColors" class="cta-button">Reset Colors</button>
+  <button id="resetColors" class="cta-button sm">Reset Colors</button>
   </div>
 

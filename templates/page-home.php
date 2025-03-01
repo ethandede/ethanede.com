@@ -17,10 +17,11 @@ get_header();
   <svg class="animated-squares" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice"></svg>
 </div>
 
-<!-- Color controls UI -->
-<?php get_template_part('partials/color-controls'); ?>
-
 <main id="home">
+
+<!-- Color controls UI -->
+  <?php get_template_part('partials/color-controls'); ?>
+
   <!-- Hero Section without the SVG -->
   <section class="hero">
     <div class="container">
@@ -97,16 +98,16 @@ get_header();
       <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_liveops.svg" alt="Liveops">
     </div>
     <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_actOn.svg" alt="Act-On">
-    </div>
-    <div class="logo-container">
       <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_bosch.svg" alt="Bosch">
     </div>
     <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_rehau.svg" alt="Rehau">
-    </div>
+      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_actOn.svg" alt="Act-On">
+      </div>
     <div class="logo-container">
       <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_bestBuy.svg" alt="Best Buy">
+    </div>
+    <div class="logo-container">
+      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_rehau.svg" alt="Rehau">
     </div>
     <div class="logo-container">
       <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_toshiba.svg" alt="Toshiba">
@@ -118,10 +119,10 @@ get_header();
       <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_portlandJapaneseGarden.svg" alt="Portland Japanese Garden">
     </div>
     <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_kong.svg" alt="Kong, Inc.">
+      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_nba.svg" alt="NBA">
     </div>
     <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_nba.svg" alt="NBA">
+      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_kong.svg" alt="Kong, Inc.">
     </div>
   </div>
 </div>
