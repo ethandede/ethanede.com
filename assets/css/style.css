@@ -17,7 +17,7 @@
 }
 
 html {
-  font-size: 18px;
+  font-size: 17px;
 }
 
 body {
@@ -129,6 +129,8 @@ p {
   }
 }
 .persistent-cta .container {
+  max-width: 1300px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -147,6 +149,91 @@ p {
   .persistent-cta .container .cta-button {
     font-size: 0.83rem;
     padding: 7px 15px;
+  }
+}
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background: rgba(31, 28, 44, 0.95);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  padding: 15px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.site-nav .container {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 35px;
+}
+.site-nav .nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem;
+}
+.site-nav .nav-content .nav-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+.site-nav .nav-content .nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+}
+.site-nav .nav-content .nav-links li a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 1rem;
+  font-family: "Roboto", sans-serif;
+  transition: color 0.3s ease;
+}
+.site-nav .nav-content .nav-links li a:hover {
+  color: var(--accent-color-light);
+}
+.site-nav .persistent-cta {
+  display: flex;
+  justify-content: flex-start;
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.site-nav .persistent-cta.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.site-nav .persistent-cta .cta-button {
+  background-color: var(--accent-color);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 10px 20px;
+}
+.site-nav .persistent-cta .cta-button:hover {
+  background-color: var(--accent-color-light);
+}
+@media (max-width: 767px) {
+  .site-nav {
+    padding: 10px 0;
+  }
+  .site-nav .nav-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .site-nav .nav-content .nav-title {
+    font-size: 1.25rem;
+  }
+  .site-nav .nav-content .nav-links {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .site-nav .persistent-cta {
+    justify-content: center;
   }
 }
 
@@ -396,6 +483,59 @@ p {
   line-height: 1.5;
 }
 
+.ai-tools {
+  padding: 0;
+  background: transparent;
+  color: #fff;
+  z-index: 1;
+}
+.ai-tools .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+.ai-tools h2 {
+  font-size: 2.441rem;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+.ai-tools .supporting-text {
+  font-size: 1rem;
+  font-style: italic;
+  text-align: left;
+  padding-left: 1rem;
+  border-left: 4px solid #45748C;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+}
+.ai-tools .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+.ai-tools .item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.ai-tools .item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+.ai-tools .item h4 {
+  margin-bottom: 10px;
+  color: #fff;
+}
+.ai-tools .item p {
+  color: #ddd;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
 .clients {
   padding: 60px 0;
 }
@@ -553,6 +693,50 @@ p {
   font-size: 2.5rem;
   color: #fff;
   transform: translateX(0);
+}
+
+/* styles.css */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(9, 50px);
+  grid-gap: 1px;
+  background-color: #000;
+  padding: 1px;
+  width: fit-content;
+}
+
+.cell {
+  width: 50px;
+  height: 50px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.cell:nth-child(3n) {
+  border-right: 2px solid #000;
+}
+
+.grid > div:nth-child(n+19):nth-child(-n+27),
+.grid > div:nth-child(n+46):nth-child(-n+54) {
+  border-bottom: 2px solid #000;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
 }
 
 .contact-page {

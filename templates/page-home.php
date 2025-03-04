@@ -22,6 +22,24 @@ get_header();
 <!-- Color controls UI -->
   <?php get_template_part('partials/color-controls'); ?>
 
+  <!-- Sticky Navigation with Integrated CTA -->
+  <nav class="site-nav">
+    <div class="container">
+      <div class="nav-content">
+        <h3 class="nav-title">Ethan Ede</h3>
+        <ul class="nav-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills & Experience</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="persistent-cta">
+        <a href="/contact" class="cta-button">Let’s Work Together <i class="fa fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </nav>
+
   <!-- Hero Section without the SVG -->
   <section class="hero">
     <div class="container">
@@ -31,20 +49,12 @@ get_header();
         I build marketing websites <br>that
         <span class=rotating-word-break><br></span>
         <span class="rotating-word"></span>
-    </h1>
+    </h1>    
+    <p>20+ years blending tech and creativity, now powered by AI</p>
       <a href="/contact" class="hero-button cta-button">Let's work together <i class="fa fa-arrow-right"></i></a>
-    </div>
-  </section>
-
-  <!-- Persistent CTA -->
-<div class="persistent-cta">
-  <div class="container">
-    <h3>Ethan Ede</h3>
-    <a href="/contact" class="cta-button">Let's Work Together <i class="fa fa-arrow-right"></i></a>
-  </div>
-</div>
-
-
+    </div>  
+  </section>  
+  
   <!-- Things I Do Section -->
   <section class="what-i-do">
     <div class="container">
@@ -210,6 +220,33 @@ get_header();
       </div>
     </div>
 </section>
+
+  <!-- AI Tools Section -->
+  <section class="ai-tools">
+    <div class="container">
+      <h2>AI Tools & Technologies</h2>
+      <p class="supporting-text">I leverage cutting-edge AI to amplify creativity, efficiency, and impact in digital solutions.</p>
+      <div class="grid">
+        <div class="item">
+          <h4>ChatGPT</h4>
+          <p>Automating content creation and ideation—generated SEO-optimized posts for [Company Z], cutting time by 30%.</p>
+        </div>
+        <div class="item">
+          <h4>Grok</h4>
+          <p>Analyzing data and user feedback—prioritized features for [Company V] with actionable insights.</p>
+        </div>
+        <div class="item">
+          <h4>Stable Diffusion</h4>
+          <p>Prototyping visuals—designed unique assets for [Project W], streamlining workflows.</p>
+        </div>
+        <div class="item">
+          <h4>Midjourney</h4>
+          <p>Enhancing creative output—crafted concept art for [Project X], reducing design time by 50%.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
 </main>
 
 <?php get_footer(); ?>

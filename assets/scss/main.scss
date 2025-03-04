@@ -10,6 +10,7 @@
 // Layout
 @use 'layout/header';
 @use 'layout/persistentCTA';
+@use 'layout/siteNav';
 @use 'layout/footer';
 @use 'layout/backgroundAnimation';
 
@@ -22,6 +23,8 @@
 @use 'pages/home';
 @use 'pages/about';
 @use 'pages/what-i-do';
+@use 'pages/ai-tools';
 @use 'pages/clients';
 @use 'pages/portfolio';
+@use 'pages/sudoku';
 @use 'pages/contact';
