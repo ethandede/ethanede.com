@@ -393,22 +393,21 @@ function generatePuzzle(difficulty) {
   }
   const solution = full.slice();
   const difficultyTargets = {
-    quick: { minClues: 36, maxClues: 40, minTechnique: 0 },
-    easy: { minClues: 30, maxClues: 35, minTechnique: 1 },
-    'not easy': { minClues: 27, maxClues: 30, minTechnique: 2 },
-    hard: { minClues: 23, maxClues: 27, minTechnique: 3 },
-    mental: { minClues: 20, maxClues: 23, minTechnique: 4 }
+    quick: { minClues: 40, maxClues: 45, minTechnique: 0 },
+    easy: { minClues: 36, maxClues: 40, minTechnique: 0 },
+    'not easy': { minClues: 30, maxClues: 35, minTechnique: 1 },
+    hard: { minClues: 27, maxClues: 31, minTechnique: 2 },
+    expert: { minClues: 22, maxClues: 26, minTechnique: 3 }, // New Expert
+    mental: { minClues: 20, maxClues: 24, minTechnique: 4 }
   };
   const target = difficultyTargets[difficulty] || difficultyTargets.easy;
 
-  // Seed with minimal unique puzzle (~17 clues)
   let base = Array(81).fill(0);
   let clues = 0;
   let indices = Array.from({ length: 81 }, (_, i) => i);
-  const minSeed = 17;
+  const minSeed = difficulty === 'quick' || difficulty === 'easy' ? 30 : 17;
   let targetClues = Math.floor(Math.random() * (target.maxClues - target.minClues + 1)) + target.minClues;
 
-  // Seed to 17 clues
   while (clues < minSeed && indices.length > 0) {
     const idx = Math.floor(Math.random() * indices.length);
     const pos = indices.splice(idx, 1)[0];
@@ -417,7 +416,6 @@ function generatePuzzle(difficulty) {
     console.log(`Seeded cell ${pos}, clues: ${clues}`);
   }
 
-  // Add to targetClues with relaxed uniqueness
   while (clues < targetClues && indices.length > 0) {
     const idx = Math.floor(Math.random() * indices.length);
     const pos = indices.splice(idx, 1)[0];
@@ -426,11 +424,9 @@ function generatePuzzle(difficulty) {
     console.log(`Added cell ${pos}, clues: ${clues}`);
     if (!hasUniqueSolution(base, solution)) {
       console.log(`Checking uniqueness at ${clues} clues`);
-      // Allow some non-unique steps until final check
     }
   }
 
-  // Final uniqueness check
   if (!hasUniqueSolution(base, solution)) {
     console.warn('Puzzle not unique, adjusting...');
     while (clues < target.maxClues && indices.length > 0) {
@@ -479,11 +475,12 @@ function hasUniqueSolution(board, solution) {
 
 function analyzeDifficulty(base, solution, difficulty) {
   const difficultyTargets = {
-    quick: { minClues: 36, maxClues: 40, minTechnique: 0 },
-    easy: { minClues: 30, maxClues: 35, minTechnique: 1 },
-    'not easy': { minClues: 27, maxClues: 30, minTechnique: 2 },
-    hard: { minClues: 23, maxClues: 27, minTechnique: 3 },
-    mental: { minClues: 20, maxClues: 23, minTechnique: 4 }
+    quick: { minClues: 40, maxClues: 45, minTechnique: 0 },
+    easy: { minClues: 36, maxClues: 40, minTechnique: 0 },
+    'not easy': { minClues: 30, maxClues: 35, minTechnique: 1 },
+    hard: { minClues: 27, maxClues: 31, minTechnique: 2 },
+    expert: { minClues: 22, maxClues: 26, minTechnique: 3 },
+    mental: { minClues: 20, maxClues: 24, minTechnique: 4 }
   };
   const target = difficultyTargets[difficulty] || difficultyTargets.easy;
   let tempBoard = base.slice();
@@ -501,8 +498,8 @@ function analyzeDifficulty(base, solution, difficulty) {
     if (zeros === 0 || hardestTechnique >= target.minTechnique) break;
   }
 
-  // Cap at minTechnique unless unsolvable below it
-  hardestTechnique = hardestTechnique === -1 ? target.minTechnique : Math.min(hardestTechnique, target.minTechnique);
+  hardestTechnique = hardestTechnique === -1 ? target.minTechnique : Math.min(hardestTechnique, 
+    difficulty === 'hard' ? 2 : (difficulty === 'expert' ? 3 : target.minTechnique));
   return { hardestTechnique };
 }
 

@@ -19,11 +19,12 @@ get_header();
             <div class="control-row">
               <label for="difficulty">Difficulty:</label>
               <select id="difficulty" class="sudoku-select">
-                <option value="quick">Quick</option>
-                <option value="easy">Easy</option>
-                <option value="not easy">Not Easy</option>
-                <option value="hard">Hard</option>
-                <option value="mental">Mental</option>
+              <option value="quick">Quick</option>
+              <option value="easy">Easy</option>
+              <option value="not easy">Not Easy</option>
+              <option value="hard">Hard</option>
+              <option value="expert">Expert</option>
+              <option value="mental">Mental</option>
               </select>
             </div>
             <div class="control-row">
