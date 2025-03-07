@@ -237,6 +237,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
     }
 
     .cell {
+      color: var(--primary-color); /* White for user-entered */
       position: relative;
       width: clamp(40px, 8vw, 75px);
       height: clamp(40px, 8vw, 75px);
@@ -304,6 +305,18 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
 
       &:nth-last-child(-n+9) {
         border-bottom: 1px solid $overgrid-border-color;
+      }
+
+      &.initial {
+        color: var(--initial-color); /* Gray (#999) for initial numbers */
+      }
+
+      &.button-solved {
+        color: var(--highlight-color);
+      }
+
+      &.user-solved {
+        color: var(--primary-color);
       }
 
       &.invalid {
@@ -396,9 +409,9 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       }
 
       &.solved {
-        color: $solved-color; // #999 for completion
+        color: $highlight-color !important; // #999 for completion
         .number-text {
-          color: $solved-color; // Ensure text matches
+          color: $highlight-color; // Ensure text matches
         }
       }
 

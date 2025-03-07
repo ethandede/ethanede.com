@@ -8,8 +8,8 @@
   --accent-color-light: rgb(87.5358851675, 143.7559808612, 172.4641148325);
   --highlight-color: #BF3978;
   --highlight-color-rgb: 191, 57, 120;
-  --solved-color: #999;
-  --solved-color-rgb: 153, 153, 153;
+  --initial-color: #999;
+  --initial-color-rgb: 153, 153, 153;
 }
 
 * {
@@ -913,6 +913,7 @@ p {
   border-radius: 8px;
 }
 .sudoku-page .sudoku-container .cell {
+  color: var(--primary-color); /* White for user-entered */
   position: relative;
   width: clamp(40px, 8vw, 75px);
   height: clamp(40px, 8vw, 75px);
@@ -969,6 +970,15 @@ p {
 }
 .sudoku-page .sudoku-container .cell:nth-last-child(-n+9) {
   border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+}
+.sudoku-page .sudoku-container .cell.initial {
+  color: var(--initial-color); /* Gray (#999) for initial numbers */
+}
+.sudoku-page .sudoku-container .cell.button-solved {
+  color: var(--highlight-color);
+}
+.sudoku-page .sudoku-container .cell.user-solved {
+  color: var(--primary-color);
 }
 .sudoku-page .sudoku-container .cell.invalid {
   color: var(--highlight-color);
@@ -1047,10 +1057,10 @@ p {
   border-color: var(--accent-color);
 }
 .sudoku-page .sudoku-container .number-cell.solved {
-  color: #999;
+  color: #BF3978 !important;
 }
 .sudoku-page .sudoku-container .number-cell.solved .number-text {
-  color: #999;
+  color: #BF3978;
 }
 .sudoku-page .sudoku-container .number-cell.noted {
   opacity: 0.7;

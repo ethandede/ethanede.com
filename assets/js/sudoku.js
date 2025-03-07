@@ -1,4 +1,3 @@
-// sudoku.js
 const grid = document.getElementById('sudoku-grid');
 const difficultySelect = document.getElementById('difficulty');
 const mistakeCounter = document.getElementById('mistake-counter');
@@ -6,6 +5,7 @@ const numberStatusGrid = document.getElementById('number-status-grid');
 let board = Array(81).fill(0);
 let notes = Array(81).fill().map(() => new Set());
 let initialBoard = [];
+let solution = []; // Store the full solution for solving
 let mistakeCount = 0;
 let gameOver = false;
 let gameWon = false;
@@ -14,8 +14,8 @@ let timerInterval = null;
 let startTime = null;
 let autoCandidates = Array(81).fill().map(() => new Set());
 let isAutoCandidatesEnabled = false;
+let userSolved = Array(81).fill(false); // Tracks user-solved cells
 
-// Initialize game with empty grid and overlay
 function initializeGame() {
   createGrid();
   createNumberStatusGrid();
@@ -25,7 +25,6 @@ function initializeGame() {
   showStartOverlay();
 }
 
-// Show start overlay over the grid only
 function showStartOverlay() {
   const existingOverlay = document.querySelector('.start-overlay');
   if (existingOverlay) existingOverlay.remove();
@@ -47,6 +46,7 @@ async function newGame() {
   board = Array(81).fill(0);
   notes = Array(81).fill().map(() => new Set());
   initialBoard = [];
+  userSolved = Array(81).fill(false); // Reset user-solved tracking
   mistakeCount = 0;
   gameOver = false;
   gameWon = false;
@@ -54,8 +54,8 @@ async function newGame() {
   const cells = document.querySelectorAll('.cell');
   cells.forEach(cell => {
     cell.innerHTML = '';
-    cell.classList.remove('notes', 'highlight', 'thinking-type');
-    cell.style.color = 'var(--primary-color)';
+    cell.classList.remove('notes', 'highlight', 'thinking-type', 'solved', 'user-solved', 'button-solved', 'initial', 'invalid');
+    cell.style.color = '';
   });
   const overlay = document.querySelector('.game-over-overlay') || document.querySelector('.success-overlay') || document.querySelector('.start-overlay');
   if (overlay) overlay.remove();
@@ -165,10 +165,17 @@ function updateGrid(clickedIndex = null) {
   const cells = document.querySelectorAll('.cell');
   cells.forEach((cell, index) => {
     cell.innerHTML = '';
-    cell.classList.remove('notes', 'highlighted', 'highlight');
+    cell.classList.remove('notes', 'highlighted', 'highlight', 'user-solved', 'button-solved', 'initial', 'invalid');
+    cell.style.color = ''; // Clear inline styles
     if (board[index] !== 0) {
       cell.textContent = board[index];
-      cell.style.color = initialBoard[index] === 0 ? 'var(--primary-color)' : 'rgba(255, 255, 255, 0.6)';
+      if (initialBoard[index] !== 0) {
+        cell.classList.add('initial'); // Gray (#999)
+      } else if (userSolved[index]) {
+        cell.classList.add('user-solved'); // White (#fff)
+      } else if (initialBoard[index] === 0 && board[index] !== 0) {
+        cell.classList.add('button-solved'); // Pink (#BF3978)
+      }
     } else {
       const displayNotes = new Set(notes[index]);
       if (isAutoCandidatesEnabled) {
@@ -306,17 +313,19 @@ function handleKeydown(event, index) {
     console.log('Processing guess:', value, 'Valid?', isValidMove(index, value, board));
     if (isValidMove(index, value, board)) {
       board[index] = value;
+      userSolved[index] = true; // Mark as user-solved
       notes[index].clear();
       clearNotesInSection(index, value);
       cell.textContent = value;
-      cell.style.color = 'var(--primary-color)';
+      cell.classList.remove('button-solved', 'initial', 'invalid');
+      cell.classList.add('user-solved'); // White (#fff)
       cell.contentEditable = false;
       computeAutoCandidates();
       updateGrid(index);
     } else {
       mistakeCount++;
       cell.textContent = value;
-      cell.classList.add('invalid');
+      cell.classList.add('invalid'); // Pink (#BF3978)
       setTimeout(() => {
         board[index] = 0;
         cell.textContent = '';
@@ -329,8 +338,10 @@ function handleKeydown(event, index) {
   } else if (key === 'Backspace' || key === 'Delete') {
     event.preventDefault();
     board[index] = 0;
+    userSolved[index] = false; // Clear user-solved status
     notes[index].clear();
     cell.textContent = '';
+    cell.classList.remove('user-solved', 'button-solved', 'initial', 'invalid');
     cell.contentEditable = false;
     computeAutoCandidates();
     updateGrid(index);
@@ -348,11 +359,14 @@ function handleBlur(index) {
     const num = parseInt(value);
     if (isValidMove(index, num, board)) {
       board[index] = num;
+      userSolved[index] = true; // Mark as user-solved
       notes[index].clear();
       clearNotesInSection(index, num);
+      cell.classList.remove('button-solved', 'initial', 'invalid');
+      cell.classList.add('user-solved'); // White (#fff)
     } else {
       mistakeCount++;
-      cell.classList.add('invalid');
+      cell.classList.add('invalid'); // Pink (#BF3978)
       setTimeout(() => {
         board[index] = 0;
         cell.textContent = '';
@@ -391,13 +405,13 @@ function generatePuzzle(difficulty) {
     console.error('Failed to solve initial board');
     return full;
   }
-  const solution = full.slice();
+  solution = full.slice(); // Store the solution globally
   const difficultyTargets = {
     quick: { minClues: 40, maxClues: 45, minTechnique: 0 },
     easy: { minClues: 36, maxClues: 40, minTechnique: 0 },
     'not easy': { minClues: 30, maxClues: 35, minTechnique: 1 },
     hard: { minClues: 27, maxClues: 31, minTechnique: 2 },
-    expert: { minClues: 22, maxClues: 26, minTechnique: 3 }, // New Expert
+    expert: { minClues: 22, maxClues: 26, minTechnique: 3 },
     mental: { minClues: 20, maxClues: 24, minTechnique: 4 }
   };
   const target = difficultyTargets[difficulty] || difficultyTargets.easy;
@@ -453,7 +467,7 @@ function hasUniqueSolution(board, solution) {
   let solutions = 0;
   const maxSolutions = 2;
   function countSolutions(b, depth = 0) {
-    if (depth > 1500) return true; // Max depth
+    if (depth > 1500) return true;
     const empty = b.indexOf(0);
     if (empty === -1) {
       solutions++;
@@ -503,30 +517,6 @@ function analyzeDifficulty(base, solution, difficulty) {
   return { hardestTechnique };
 }
 
-function hasUniqueSolution(board, solution) {
-  let solutions = 0;
-  const maxSolutions = 2;
-  function countSolutions(b, depth = 0) {
-    if (depth > 500) return true; // Max depth
-    const empty = b.indexOf(0);
-    if (empty === -1) {
-      solutions++;
-      return solutions > 1;
-    }
-    for (let num = 1; num <= 9 && solutions < maxSolutions; num++) {
-      if (isValidMove(empty, num, b)) {
-        b[empty] = num;
-        if (countSolutions(b, depth + 1)) return true;
-        b[empty] = 0;
-      }
-    }
-    return false;
-  }
-  const temp = board.slice();
-  countSolutions(temp);
-  return solutions === 1;
-}
-
 function applyTechnique(level, board, analyzeOnly = false) {
   let progress = false;
   let tempBoard = analyzeOnly ? board.slice() : board;
@@ -540,7 +530,7 @@ function applyTechnique(level, board, analyzeOnly = false) {
     return candidates;
   }
 
-  if (level === 0) { // Singles
+  if (level === 0) {
     for (let i = 0; i < 81; i++) {
       if (tempBoard[i] === 0) {
         const candidates = getCandidates(i);
@@ -569,7 +559,7 @@ function applyTechnique(level, board, analyzeOnly = false) {
         }
       }
     }
-  } else if (level === 1) { // Locked Candidates
+  } else if (level === 1) {
     for (let box = 0; box < 9; box++) {
       const boxStart = Math.floor(box / 3) * 27 + (box % 3) * 3;
       const boxCells = [];
@@ -607,7 +597,7 @@ function applyTechnique(level, board, analyzeOnly = false) {
         }
       }
     }
-  } else if (level === 2) { // Naked Pairs/Triples
+  } else if (level === 2) {
     for (let unit = 0; unit < 27; unit++) {
       const cells = getUnitCells(unit);
       const cands = cells.map(i => tempBoard[i] === 0 ? getCandidates(i) : []);
@@ -638,7 +628,7 @@ function applyTechnique(level, board, analyzeOnly = false) {
         }
       }
     }
-  } else if (level === 3) { // X-Wing
+  } else if (level === 3) {
     for (let num = 1; num <= 9; num++) {
       const rowCands = Array(9).fill().map(() => []);
       for (let i = 0; i < 81; i++) {
@@ -669,7 +659,7 @@ function applyTechnique(level, board, analyzeOnly = false) {
         }
       }
     }
-  } else if (level === 4) { // Forcing Chains
+  } else if (level === 4) {
     for (let i = 0; i < 81; i++) {
       if (tempBoard[i] === 0) {
         const candidates = getCandidates(i);
@@ -689,7 +679,7 @@ function applyTechnique(level, board, analyzeOnly = false) {
     }
   }
 
-  return progress; // Just return progress, modify board in-place
+  return progress;
 }
 
 function getUnitCells(unit) {
@@ -743,6 +733,14 @@ function solve(board) {
   return false;
 }
 
+function solvePuzzle() {
+  if (gameOver || gameWon) return;
+  board = solution.slice();
+  gameWon = true;
+  if (timerInterval) clearInterval(timerInterval);
+  updateGrid(); // Let updateGrid handle class assignment
+}
+
 async function thinkingAnimation(finalBoard) {
   console.log('Starting thinking animation with board:', finalBoard);
   if (!finalBoard || finalBoard.every(val => val === 0)) return;
@@ -756,7 +754,7 @@ async function thinkingAnimation(finalBoard) {
     cells[index].textContent = finalBoard[index];
     cells[index].classList.add('thinking-type');
     console.log(`Animating cell ${index} with value ${finalBoard[index]}`);
-    await new Promise(resolve => setTimeout(resolve, 50)); // Increased to 50ms for visibility
+    await new Promise(resolve => setTimeout(resolve, 50));
     cells[index].classList.remove('thinking-type');
   }
   console.log('Thinking animation completed');
@@ -814,7 +812,6 @@ function resetGame() {
   updateGrid();
 }
 
-// DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM loaded, initializing Sudoku');
   if (!grid || !difficultySelect || !mistakeCounter || !numberStatusGrid || !document.getElementById('timer') || !document.getElementById('auto-candidates')) {
@@ -822,6 +819,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initializeGame();
   document.getElementById('start-game').addEventListener('click', newGame);
+  document.getElementById('solve-puzzle').addEventListener('click', solvePuzzle); // New event listener
   difficultySelect.addEventListener('change', () => {
     const overlay = document.querySelector('.start-overlay');
     if (overlay) showStartOverlay();

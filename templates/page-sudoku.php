@@ -43,6 +43,7 @@ get_header();
               <button class="cta-button" id="start-game">Start Game</button>
               <button class="cta-button" onclick="newGame()">New Game</button>
               <button class="cta-button" onclick="resetGame()">Reset</button>
+              <button class="cta-button" id="solve-puzzle">Solve Puzzle</button>
             </div>
           </div>
           <div id="number-status-grid" class="number-status-grid"></div>

@@ -6,7 +6,7 @@ $secondary-color: #1f1c2c;
 $accent-color: #45748C;
 $highlight-color: #BF3978;
 $accent-color-light: color.adjust($accent-color, $lightness: 10%);
-$solved-color: #999; // New variable, matches grid’s initial numbers
+$initial-color: #999;   // Gray for initial numbers (renamed from $solved-color)
 
 // Output as CSS variables for runtime use
 :root {
@@ -19,9 +19,8 @@ $solved-color: #999; // New variable, matches grid’s initial numbers
   --accent-color-light: #{$accent-color-light};
   --highlight-color: #{$highlight-color};
   --highlight-color-rgb: #{color.channel($highlight-color, "red", $space: rgb)}, #{color.channel($highlight-color, "green", $space: rgb)}, #{color.channel($highlight-color, "blue", $space: rgb)};
-  --solved-color: #{$solved-color}; // Add to CSS vars
-  --solved-color-rgb: #{color.channel($solved-color, "red", $space: rgb)}, #{color.channel($solved-color, "green", $space: rgb)}, #{color.channel($solved-color, "blue", $space: rgb)};
-}
+  --initial-color: #{$initial-color}; // New variable for initial numbers
+  --initial-color-rgb: #{color.channel($initial-color, "red", $space: rgb)}, #{color.channel($initial-color, "green", $space: rgb)}, #{color.channel($initial-color, "blue", $space: rgb)};}
 
 // Typography Variables & Global Settings
 $base-font-size: 17px;   // 1rem
