@@ -6,6 +6,16 @@
   <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-89QXYH3QB8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-89QXYH3QB8');
+</script>
 
 <header class="site-header">
   <!-- <div class="container">
