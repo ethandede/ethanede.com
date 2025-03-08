@@ -809,6 +809,15 @@ p {
   padding: 10px;
   border-radius: 8px;
 }
+.sudoku-page .sudoku-container .sudoku-controls .control-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.sudoku-page .sudoku-container .sudoku-controls .control-row.close-row {
+  display: none;
+}
 @media (max-width: 991px) {
   .sudoku-page .sudoku-container .sudoku-controls {
     position: fixed;
@@ -833,13 +842,11 @@ p {
     transform: translateY(0);
   }
   .sudoku-page .sudoku-container .sudoku-controls .control-row {
-    display: flex;
     gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
     justify-content: space-between;
   }
   .sudoku-page .sudoku-container .sudoku-controls .control-row.close-row {
+    display: flex;
     justify-content: flex-end;
   }
   .sudoku-page .sudoku-container .sudoku-controls .control-row.start-row {
@@ -894,8 +901,6 @@ p {
     font-size: clamp(10px, 2vw, 1rem);
     min-width: 80px;
     border-radius: 5px;
-    position: relative;
-    transition: opacity 0.3s ease;
   }
   .sudoku-page .sudoku-container .sudoku-controls .control-row .cta-button:hover {
     background: rgb(87.5358851675, 143.7559808612, 172.4641148325);
@@ -910,39 +915,6 @@ p {
   }
   .sudoku-page .sudoku-container .sudoku-controls .control-row .cta-button.close-menu:hover {
     background: #ff6666;
-  }
-  .sudoku-page .sudoku-container .sudoku-controls .control-row .cta-button[disabled] {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  .sudoku-page .sudoku-container .sudoku-controls .control-row .cta-button.loading {
-    position: relative;
-    pointer-events: none;
-  }
-  .sudoku-page .sudoku-container .sudoku-controls .control-row .cta-button.loading span {
-    visibility: hidden;
-  }
-  .sudoku-page .sudoku-container .sudoku-controls .control-row .cta-button.loading::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top: 3px solid #fff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-  }
-  @keyframes spin {
-    0% {
-      transform: translate(-50%, -50%) rotate(0deg);
-    }
-    100% {
-      transform: translate(-50%, -50%) rotate(360deg);
-    }
   }
   .sudoku-page .sudoku-container .sudoku-controls .control-row .auto-candidates-checkbox {
     margin-left: 8px;
