@@ -894,6 +894,8 @@ p {
     font-size: clamp(10px, 2vw, 1rem);
     min-width: 80px;
     border-radius: 5px;
+    position: relative;
+    transition: opacity 0.3s ease;
   }
   .sudoku-page .sudoku-container .sudoku-controls .control-row .cta-button:hover {
     background: rgb(87.5358851675, 143.7559808612, 172.4641148325);
@@ -908,6 +910,39 @@ p {
   }
   .sudoku-page .sudoku-container .sudoku-controls .control-row .cta-button.close-menu:hover {
     background: #ff6666;
+  }
+  .sudoku-page .sudoku-container .sudoku-controls .control-row .cta-button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .sudoku-page .sudoku-container .sudoku-controls .control-row .cta-button.loading {
+    position: relative;
+    pointer-events: none;
+  }
+  .sudoku-page .sudoku-container .sudoku-controls .control-row .cta-button.loading span {
+    visibility: hidden;
+  }
+  .sudoku-page .sudoku-container .sudoku-controls .control-row .cta-button.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+  @keyframes spin {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
   }
   .sudoku-page .sudoku-container .sudoku-controls .control-row .auto-candidates-checkbox {
     margin-left: 8px;
@@ -1330,15 +1365,78 @@ p {
 .sudoku-page .sudoku-container .success-overlay .game-over-message .cta-button,
 .sudoku-page .sudoku-container .success-overlay .success-message .cta-button {
   background: #45748C;
-  border: none;
-  padding: 10px 20px;
-  font-size: clamp(12px, 2.5vw, 1rem);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 8px 16px;
+  font-size: clamp(10px, 2vw, 1rem);
+  min-width: 80px;
+  border-radius: 5px;
+  position: relative;
+  transition: opacity 0.3s ease;
 }
 .sudoku-page .sudoku-container .game-over-overlay .game-over-message .cta-button:hover,
 .sudoku-page .sudoku-container .game-over-overlay .success-message .cta-button:hover,
 .sudoku-page .sudoku-container .success-overlay .game-over-message .cta-button:hover,
 .sudoku-page .sudoku-container .success-overlay .success-message .cta-button:hover {
   background: rgb(87.5358851675, 143.7559808612, 172.4641148325);
+}
+.sudoku-page .sudoku-container .game-over-overlay .game-over-message .cta-button.start-game,
+.sudoku-page .sudoku-container .game-over-overlay .success-message .cta-button.start-game,
+.sudoku-page .sudoku-container .success-overlay .game-over-message .cta-button.start-game,
+.sudoku-page .sudoku-container .success-overlay .success-message .cta-button.start-game {
+  padding: 10px 20px;
+  font-size: 1rem;
+  min-width: 120px;
+}
+.sudoku-page .sudoku-container .game-over-overlay .game-over-message .cta-button.close-menu,
+.sudoku-page .sudoku-container .game-over-overlay .success-message .cta-button.close-menu,
+.sudoku-page .sudoku-container .success-overlay .game-over-message .cta-button.close-menu,
+.sudoku-page .sudoku-container .success-overlay .success-message .cta-button.close-menu {
+  background: #ff4444;
+}
+.sudoku-page .sudoku-container .game-over-overlay .game-over-message .cta-button.close-menu:hover,
+.sudoku-page .sudoku-container .game-over-overlay .success-message .cta-button.close-menu:hover,
+.sudoku-page .sudoku-container .success-overlay .game-over-message .cta-button.close-menu:hover,
+.sudoku-page .sudoku-container .success-overlay .success-message .cta-button.close-menu:hover {
+  background: #ff6666;
+}
+.sudoku-page .sudoku-container .game-over-overlay .game-over-message .cta-button[disabled],
+.sudoku-page .sudoku-container .game-over-overlay .success-message .cta-button[disabled],
+.sudoku-page .sudoku-container .success-overlay .game-over-message .cta-button[disabled],
+.sudoku-page .sudoku-container .success-overlay .success-message .cta-button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.sudoku-page .sudoku-container .game-over-overlay .game-over-message .cta-button.loading,
+.sudoku-page .sudoku-container .game-over-overlay .success-message .cta-button.loading,
+.sudoku-page .sudoku-container .success-overlay .game-over-message .cta-button.loading,
+.sudoku-page .sudoku-container .success-overlay .success-message .cta-button.loading {
+  position: relative;
+  overflow: hidden;
+  color: transparent;
+}
+.sudoku-page .sudoku-container .game-over-overlay .game-over-message .cta-button.loading::after,
+.sudoku-page .sudoku-container .game-over-overlay .success-message .cta-button.loading::after,
+.sudoku-page .sudoku-container .success-overlay .game-over-message .cta-button.loading::after,
+.sudoku-page .sudoku-container .success-overlay .success-message .cta-button.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+}
+@keyframes spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 @keyframes successFlash {
   0% {

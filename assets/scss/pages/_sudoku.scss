@@ -211,24 +211,61 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
             font-size: clamp(10px, 2vw, $font-sm);
             min-width: 80px;
             border-radius: 5px;
+            position: relative;
+            transition: opacity 0.3s ease;
+          
             &:hover {
               background: $accent-color-light;
             }
-    
+          
             &.start-game {
               padding: 10px 20px;
               font-size: $font-sm;
               min-width: 120px;
             }
-    
+          
             &.close-menu {
-              background: #ff4444; // Red to distinguish
+              background: #ff4444;
               &:hover {
                 background: #ff6666;
               }
             }
+          
+            &[disabled] {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+          
+            &.loading {
+              position: relative;
+              pointer-events: none; // Ensure no clicks during loading
+          
+              span {
+                visibility: hidden; // Hide text if wrapped in span
+              }
+          
+              &::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 20px;
+                height: 20px;
+                border: 3px solid rgba(255, 255, 255, 0.3);
+                border-top: 3px solid $primary-color; // White spinner
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                transform: translate(-50%, -50%);
+                z-index: 1; // Ensure it’s above button content
+              }
+            }
           }
-    
+          
+          @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+          }
+              
           .auto-candidates-checkbox {
             margin-left: 8px;
             accent-color: $accent-color;
@@ -667,15 +704,60 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
 
         .cta-button {
           background: $accent-color;
-          border: none;
-          padding: 10px 20px;
-          font-size: clamp(12px, 2.5vw, $font-sm);
-
+          border: 1px solid rgba(255, 255, 255, 0.5);
+          padding: 8px 16px;
+          font-size: clamp(10px, 2vw, $font-sm);
+          min-width: 80px;
+          border-radius: 5px;
+          position: relative; // For spinner positioning
+          transition: opacity 0.3s ease; // Smooth disable effect
           &:hover {
             background: $accent-color-light;
           }
+        
+          &.start-game {
+            padding: 10px 20px;
+            font-size: $font-sm;
+            min-width: 120px;
+          }
+        
+          &.close-menu {
+            background: #ff4444;
+            &:hover {
+              background: #ff6666;
+            }
+          }
+        
+          &[disabled] {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+        
+          &.loading {
+            position: relative;
+            overflow: hidden; // Contain spinner
+            color: transparent; // Hide text during loading
+        
+            &::after {
+              content: '';
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              width: 20px;
+              height: 20px;
+              border: 3px solid rgba(255, 255, 255, 0.3);
+              border-top: 3px solid $primary-color; // White spinner
+              border-radius: 50%;
+              animation: spin 1s linear infinite;
+              transform: translate(-50%, -50%);
+            }
+          }
         }
-      }
+        
+        @keyframes spin {
+          0% { transform: translate(-50%, -50%) rotate(0deg); }
+          100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }      }
     }
   }
 

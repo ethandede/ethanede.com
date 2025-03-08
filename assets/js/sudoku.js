@@ -17,6 +17,7 @@ let isAutoCandidatesEnabled = false;
 let userSolved = Array(81).fill(false);
 let selectedCell = null;
 let inputMode = 'guess'; // Added global declaration
+let isLoading = false;
 
 function initializeGame() {
   createGrid();
@@ -41,14 +42,22 @@ function showStartOverlay() {
   document.querySelector('.sudoku-grid').appendChild(overlay);
 }
 
-async function newGame() {
+function newGame() {
   if (!difficultySelect) return console.error('Difficulty select not found');
+  if (isLoading) return; // Prevent multiple calls while loading
   console.log('New game triggered with difficulty:', difficultySelect.value);
+
+  const newGameBtn = document.querySelector('button[onclick="newGame()"]');
+  if (newGameBtn) {
+    isLoading = true;
+    newGameBtn.disabled = true;
+    newGameBtn.classList.add('loading');
+  }
 
   board = Array(81).fill(0);
   notes = Array(81).fill().map(() => new Set());
   initialBoard = [];
-  userSolved = Array(81).fill(false); // Reset user-solved tracking
+  userSolved = Array(81).fill(false);
   mistakeCount = 0;
   gameOver = false;
   gameWon = false;
@@ -70,15 +79,23 @@ async function newGame() {
 
   const difficulty = difficultySelect.value;
   const newBoard = generatePuzzle(difficulty);
-  await thinkingAnimation(newBoard);
-  board = newBoard;
-  initialBoard = board.slice();
-  notes = Array(81).fill().map(() => new Set());
-  computeAutoCandidates();
-  updateGrid();
-  const numSolutions = countSolutions(board);
-  console.log(`Puzzle with ${board.filter(x => x !== 0).length} clues has ${numSolutions} solutions`);
-  if (numSolutions !== 1) console.warn(`Non-unique puzzle! Solutions: ${numSolutions}`);
+  thinkingAnimation(newBoard).then(() => {
+    board = newBoard;
+    initialBoard = board.slice();
+    notes = Array(81).fill().map(() => new Set());
+    computeAutoCandidates();
+    updateGrid();
+    const numSolutions = countSolutions(board);
+    console.log(`Puzzle with ${board.filter(x => x !== 0).length} clues has ${numSolutions} solutions`);
+    if (numSolutions !== 1) console.warn(`Non-unique puzzle! Solutions: ${numSolutions}`);
+
+    // Re-enable button after loading completes
+    if (newGameBtn) {
+      isLoading = false;
+      newGameBtn.disabled = false;
+      newGameBtn.classList.remove('loading');
+    }
+  });
 }
 
 function updateTimerDisplay() {
