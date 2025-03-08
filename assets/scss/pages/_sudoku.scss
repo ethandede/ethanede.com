@@ -9,8 +9,8 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
   min-height: 100vh;
   padding: 100px 0 50px;
 
-  @media (max-width: 768px) {
-    padding: 50px 0 25px;
+  @media (max-width: 991px) {
+    padding: 20px 0;
   }
 
   .sudoku-container {
@@ -19,7 +19,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       margin: 0 auto;
       padding: 0 35px;
 
-      @media (max-width: 768px) {
+      @media (max-width: 991px) {
         padding: 0 15px;
       }
     }
@@ -28,8 +28,8 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%; // Matches .sudoku-grid width
-      height: 100%; // Matches .sudoku-grid height
+      width: 100%;
+      height: 100%;
       background: rgba(0, 0, 0, 0.7);
       display: flex;
       align-items: center;
@@ -64,9 +64,10 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       color: $primary-color;
       text-shadow: none;
       font-family: $header-font;
+      text-align: center;
 
-      @media (max-width: 768px) {
-        margin-bottom: 0.75rem;
+      @media (max-width: 991px) {
+        font-size: clamp(20px, 4vw, $font-xl);
       }
     }
 
@@ -81,8 +82,8 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       color: #ddd;
       font-family: $body-font;
 
-      @media (max-width: 768px) {
-        margin-bottom: 1.5rem;
+      @media (max-width: 991px) {
+        display: none;
       }
     }
 
@@ -92,13 +93,9 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       justify-content: center;
       align-items: flex-start;
 
-      .sudoku-grid  {
-        position: relative;
-      }
-
-      @media (max-width: 768px) {
+      @media (max-width: 991px) {
         flex-direction: column;
-        gap: 20px;
+        gap: 15px;
         align-items: center;
       }
     }
@@ -109,7 +106,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       gap: 20px;
       align-items: center;
 
-      @media (max-width: 768px) {
+      @media (max-width: 991px) {
         width: 100%;
       }
     }
@@ -121,97 +118,193 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       background: rgba(255, 255, 255, 0.05);
       padding: 10px;
       border-radius: 8px;
-
-      @media (max-width: 768px) {
-        gap: 8px;
-        padding: 8px;
+    
+      @media (max-width: 991px) {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
         width: 100%;
-      }
-
-      .control-row {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        flex-wrap: wrap;
-
-        .timer {
-          font-size: $font-sm;
-          color: $primary-color;
-          padding: 8px;
-          font-family: $body-font;
-          min-width: 50px;
-        }
-
-        @media (max-width: 768px) {
-          gap: 8px;
+        height: auto;
+        max-height: 80vh;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 20;
+        padding: 5rem;
+        gap: 1.5rem;
+        transform: translateY(100%); // Start off-screen below
+        transition: transform 0.3s ease-in-out; // Slide animation
+        display: none;
+    
+        &.visible {
+          display: flex;
           flex-direction: column;
-          align-items: flex-start;
+          justify-content: flex-end;
+          transform: translateY(0); // Slide up to visible
         }
-      }
-
-      label {
-        font-size: $font-sm;
-        color: $primary-color;
-        font-family: $body-font;
-
-        @media (max-width: 768px) {
-          margin-bottom: 5px;
-        }
-      }
-
-      .sudoku-select {
-        padding: 8px 32px 8px 16px;
-        font-size: $font-sm;
-        font-family: $body-font;
-        background: var(--accent-color);
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        border-radius: 7px;
-        color: $primary-color;
-        transition: background-color 0.3s ease;
-        min-width: 100px;
-
-        &:hover,
-        &:focus {
-          background: var(--accent-color-light);
-          outline: none;
-        }
-      }
-
-      .mistake-counter {
-        display: flex;
-        gap: 6px;
-        padding: 8px;
-
-        .dot {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.3);
-          transition: background-color 0.3s ease;
-
-          &.filled {
-            background: var(--highlight-color);
+    
+        .control-row {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          flex-wrap: wrap;
+          justify-content: space-between;
+    
+          &.close-row {
+            justify-content: flex-end; // Close button on the right
+          }
+    
+          &.start-row {
+            justify-content: center;
+          }
+    
+          &.button-row {
+            justify-content: center;
+            gap: 10px;
+          }
+    
+          .timer {
+            font-size: $font-sm;
+            color: $primary-color;
+            padding: 6px;
+            min-width: 40px;
+          }
+    
+          label {
+            font-size: $font-sm;
+            color: $primary-color;
+            font-family: $body-font;
+          }
+    
+          .sudoku-select {
+            padding: 6px 12px;
+            font-size: $font-sm;
+            background: $accent-color;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            color: $primary-color;
+            min-width: 80px;
+            &:hover, &:focus {
+              background: $accent-color-light;
+              outline: none;
+            }
+          }
+    
+          .mistake-counter {
+            display: flex;
+            gap: 4px;
+            padding: 6px;
+            .dot {
+              width: 8px;
+              height: 8px;
+              border-radius: 50%;
+              background: rgba(255, 255, 255, 0.3);
+              &.filled {
+                background: $highlight-color;
+              }
+            }
+          }
+    
+          .cta-button {
+            background: $accent-color;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 8px 16px;
+            font-size: clamp(10px, 2vw, $font-sm);
+            min-width: 80px;
+            border-radius: 5px;
+            &:hover {
+              background: $accent-color-light;
+            }
+    
+            &.start-game {
+              padding: 10px 20px;
+              font-size: $font-sm;
+              min-width: 120px;
+            }
+    
+            &.close-menu {
+              background: #ff4444; // Red to distinguish
+              &:hover {
+                background: #ff6666;
+              }
+            }
+          }
+    
+          .auto-candidates-checkbox {
+            margin-left: 8px;
+            accent-color: $accent-color;
+            cursor: pointer;
           }
         }
       }
-
-      .cta-button {
+    }
+    
+    .menu-toggle {
+      display: none;
+    
+      @media (max-width: 991px) {
+        display: block;
         background: $accent-color;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        min-width: 100px;
-
+        color: $primary-color;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        font-size: $font-sm;
+        cursor: pointer;
         &:hover {
           background: $accent-color-light;
         }
       }
+    }
 
-      .auto-candidates-checkbox {
-        margin-left: 10px;
-        accent-color: $accent-color; // Teal checkbox for consistency
+    .menu-toggle {
+      display: none;
+    
+      @media (max-width: 991px) {
+        display: block;
+        background: $accent-color;
+        color: $primary-color;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        font-size: $font-sm;
         cursor: pointer;
-
         &:hover {
-          opacity: 0.8;
+          background: $accent-color-light;
+        }
+      }
+    }
+
+    .menu-toggle {
+      display: none;
+    
+      @media (max-width: 991px) {
+        display: block;
+        background: $accent-color;
+        color: $primary-color;
+        border: none;
+        padding: 8px 16px; // Match button size
+        border-radius: 5px;
+        font-size: $font-sm;
+        cursor: pointer;
+        &:hover {
+          background: $accent-color-light;
+        }
+      }
+    }
+    .menu-toggle {
+      display: none;
+
+      @media (max-width: 991px) {
+        display: block;
+        background: $accent-color;
+        color: $primary-color;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 7px;
+        font-size: $font-sm;
+        cursor: pointer;
+        &:hover {
+          background: $accent-color-light;
         }
       }
     }
@@ -225,6 +318,14 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       width: fit-content;
       border-radius: 8px;
       position: relative;
+
+      @media (max-width: 991px) {
+        grid-template-columns: repeat(9, clamp(32px, 10vw, 50px));
+        grid-gap: 2px;
+        padding: 4px;
+        max-width: calc(100% - 20px);
+        margin: 0 auto;
+      }
     }
 
     .number-status-grid {
@@ -234,10 +335,66 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       background: rgba(0, 0, 0, 0.8);
       padding: 6px;
       border-radius: 8px;
-    }
 
+      @media (max-width: 991px) {
+        grid-template-columns: repeat(9, clamp(32px, 10vw, 50px));
+        grid-gap: 2px;
+        padding: 4px;
+        max-width: calc(100% - 20px);
+        margin: 0 auto;
+
+        .mode-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr; // Two columns for Guess and Candidate
+          gap: 2px;
+          margin-bottom: 8px; // Small padding below
+          width: 100%;
+          grid-column: 1 / -1; // Span full width
+        }
+
+        .mode-option {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 8px;
+          font-size: clamp(12px, 2vw, $font-sm);
+          background: $primary-color; // White background
+          color: $accent-color; // Teal text
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease, color 0.3s ease;
+
+          &.active {
+            background: $accent-color; // Teal background when active
+            color: $primary-color; // White text when active
+          }
+
+          &:hover:not(.active) {
+            background: rgba($primary-color, 0.8);
+          }
+        }
+
+        .number-cell {
+          width: clamp(32px, 10vw, 50px);
+          height: clamp(32px, 10vw, 50px);
+          font-size: clamp(16px, 2.5vw, 20px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba($accent-color, 0.2);
+          color: $primary-color;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          cursor: pointer;
+          position: relative;
+
+          &.guess-mode { border-color: $accent-color; }
+          &.notes-mode { border-color: #ff69b4; }
+        }
+      }
+    }
     .cell {
-      color: var(--primary-color); /* White for user-entered */
+      color: $primary-color;
       position: relative;
       width: clamp(40px, 8vw, 75px);
       height: clamp(40px, 8vw, 75px);
@@ -245,29 +402,37 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(16px, 2.5vw, 20px);
+      font-size: clamp(18px, 2.5vw, 24px);
       border: 1px solid rgba(255, 255, 255, 0.2);
       cursor: default;
-    
+      font-weight: 900;
+
+      @media (max-width: 991px) {
+        width: clamp(32px, 10vw, 50px);
+        height: clamp(32px, 10vw, 50px);
+        font-size: clamp(16px, 2.5vw, 20px);
+        cursor: pointer;
+      }
+
       &:hover {
         background: rgba(255, 255, 255, 0.25);
       }
-    
+
       &[contenteditable="true"] {
         caret-color: transparent;
       }
-    
+
       &[contenteditable="true"]:focus {
         outline: none;
         border: 2px solid #fff;
-        background: rgba(var(--highlight-color-rgb), 0.3); // Magenta, lighter
+        background: rgba($highlight-color, 0.3);
       }
 
       &.invalid {
-        color: $highlight-color; // #BF3978 (pink)
-        transition: color 0.3s ease; // Smooth fade-out
+        color: $highlight-color;
+        transition: color 0.3s ease;
       }
-    
+
       &.notes {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
@@ -275,7 +440,13 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
         padding: 2px !important;
         font-size: clamp(10px, 1.5vw, 12px) !important;
         background: rgba(255, 255, 255, 0.15) !important;
-    
+
+        @media (max-width: 991px) {
+          font-size: clamp(8px, 1.5vw, 10px) !important;
+          gap: 1px !important;
+          padding: 1px !important;
+        }
+
         span {
           display: flex;
           align-items: center;
@@ -308,24 +479,24 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       }
 
       &.initial {
-        color: var(--initial-color); /* Gray (#999) for initial numbers */
+        color: #999;
       }
 
       &.button-solved {
-        color: var(--highlight-color);
+        color: $highlight-color;
       }
 
       &.user-solved {
-        color: var(--primary-color);
+        color: $primary-color;
       }
 
       &.invalid {
-        color: var(--highlight-color);
+        color: $highlight-color;
         transition: color 0.3s ease;
       }
 
       &.highlighted {
-        background: rgba(var(--accent-color-rgb), 0.5);
+        background: rgba($accent-color, 0.5);
       }
     }
 
@@ -342,49 +513,58 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       padding: 2px;
       border-radius: 5px;
       z-index: 10;
-    
+
+      @media (max-width: 991px) {
+        display: none; // Hidden on mobile
+      }
 
       .note-option {
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: clamp(10px, 1.5vw, 14px);
-        color: transparent; // Hidden by default
+        color: transparent;
         cursor: pointer;
-        transition: color 0.4s ease; // Slower transition for color only
+        transition: color 0.4s ease;
 
         &:hover {
-          color: #ff69b4; // Pink on hover (matches permanent notes)
-          background: transparent; // No background fill
+          color: #ff69b4;
         }
 
         &.selected {
-          color: #ff69b4; // Pink when selected
-          background: transparent; // No background fill
-        }
-
-        &.selected:hover {
-          color: #ff69b4; // Remains pink (no change needed)
-          background: transparent; // No background fill
+          color: #ff69b4;
         }
       }
     }
-    
+
     .number-cell {
       width: clamp(40px, 6vw, 60px);
       height: clamp(40px, 6vw, 60px);
-      background: rgba(var(--accent-color-rgb), 0);
+      background: rgba($accent-color, 0);
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
       gap: 1px;
       font-size: clamp(16px, 2.5vw, 24px);
       font-family: $body-font;
-      color: $primary-color; // #fff (default)
+      color: $primary-color;
       border: 1px solid rgba(255, 255, 255, 0.2);
       cursor: pointer;
       transition: border-color 0.3s ease, color 0.3s ease;
       position: relative;
+
+      @media (max-width: 991px) {
+        width: clamp(32px, 10vw, 50px);
+        height: clamp(32px, 10vw, 50px);
+        font-size: clamp(16px, 2.5vw, 20px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        grid-template-columns: none;
+        grid-template-rows: none;
+        gap: 0;
+        background: rgba($accent-color, 0.2);
+      }
 
       .number-text {
         position: absolute;
@@ -393,35 +573,57 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
         transform: translate(-50%, -50%);
         z-index: 1;
         transition: color 0.3s ease;
+
+        @media (max-width: 991px) {
+          position: static;
+          transform: none;
+        }
       }
 
       .segment {
-        background: rgba(var(--accent-color-rgb), 0.2);
+        background: rgba($accent-color, 0.2);
         transition: background-color 0.3s ease;
-      }
 
-      .segment.filled {
-        background: rgba(var(--accent-color-rgb), 0.8);
+        @media (max-width: 991px) {
+          display: none; // Hidden on mobile
+        }
+
+        &.filled {
+          background: rgba($accent-color, 0.8);
+        }
       }
 
       &:hover {
-        border-color: var(--accent-color);
+        border-color: $accent-color;
       }
 
       &.solved {
-        color: $highlight-color !important; // #999 for completion
+        color: $highlight-color !important;
         .number-text {
-          color: $highlight-color; // Ensure text matches
+          color: $highlight-color;
         }
       }
 
       &.noted {
         opacity: 0.7;
       }
+
+      &.mode-toggle {
+        background: $highlight-color;
+        color: $primary-color;
+      }
+
+      &.guess-mode {
+        border-color: $accent-color;
+      }
+
+      &.notes-mode {
+        border-color: #ff69b4;
+      }
     }
 
     .highlight {
-      background: rgba(var(--accent-color-rgb), 0.4);
+      background: rgba($accent-color, 0.4);
     }
 
     .thinking-type {
@@ -453,8 +655,8 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
         h2 {
           font-size: clamp(20px, 4vw, $font-xl);
           margin-bottom: 10px;
-          color: var(--highlight-color);
-          &.success-message h2 { color: var(--accent-color); }
+          color: $highlight-color;
+          &.success-message h2 { color: $accent-color; }
         }
 
         p {
@@ -479,7 +681,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
 
   @keyframes successFlash {
     0% { background: rgba(0, 0, 0, 0.8); }
-    50% { background: rgba(var(--accent-color-rgb), 0.3); }
+    50% { background: rgba($accent-color, 0.3); }
     100% { background: rgba(0, 0, 0, 0.8); }
   }
 

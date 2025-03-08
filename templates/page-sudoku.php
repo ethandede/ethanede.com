@@ -15,16 +15,21 @@ get_header();
       <div class="sudoku-layout">
         <div id="sudoku-grid" class="sudoku-grid"></div>
         <div class="controls-column">
-          <div class="sudoku-controls">
+          <div id="number-status-grid" class="number-status-grid"></div>
+          <button id="menu-toggle" class="menu-toggle">Menu</button>
+          <div id="sudoku-controls" class="sudoku-controls">
+            <div class="control-row close-row">
+              <button class="cta-button close-menu" id="close-menu">Close</button>
+            </div>
             <div class="control-row">
               <label for="difficulty">Difficulty:</label>
               <select id="difficulty" class="sudoku-select">
-              <option value="quick">Quick</option>
-              <option value="easy">Easy</option>
-              <option value="not easy">Not Easy</option>
-              <option value="hard">Hard</option>
-              <option value="expert">Expert</option>
-              <option value="mental">Mental</option>
+                <option value="quick">Quick</option>
+                <option value="easy">Easy</option>
+                <option value="not easy">Not Easy</option>
+                <option value="hard">Hard</option>
+                <option value="expert">Expert</option>
+                <option value="mental">Mental</option>
               </select>
             </div>
             <div class="control-row">
@@ -39,14 +44,16 @@ get_header();
               <label for="auto-candidates">Auto-Candidates:</label>
               <input type="checkbox" id="auto-candidates" class="auto-candidates-checkbox">
             </div>
-            <div class="control-row">
-              <button class="cta-button" id="start-game">Start Game</button>
+            <div class="control-row start-row">
+              <button class="cta-button start-game" id="start-game">Start Game</button>
+            </div>
+            <div class="control-row button-row">
               <button class="cta-button" onclick="newGame()">New Game</button>
               <button class="cta-button" onclick="resetGame()">Reset</button>
               <button class="cta-button" id="solve-puzzle">Solve Puzzle</button>
+              <button class="cta-button" id="check-solutions">Check Solutions</button>
             </div>
           </div>
-          <div id="number-status-grid" class="number-status-grid"></div>
         </div>
       </div>
     </div>

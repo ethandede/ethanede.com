@@ -5,7 +5,7 @@ const numberStatusGrid = document.getElementById('number-status-grid');
 let board = Array(81).fill(0);
 let notes = Array(81).fill().map(() => new Set());
 let initialBoard = [];
-let solution = []; // Store the full solution for solving
+let solution = [];
 let mistakeCount = 0;
 let gameOver = false;
 let gameWon = false;
@@ -14,7 +14,9 @@ let timerInterval = null;
 let startTime = null;
 let autoCandidates = Array(81).fill().map(() => new Set());
 let isAutoCandidatesEnabled = false;
-let userSolved = Array(81).fill(false); // Tracks user-solved cells
+let userSolved = Array(81).fill(false);
+let selectedCell = null;
+let inputMode = 'guess'; // Added global declaration
 
 function initializeGame() {
   createGrid();
@@ -74,6 +76,9 @@ async function newGame() {
   notes = Array(81).fill().map(() => new Set());
   computeAutoCandidates();
   updateGrid();
+  const numSolutions = countSolutions(board);
+  console.log(`Puzzle with ${board.filter(x => x !== 0).length} clues has ${numSolutions} solutions`);
+  if (numSolutions !== 1) console.warn(`Non-unique puzzle! Solutions: ${numSolutions}`);
 }
 
 function updateTimerDisplay() {
@@ -128,23 +133,173 @@ function editCell(index, event) {
 }
 
 function createNumberStatusGrid() {
-  if (!numberStatusGrid) return console.error('Number status grid element not found');
+  if (!numberStatusGrid) return console.error('Number status grid not found');
   numberStatusGrid.innerHTML = '';
-  for (let num = 1; num <= 9; num++) {
-    const cell = document.createElement('div');
-    cell.classList.add('number-cell');
-    const text = document.createElement('span');
-    text.classList.add('number-text');
-    text.textContent = num;
-    cell.dataset.number = num;
-    cell.appendChild(text);
-    for (let i = 0; i < 9; i++) {
-      const segment = document.createElement('div');
-      segment.classList.add('segment');
-      cell.appendChild(segment);
+  const isMobile = window.innerWidth <= 991;
+  if (isMobile) {
+    // Create mode selector row
+    const modeRow = document.createElement('div');
+    modeRow.classList.add('mode-row');
+
+    const guessBtn = document.createElement('div');
+    guessBtn.classList.add('mode-option', 'guess-option');
+    guessBtn.dataset.mode = 'guess';
+    guessBtn.textContent = 'Guess';
+    guessBtn.addEventListener('click', () => {
+      inputMode = 'guess';
+      updateNumberStatusGrid();
+    });
+
+    const candidateBtn = document.createElement('div');
+    candidateBtn.classList.add('mode-option', 'candidate-option');
+    candidateBtn.dataset.mode = 'notes';
+    candidateBtn.textContent = 'Candidate';
+    candidateBtn.addEventListener('click', () => {
+      inputMode = 'notes';
+      updateNumberStatusGrid();
+    });
+
+    modeRow.appendChild(guessBtn);
+    modeRow.appendChild(candidateBtn);
+    numberStatusGrid.appendChild(modeRow);
+
+    // Create number cells (1-9)
+    for (let num = 1; num <= 9; num++) {
+      const cell = document.createElement('div');
+      cell.classList.add('number-cell');
+      cell.dataset.number = num;
+      cell.textContent = num;
+      cell.addEventListener('click', () => handleNumberInput(num));
+      numberStatusGrid.appendChild(cell);
     }
-    cell.addEventListener('click', () => toggleHighlight(num));
-    numberStatusGrid.appendChild(cell);
+  } else {
+    for (let num = 1; num <= 9; num++) {
+      const cell = document.createElement('div');
+      cell.classList.add('number-cell');
+      const text = document.createElement('span');
+      text.classList.add('number-text');
+      text.textContent = num;
+      cell.dataset.number = num;
+      cell.appendChild(text);
+      for (let i = 0; i < 9; i++) {
+        const segment = document.createElement('div');
+        segment.classList.add('segment');
+        cell.appendChild(segment);
+      }
+      cell.addEventListener('click', () => handleNumberInput(num));
+      numberStatusGrid.appendChild(cell);
+    }
+  }
+  updateNumberStatusGrid();
+}
+
+function updateNumberStatusGrid() {
+  const numberCells = document.querySelectorAll('.number-cell');
+  const isMobile = window.innerWidth <= 991;
+  if (isMobile) {
+    const guessBtn = document.querySelector('.guess-option');
+    const candidateBtn = document.querySelector('.candidate-option');
+    if (guessBtn && candidateBtn) {
+      guessBtn.classList.toggle('active', inputMode === 'guess');
+      candidateBtn.classList.toggle('active', inputMode === 'notes');
+    }
+    numberCells.forEach(cell => {
+      const num = parseInt(cell.dataset.number);
+      if (num) { // Only apply to number cells, not mode options
+        cell.classList.toggle('guess-mode', inputMode === 'guess');
+        cell.classList.toggle('notes-mode', inputMode === 'notes');
+      }
+    });
+  } else {
+    const numberCounts = Array(10).fill(0);
+    const noteCounts = Array(10).fill(0);
+    board.forEach(val => numberCounts[val]++);
+    notes.forEach(noteSet => noteSet.forEach(num => noteCounts[num]++));
+    numberCells.forEach(cell => {
+      const num = parseInt(cell.dataset.number);
+      const count = numberCounts[num];
+      const segments = cell.querySelectorAll('.segment');
+      segments.forEach((segment, index) => {
+        segment.classList.toggle('filled', index < count);
+      });
+      cell.classList.toggle('solved', count === 9);
+      cell.classList.toggle('noted', noteCounts[num] > 0 && count < 9);
+    });
+  }
+}
+
+function handleNumberInput(num) {
+  const isMobile = window.innerWidth <= 991;
+  if (gameOver || gameWon) return;
+
+  if (isMobile && num === 0) { // Mobile toggle
+    inputMode = inputMode === 'guess' ? 'notes' : 'guess';
+    updateNumberStatusGrid();
+    console.log(`Switched to ${inputMode} mode`);
+    return;
+  }
+
+  if (!selectedCell) {
+    toggleHighlight(num); // Highlight numbers if no cell selected
+    return;
+  }
+
+  const index = parseInt(selectedCell.dataset.index);
+  if (initialBoard[index] !== 0) return;
+
+  if (isMobile) {
+    if (inputMode === 'guess') {
+      handleGuess(index, num);
+    } else {
+      toggleNote(index, num);
+    }
+  } else { // Desktop: only guesses via number grid
+    handleGuess(index, num);
+  }
+  computeAutoCandidates();
+  updateGrid();
+}
+
+function handleGuess(index, num) {
+  if (isValidMove(index, num, board)) {
+    board[index] = num;
+    userSolved[index] = true;
+    notes[index].clear();
+    clearNotesInSection(index, num);
+  } else {
+    mistakeCount++;
+    board[index] = num;
+    selectedCell.classList.add('invalid');
+    setTimeout(() => {
+      board[index] = 0;
+      selectedCell.classList.remove('invalid');
+      updateGrid();
+    }, 1000);
+  }
+}
+
+function editCell(index, event) {
+  if (gameOver || gameWon) return;
+  const cell = event.target;
+  const isMobile = window.innerWidth <= 991;
+
+  if (board[index] !== 0) {
+    toggleHighlight(board[index]);
+    return;
+  }
+
+  selectedCell = cell;
+  cell.dataset.index = index;
+  document.querySelectorAll('.cell').forEach(c => c.classList.remove('highlighted'));
+  cell.classList.add('highlighted');
+
+  if (!isMobile) {
+    cell.contentEditable = true;
+    cell.focus();
+    cell.textContent = '';
+    cell.addEventListener('keydown', (e) => handleKeydown(e, index), { once: true });
+    cell.addEventListener('blur', () => handleBlur(index), { once: true });
+    showNotesOverlay(index, cell);
   }
 }
 
@@ -226,20 +381,33 @@ function updateMistakeCounter() {
 
 function updateNumberStatusGrid() {
   const numberCells = document.querySelectorAll('.number-cell');
-  const numberCounts = Array(10).fill(0);
-  const noteCounts = Array(10).fill(0);
-  board.forEach(val => numberCounts[val]++);
-  notes.forEach(noteSet => noteSet.forEach(num => noteCounts[num]++));
-  numberCells.forEach(cell => {
-    const num = parseInt(cell.dataset.number);
-    const count = numberCounts[num];
-    const segments = cell.querySelectorAll('.segment');
-    segments.forEach((segment, index) => {
-      segment.classList.toggle('filled', index < count);
+  const isMobile = window.innerWidth <= 991;
+  if (isMobile) {
+    numberCells.forEach(cell => {
+      const num = parseInt(cell.dataset.number);
+      if (num === 0) {
+        cell.textContent = inputMode === 'guess' ? 'N/G' : 'G/N';
+      } else {
+        cell.classList.toggle('guess-mode', inputMode === 'guess');
+        cell.classList.toggle('notes-mode', inputMode === 'notes');
+      }
     });
-    cell.classList.toggle('solved', count === 9);
-    cell.classList.toggle('noted', noteCounts[num] > 0 && count < 9);
-  });
+  } else {
+    const numberCounts = Array(10).fill(0);
+    const noteCounts = Array(10).fill(0);
+    board.forEach(val => numberCounts[val]++);
+    notes.forEach(noteSet => noteSet.forEach(num => noteCounts[num]++));
+    numberCells.forEach(cell => {
+      const num = parseInt(cell.dataset.number);
+      const count = numberCounts[num];
+      const segments = cell.querySelectorAll('.segment');
+      segments.forEach((segment, index) => {
+        segment.classList.toggle('filled', index < count);
+      });
+      cell.classList.toggle('solved', count === 9);
+      cell.classList.toggle('noted', noteCounts[num] > 0 && count < 9);
+    });
+  }
 }
 
 function toggleHighlight(num) {
@@ -400,12 +568,6 @@ function isValidMove(index, value, checkBoard) {
 
 function generatePuzzle(difficulty) {
   console.log(`Generating puzzle with difficulty: ${difficulty}`);
-  const full = Array(81).fill(0);
-  if (!solve(full)) {
-    console.error('Failed to solve initial board');
-    return full;
-  }
-  solution = full.slice(); // Store the solution globally
   const difficultyTargets = {
     quick: { minClues: 40, maxClues: 45, minTechnique: 0 },
     easy: { minClues: 36, maxClues: 40, minTechnique: 0 },
@@ -415,59 +577,98 @@ function generatePuzzle(difficulty) {
     mental: { minClues: 20, maxClues: 24, minTechnique: 4 }
   };
   const target = difficultyTargets[difficulty] || difficultyTargets.easy;
+  const targetClues = Math.floor(Math.random() * (target.maxClues - target.minClues + 1)) + target.minClues;
 
-  let base = Array(81).fill(0);
-  let clues = 0;
+  // Generate a full solution
+  let fullGrid = Array(81).fill(0);
+  if (!generateFullGrid(fullGrid)) {
+    console.error('Failed to generate a full grid');
+    return fullGrid;
+  }
+  solution = fullGrid.slice(); // Store globally
+
+  // Create puzzle by removing numbers
+  let puzzle = fullGrid.slice();
   let indices = Array.from({ length: 81 }, (_, i) => i);
-  const minSeed = difficulty === 'quick' || difficulty === 'easy' ? 30 : 17;
-  let targetClues = Math.floor(Math.random() * (target.maxClues - target.minClues + 1)) + target.minClues;
+  shuffleArray(indices);
+  let remainingClues = 81;
+  let removalAttempts = 0;
+  const maxAttempts = 500; // Prevent infinite loops
 
-  while (clues < minSeed && indices.length > 0) {
-    const idx = Math.floor(Math.random() * indices.length);
-    const pos = indices.splice(idx, 1)[0];
-    base[pos] = solution[pos];
-    clues++;
-    console.log(`Seeded cell ${pos}, clues: ${clues}`);
+  while (remainingClues > target.maxClues && removalAttempts < maxAttempts) {
+    let removed = false;
+    for (let i = 0; i < indices.length && remainingClues > target.maxClues; i++) {
+      const pos = indices[i];
+      if (puzzle[pos] === 0) continue; // Skip already removed cells
+
+      const temp = puzzle[pos];
+      puzzle[pos] = 0;
+      remainingClues--;
+
+      const tempPuzzle = puzzle.slice();
+      const numSolutions = countSolutions(tempPuzzle);
+      if (numSolutions !== 1) {
+        puzzle[pos] = temp; // Revert
+        remainingClues++;
+        console.log(`Reverted cell ${pos}, solutions: ${numSolutions}`);
+      } else {
+        console.log(`Removed cell ${pos}, clues remaining: ${remainingClues}`);
+        removed = true;
+      }
+    }
+
+    if (!removed) {
+      // No removals this pass; reshuffle remaining indices and try again
+      indices = indices.filter(i => puzzle[i] !== 0); // Keep only filled cells
+      shuffleArray(indices);
+      if (indices.length === 0) break; // No more cells to remove
+    }
+    removalAttempts++;
   }
 
-  while (clues < targetClues && indices.length > 0) {
-    const idx = Math.floor(Math.random() * indices.length);
-    const pos = indices.splice(idx, 1)[0];
-    base[pos] = solution[pos];
-    clues++;
-    console.log(`Added cell ${pos}, clues: ${clues}`);
-    if (!hasUniqueSolution(base, solution)) {
-      console.log(`Checking uniqueness at ${clues} clues`);
+  // Final check
+  remainingClues = puzzle.filter(x => x !== 0).length;
+  const finalSolutions = countSolutions(puzzle.slice());
+  console.log(`Generated puzzle: clues=${remainingClues}, solutions=${finalSolutions}`);
+  if (finalSolutions !== 1) {
+    console.warn('Puzzle has multiple solutions, generation failed');
+  }
+  if (remainingClues < target.minClues || remainingClues > target.maxClues) {
+    console.warn(`Clue count ${remainingClues} outside target range ${target.minClues}-${target.maxClues}`);
+  }
+
+  return puzzle;
+}
+
+// Helper: Generate a full, valid Sudoku grid
+function generateFullGrid(board) {
+  const empty = board.indexOf(0);
+  if (empty === -1) return true;
+
+  const nums = Array.from({ length: 9 }, (_, i) => i + 1);
+  shuffleArray(nums); // Randomize for variety
+  for (let num of nums) {
+    if (isValidMove(empty, num, board)) {
+      board[empty] = num;
+      if (generateFullGrid(board)) return true;
+      board[empty] = 0;
     }
   }
+  return false;
+}
 
-  if (!hasUniqueSolution(base, solution)) {
-    console.warn('Puzzle not unique, adjusting...');
-    while (clues < target.maxClues && indices.length > 0) {
-      const idx = Math.floor(Math.random() * indices.length);
-      const pos = indices.splice(idx, 1)[0];
-      base[pos] = solution[pos];
-      clues++;
-      if (hasUniqueSolution(base, solution)) break;
-    }
+// Helper: Shuffle an array (Fisher-Yates)
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-
-  console.log(`Initial clues: ${clues}, board:`, base);
-  let analysis = analyzeDifficulty(base, solution, difficulty);
-  console.log(`Final puzzle: clues=${clues}, hardest technique=${analysis.hardestTechnique}`);
-  if (clues > target.maxClues) {
-    console.warn(`Stopped at ${clues} clues, above max ${target.maxClues} for ${difficulty}`);
-  } else if (clues < target.minClues) {
-    console.warn(`Stopped at ${clues} clues, below min ${target.minClues} for ${difficulty}`);
-  }
-  return base;
 }
 
 function hasUniqueSolution(board, solution) {
   let solutions = 0;
   const maxSolutions = 2;
-  function countSolutions(b, depth = 0) {
-    if (depth > 1500) return true;
+  function countSolutions(b) {
     const empty = b.indexOf(0);
     if (empty === -1) {
       solutions++;
@@ -476,7 +677,7 @@ function hasUniqueSolution(board, solution) {
     for (let num = 1; num <= 9 && solutions < maxSolutions; num++) {
       if (isValidMove(empty, num, b)) {
         b[empty] = num;
-        if (countSolutions(b, depth + 1)) return true;
+        if (countSolutions(b)) return true;
         b[empty] = 0;
       }
     }
@@ -812,22 +1013,85 @@ function resetGame() {
   updateGrid();
 }
 
+// Count the total number of solutions for a given puzzle
+function countSolutions(board) {
+  let solutions = 0;
+  
+  function solveAll(b) {
+    const empty = b.indexOf(0);
+    if (empty === -1) {
+      solutions++; // Found a solution
+      return false; // Keep going to find all solutions
+    }
+    for (let num = 1; num <= 9; num++) {
+      if (isValidMove(empty, num, b)) {
+        b[empty] = num;
+        solveAll(b);
+        b[empty] = 0; // Backtrack
+      }
+    }
+    return false; // No early exit, count all
+  }
+
+  const temp = board.slice();
+  solveAll(temp);
+  console.log(`Total solutions found: ${solutions}`);
+  return solutions;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM loaded, initializing Sudoku');
   if (!grid || !difficultySelect || !mistakeCounter || !numberStatusGrid || !document.getElementById('timer') || !document.getElementById('auto-candidates')) {
     return console.error('Required elements missing');
   }
   initializeGame();
-  document.getElementById('start-game').addEventListener('click', newGame);
-  document.getElementById('solve-puzzle').addEventListener('click', solvePuzzle); // New event listener
+  const startGameBtn = document.getElementById('start-game');
+  const menuToggle = document.getElementById('menu-toggle');
+  const controls = document.getElementById('sudoku-controls');
+  const closeMenuBtn = document.getElementById('close-menu');
+
+  startGameBtn.addEventListener('click', () => {
+    newGame();
+    if (window.innerWidth <= 991 && controls) {
+      controls.classList.remove('visible');
+    }
+  });
+  document.getElementById('solve-puzzle').addEventListener('click', solvePuzzle);
   difficultySelect.addEventListener('change', () => {
     const overlay = document.querySelector('.start-overlay');
     if (overlay) showStartOverlay();
   });
-  document.getElementById('auto-candidates').addEventListener('change', (e) => {
+  document.getElementById('auto-candidates').addEventListener('change', (e) => { // Fixed 'click' to 'change'
     isAutoCandidatesEnabled = e.target.checked;
     console.log('Auto-candidates toggled:', isAutoCandidatesEnabled);
     updateGrid();
+  });
+  document.getElementById('check-solutions').addEventListener('click', () => {
+    const numSolutions = countSolutions(board);
+    alert(`This puzzle has ${numSolutions} solution${numSolutions === 1 ? '' : 's'}.`);
+  });
+
+  if (menuToggle && controls) {
+    menuToggle.addEventListener('click', () => {
+      controls.classList.toggle('visible');
+    });
+    if (closeMenuBtn) {
+      closeMenuBtn.addEventListener('click', () => {
+        controls.classList.remove('visible');
+      });
+    }
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 991 && controls.classList.contains('visible') && 
+          !controls.contains(e.target) && e.target !== menuToggle) {
+        controls.classList.remove('visible');
+      }
+    });
+  }
+
+  window.addEventListener('resize', () => {
+    createNumberStatusGrid();
+    if (window.innerWidth > 991 && controls) controls.classList.remove('visible');
   });
 });
 
