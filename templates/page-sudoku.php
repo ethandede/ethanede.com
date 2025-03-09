@@ -7,6 +7,29 @@
 get_header();
 ?>
 
+<body>
+    <div id="box"></div>
+
+    <!-- Include GSAP library from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        // GSAP animation
+// Create a timeline
+const tl = gsap.timeline({ repeat: -1, yoyo: true }); // Loops infinitely, reverses back
+
+tl.to("#box", { 
+    x: 300, 
+    rotation: 360, 
+    duration: 1.5, 
+    ease: "elastic.out(1, 0.3)" 
+})
+  .to("#box", { 
+      scale: 1.5, 
+      duration: 0.8, 
+      ease: "bounce.out" 
+  }, "-=0.5"); // Overlaps with the previous animation by 0.5 seconds
+    </script>
+
 <main id="sudoku" class="sudoku-page">
   <section class="sudoku-container">
     <div class="container">

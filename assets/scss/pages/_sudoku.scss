@@ -1,11 +1,11 @@
 @use "sass:color";
-@use "../abstracts/_variables" as *;
+@use "../abstracts/_sudoku_variables" as *;
 
-$overgrid-border-color: rgba(255, 255, 255, 0.8);
+$overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded white
 
 .sudoku-page {
-  background: linear-gradient(to bottom, #000, $secondary-color);
-  color: $primary-color;
+  background: linear-gradient(to bottom, $background-start, $background-end);
+  color: $primary-text;
   min-height: 100vh;
   padding: 100px 0 50px;
 
@@ -30,24 +30,24 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: $overlay-background;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 10;
 
       .start-message {
-        background: $secondary-color;
+        background: $background-end;
         padding: clamp(15px, 3vw, 20px);
         border-radius: 8px;
         text-align: center;
         max-width: 90%;
-        color: $primary-color;
+        color: $primary-text;
 
         h2 {
           font-size: clamp(20px, 4vw, $font-xl);
           margin-bottom: 10px;
-          color: $accent-color;
+          color: $accent;
         }
 
         p {
@@ -61,7 +61,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       font-size: clamp(24px, 5vw, $font-xxl);
       line-height: 1.2;
       margin-bottom: 1rem;
-      color: $primary-color;
+      color: $primary-text;
       text-shadow: none;
       font-family: $header-font;
       text-align: center;
@@ -76,10 +76,10 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       font-style: italic;
       text-align: left;
       padding-left: 1rem;
-      border-left: 4px solid $accent-color;
+      border-left: 4px solid $accent;
       margin-bottom: 2rem;
       max-width: 600px;
-      color: #ddd;
+      color: lighten($primary-text, 20%);
       font-family: $body-font;
 
       @media (max-width: 991px) {
@@ -115,21 +115,21 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       display: flex;
       flex-direction: column;
       gap: 3rem;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba($primary-text, 0.05);
       padding: 10px;
       border-radius: 8px;
-    
+
       .control-row {
         display: flex;
         gap: 10px;
         align-items: center;
         flex-wrap: wrap;
-    
+
         &.close-row {
-          display: none; // Hidden by default (desktop)
+          display: none;
         }
       }
-    
+
       @media (max-width: 991px) {
         position: fixed;
         top: auto;
@@ -138,182 +138,204 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
         width: 100%;
         height: auto;
         max-height: 80vh;
-        background: rgba(0, 0, 0, 0.9);
+        background: rgba($background-start, 0.9);
         z-index: 20;
         padding: 5rem;
         gap: 1.5rem;
         transform: translateY(100%);
         transition: transform 0.3s ease-in-out;
         display: none;
-    
+
         &.visible {
           display: flex;
           flex-direction: column;
           justify-content: flex-end;
           transform: translateY(0);
         }
-    
+
         .control-row {
           gap: 8px;
           justify-content: space-between;
-    
+
           &.close-row {
-            display: flex; // Show on mobile
-            justify-content: flex-end; // Right-align "Close"
+            display: flex;
+            justify-content: flex-end;
           }
-    
+
           &.start-row {
             justify-content: center;
           }
-    
+
           &.button-row {
             justify-content: center;
             gap: 10px;
           }
-    
-          .timer {
-            font-size: $font-sm;
-            color: $primary-color;
-            padding: 6px;
-            min-width: 40px;
-          }
-    
-          label {
-            font-size: $font-sm;
-            color: $primary-color;
-            font-family: $body-font;
-          }
-    
-          .sudoku-select {
-            padding: 6px 12px;
-            font-size: $font-sm;
-            background: $accent-color;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 5px;
-            color: $primary-color;
-            min-width: 80px;
-            &:hover, &:focus {
-              background: $accent-color-light;
-              outline: none;
-            }
-          }
-    
-          .mistake-counter {
-            display: flex;
-            gap: 4px;
-            padding: 6px;
-            .dot {
-              width: 8px;
-              height: 8px;
-              border-radius: 50%;
-              background: rgba(255, 255, 255, 0.3);
-              &.filled {
-                background: $highlight-color;
-              }
-            }
-          }
-    
-          .cta-button {
-            background: $accent-color;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            padding: 8px 16px;
-            font-size: clamp(10px, 2vw, $font-sm);
-            min-width: 80px;
-            border-radius: 5px;
-            &:hover {
-              background: $accent-color-light;
-            }
-    
-            &.start-game {
-              padding: 10px 20px;
-              font-size: $font-sm;
-              min-width: 120px;
-            }
-    
-            &.close-menu {
-              background: #ff4444;
-              &:hover {
-                background: #ff6666;
-              }
-            }
-          }
-    
-          .auto-candidates-checkbox {
-            margin-left: 8px;
-            accent-color: $accent-color;
-            cursor: pointer;
-          }
         }
       }
-    }
-    
-    .menu-toggle {
-      display: none;
-    
-      @media (max-width: 991px) {
-        display: block;
-        background: $accent-color;
-        color: $primary-color;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 5px;
-        font-size: $font-sm;
-        cursor: pointer;
-        &:hover {
-          background: $accent-color-light;
-        }
-      }
-    }
 
-    .menu-toggle {
-      display: none;
-    
-      @media (max-width: 991px) {
-        display: block;
-        background: $accent-color;
-        color: $primary-color;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 5px;
+      .timer {
         font-size: $font-sm;
-        cursor: pointer;
-        &:hover {
-          background: $accent-color-light;
+        color: $primary-text;
+        padding: 8px;
+        font-family: $body-font;
+        min-width: 50px;
+
+        @media (max-width: 991px) {
+          padding: 6px;
+          min-width: 40px;
         }
       }
-    }
 
-    .menu-toggle {
-      display: none;
-    
-      @media (max-width: 991px) {
-        display: block;
-        background: $accent-color;
-        color: $primary-color;
-        border: none;
-        padding: 8px 16px; // Match button size
-        border-radius: 5px;
+      label {
         font-size: $font-sm;
-        cursor: pointer;
-        &:hover {
-          background: $accent-color-light;
+        color: $primary-text;
+        font-family: $body-font;
+
+        @media (max-width: 991px) {
+          margin-bottom: 5px;
         }
       }
-    }
-    .menu-toggle {
-      display: none;
 
-      @media (max-width: 991px) {
-        display: block;
-        background: $accent-color;
-        color: $primary-color;
-        border: none;
-        padding: 10px 20px;
+      .sudoku-select {
+        padding: 8px 32px 8px 16px;
+        font-size: $font-sm;
+        font-family: $body-font;
+        background: $button-background;
+        border: 1px solid rgba($primary-text, 0.5);
         border-radius: 7px;
+        color: $primary-text;
+        transition: background-color 0.3s ease;
+        min-width: 100px;
+
+        &:hover,
+        &:focus {
+          background: $button-hover;
+          outline: none;
+        }
+
+        @media (max-width: 991px) {
+          padding: 6px 12px;
+          min-width: 80px;
+          border-radius: 5px;
+        }
+      }
+
+      .mistake-counter {
+        display: flex;
+        gap: 6px;
+        padding: 8px;
+
+        .dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: rgba($primary-text, 0.3);
+          transition: background-color 0.3s ease;
+
+          &.filled {
+            background: $highlight;
+          }
+        }
+
+        @media (max-width: 991px) {
+          gap: 4px;
+          padding: 6px;
+          .dot {
+            width: 8px;
+            height: 8px;
+          }
+        }
+      }
+
+      .cta-button {
+        background: $button-background;
+        border: 1px solid rgba($primary-text, 0.5);
+        padding: 8px 16px;
+        font-size: clamp(10px, 2vw, $font-sm);
+        min-width: 80px;
+        border-radius: 5px;
+        position: relative;
+        transition: opacity 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $primary-text;
+
+        &:hover {
+          background: $button-hover;
+        }
+
+        &.start-game {
+          padding: 10px 20px;
+          font-size: $font-sm;
+          min-width: 120px;
+        }
+
+        &.close-menu {
+          background: $button-close;
+          &:hover {
+            background: $button-close-hover;
+          }
+        }
+
+        &[disabled] {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        &.loading {
+          pointer-events: none;
+
+          span {
+            visibility: hidden;
+          }
+
+          &::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba($primary-text, 0.3);
+            border-top: 3px solid $primary-text;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+          }
+        }
+      }
+
+      .auto-candidates-checkbox {
+        margin-left: 10px;
+        accent-color: $accent;
+        cursor: pointer;
+
+        &:hover {
+          opacity: 0.8;
+        }
+
+        @media (max-width: 991px) {
+          margin-left: 8px;
+        }
+      }
+    }
+
+    .menu-toggle {
+      display: none;
+
+      @media (max-width: 991px) {
+        display: block;
+        background: $button-background;
+        color: $primary-text;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
         font-size: $font-sm;
         cursor: pointer;
         &:hover {
-          background: $accent-color-light;
+          background: $button-hover;
         }
       }
     }
@@ -322,7 +344,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       display: grid;
       grid-template-columns: repeat(9, clamp(40px, 8vw, 75px));
       grid-gap: 4px;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba($background-start, 0.8);
       padding: 6px;
       width: fit-content;
       border-radius: 8px;
@@ -341,78 +363,142 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       display: grid;
       grid-template-columns: repeat(3, clamp(40px, 6vw, 60px));
       grid-gap: 4px;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba($background-end, 0.8);
       padding: 6px;
       border-radius: 8px;
-
+    
       @media (max-width: 991px) {
         grid-template-columns: repeat(9, clamp(32px, 10vw, 50px));
         grid-gap: 2px;
         padding: 4px;
         max-width: calc(100% - 20px);
         margin: 0 auto;
-
+    
         .mode-row {
           display: grid;
-          grid-template-columns: 1fr 1fr; // Two columns for Guess and Candidate
+          grid-template-columns: 1fr 1fr;
           gap: 2px;
-          margin-bottom: 8px; // Small padding below
+          margin-bottom: 8px;
           width: 100%;
-          grid-column: 1 / -1; // Span full width
+          grid-column: 1 / -1;
         }
-
+    
         .mode-option {
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 8px;
           font-size: clamp(12px, 2vw, $font-sm);
-          background: $primary-color; // White background
-          color: $accent-color; // Teal text
-          border: 1px solid rgba(255, 255, 255, 0.2);
+          background: lighten($background-end, 10%);
+          color: $primary-text;
+          border: 1px solid rgba($primary-text, 0.2);
           border-radius: 5px;
           cursor: pointer;
           transition: background-color 0.3s ease, color 0.3s ease;
-
+    
           &.active {
-            background: $accent-color; // Teal background when active
-            color: $primary-color; // White text when active
+            background: $accent;
+            color: $primary-text;
           }
-
+    
           &:hover:not(.active) {
-            background: rgba($primary-color, 0.8);
+            background: lighten($background-end, 5%);
           }
         }
-
-        .number-cell {
+      }
+    
+      .number-cell {
+        width: clamp(40px, 6vw, 60px);
+        height: clamp(40px, 6vw, 60px);
+        background: rgba($accent, 0);
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 1px;
+        font-size: clamp(16px, 2.5vw, 24px);
+        font-family: $body-font;
+        color: $primary-text;
+        border: 1px solid rgba($primary-text, 0.2);
+        cursor: pointer;
+        transition: border-color 0.3s ease, color 0.3s ease;
+        position: relative;
+    
+        @media (max-width: 991px) {
           width: clamp(32px, 10vw, 50px);
           height: clamp(32px, 10vw, 50px);
           font-size: clamp(16px, 2.5vw, 20px);
           display: flex;
           align-items: center;
           justify-content: center;
-          background: rgba($accent-color, 0.2);
-          color: $primary-color;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          cursor: pointer;
-          position: relative;
-
-          &.guess-mode { border-color: $accent-color; }
-          &.notes-mode { border-color: #ff69b4; }
+          grid-template-columns: none;
+          grid-template-rows: none;
+          gap: 0;
+          background: rgba($accent, 0.1);
+        }
+    
+        .number-text {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 1;
+          transition: color 0.3s ease;
+    
+          @media (max-width: 991px) {
+            position: static;
+            transform: none;
+          }
+        }
+    
+        .segment {
+          background: rgba($accent, 0.2);
+          transition: background-color 0.3s ease;
+    
+          @media (max-width: 991px) {
+            display: none;
+          }
+    
+          &.filled {
+            background: rgba($accent, 0.8);
+          }
+        }
+    
+        &:hover {
+          border-color: $accent;
+        }
+    
+        &.solved {
+          color: #666 !important; // Teal instead of coral
+          .number-text {
+            color: #fff;
+          }
+        }
+    
+        &.noted {
+          opacity: 0.7;
+        }
+    
+        &.guess-mode {
+          border-color: $accent;
+        }
+    
+        &.notes-mode {
+          border-color: $notes-text;
         }
       }
     }
+
     .cell {
-      color: $primary-color;
+      color: $primary-text;
       position: relative;
       width: clamp(40px, 8vw, 75px);
       height: clamp(40px, 8vw, 75px);
-      background: rgba(255, 255, 255, 0.15);
+      background: $cell-background;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: clamp(18px, 2.5vw, 24px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba($primary-text, 0.2);
       cursor: default;
       font-weight: 900;
 
@@ -424,7 +510,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       }
 
       &:hover {
-        background: rgba(255, 255, 255, 0.25);
+        background: rgba($primary-text, 0.25);
       }
 
       &[contenteditable="true"] {
@@ -433,13 +519,32 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
 
       &[contenteditable="true"]:focus {
         outline: none;
-        border: 2px solid #fff;
-        background: rgba($highlight-color, 0.3);
+        border: 2px solid $primary-text;
+        background: rgba($highlight, 0.3);
       }
 
-      &.invalid {
-        color: $highlight-color;
-        transition: color 0.3s ease;
+      &.highlighted {
+        background: $highlight-cell;
+        border: 2px solid $highlight-border;
+      }
+
+      &.highlight-subgrid {
+        background: $highlight-subgrid;
+      }
+
+      &.highlight-row {
+        background: $highlight-row;
+      }
+
+      &.highlight-column {
+        background: $highlight-column;
+      }
+
+      &.highlighted.highlight-subgrid,
+      &.highlighted.highlight-row,
+      &.highlighted.highlight-column {
+        background: $highlight-cell;
+        border: 2px solid $highlight-border;
       }
 
       &.notes {
@@ -448,7 +553,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
         gap: 2px !important;
         padding: 2px !important;
         font-size: clamp(10px, 1.5vw, 12px) !important;
-        background: rgba(255, 255, 255, 0.15) !important;
+        background: $cell-background !important;
 
         @media (max-width: 991px) {
           font-size: clamp(8px, 1.5vw, 10px) !important;
@@ -461,7 +566,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
           align-items: center;
           justify-content: center;
           font-size: inherit !important;
-          color: #ff69b4 !important;
+          color: $notes-text !important;
           background: transparent !important;
         }
       }
@@ -488,24 +593,21 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       }
 
       &.initial {
-        color: #999;
+        color: $cell-initial-text;
       }
 
       &.button-solved {
-        color: $highlight-color;
+        color: lightblue;
+        // color: $cell-button-solved-text;
       }
 
       &.user-solved {
-        color: $primary-color;
+        color: $cell-user-solved-text;
       }
 
       &.invalid {
-        color: $highlight-color;
+        color: $cell-invalid-text;
         transition: color 0.3s ease;
-      }
-
-      &.highlighted {
-        background: rgba($accent-color, 0.5);
       }
     }
 
@@ -515,7 +617,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.9);
+      background: $notes-overlay-background;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 2px;
@@ -524,7 +626,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       z-index: 10;
 
       @media (max-width: 991px) {
-        display: none; // Hidden on mobile
+        display: none;
       }
 
       .note-option {
@@ -537,11 +639,11 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
         transition: color 0.4s ease;
 
         &:hover {
-          color: #ff69b4;
+          color: $notes-text;
         }
 
         &.selected {
-          color: #ff69b4;
+          color: $notes-text;
         }
       }
     }
@@ -549,15 +651,15 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
     .number-cell {
       width: clamp(40px, 6vw, 60px);
       height: clamp(40px, 6vw, 60px);
-      background: rgba($accent-color, 0);
+      background: rgba($accent, 0);
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
       gap: 1px;
       font-size: clamp(16px, 2.5vw, 24px);
       font-family: $body-font;
-      color: $primary-color;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: $primary-text;
+      border: 1px solid rgba($primary-text, 0.2);
       cursor: pointer;
       transition: border-color 0.3s ease, color 0.3s ease;
       position: relative;
@@ -572,7 +674,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
         grid-template-columns: none;
         grid-template-rows: none;
         gap: 0;
-        background: rgba($accent-color, 0.2);
+        background: rgba($accent, 0.2);
       }
 
       .number-text {
@@ -590,26 +692,26 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       }
 
       .segment {
-        background: rgba($accent-color, 0.2);
+        background: rgba($accent, 0.2);
         transition: background-color 0.3s ease;
 
         @media (max-width: 991px) {
-          display: none; // Hidden on mobile
+          display: none;
         }
 
         &.filled {
-          background: rgba($accent-color, 0.8);
+          background: rgba($accent, 0.8);
         }
       }
 
       &:hover {
-        border-color: $accent-color;
+        border-color: $accent;
       }
 
       &.solved {
-        color: $highlight-color !important;
+        color: $highlight !important;
         .number-text {
-          color: $highlight-color;
+          color: $highlight;
         }
       }
 
@@ -618,21 +720,21 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       }
 
       &.mode-toggle {
-        background: $highlight-color;
-        color: $primary-color;
+        background: $highlight;
+        color: $primary-text;
       }
 
       &.guess-mode {
-        border-color: $accent-color;
+        border-color: $accent;
       }
 
       &.notes-mode {
-        border-color: #ff69b4;
+        border-color: $notes-text;
       }
     }
 
     .highlight {
-      background: rgba($accent-color, 0.4);
+      background: $highlight-number;
     }
 
     .thinking-type {
@@ -647,7 +749,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.4);
+      background: $overlay-background;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -655,7 +757,7 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
 
       .game-over-message,
       .success-message {
-        background: $secondary-color;
+        background: $background-end;
         padding: clamp(15px, 3vw, 20px);
         border-radius: 8px;
         text-align: center;
@@ -664,83 +766,44 @@ $overgrid-border-color: rgba(255, 255, 255, 0.8);
         h2 {
           font-size: clamp(20px, 4vw, $font-xl);
           margin-bottom: 10px;
-          color: $highlight-color;
-          &.success-message h2 { color: $accent-color; }
+          color: $highlight;
+          &.success-message h2 { color: $accent; }
         }
 
         p {
           font-size: clamp(12px, 2.5vw, $font-sm);
-          color: $primary-color;
+          color: $primary-text;
           margin-bottom: 15px;
         }
 
         .cta-button {
-          background: $accent-color;
-          border: 1px solid rgba(255, 255, 255, 0.5);
-          padding: 8px 16px;
-          font-size: clamp(10px, 2vw, $font-sm);
-          min-width: 80px;
-          border-radius: 5px;
-          position: relative; // For spinner positioning
-          transition: opacity 0.3s ease; // Smooth disable effect
+          background: $button-background;
+          border: none;
+          padding: 10px 20px;
+          font-size: clamp(12px, 2.5vw, $font-sm);
+          color: $primary-text;
+
           &:hover {
-            background: $accent-color-light;
-          }
-        
-          &.start-game {
-            padding: 10px 20px;
-            font-size: $font-sm;
-            min-width: 120px;
-          }
-        
-          &.close-menu {
-            background: #ff4444;
-            &:hover {
-              background: #ff6666;
-            }
-          }
-        
-          &[disabled] {
-            opacity: 0.6;
-            cursor: not-allowed;
-          }
-        
-          &.loading {
-            position: relative;
-            overflow: hidden; // Contain spinner
-            color: transparent; // Hide text during loading
-        
-            &::after {
-              content: '';
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              width: 20px;
-              height: 20px;
-              border: 3px solid rgba(255, 255, 255, 0.3);
-              border-top: 3px solid $primary-color; // White spinner
-              border-radius: 50%;
-              animation: spin 1s linear infinite;
-              transform: translate(-50%, -50%);
-            }
+            background: $button-hover;
           }
         }
-        
-        @keyframes spin {
-          0% { transform: translate(-50%, -50%) rotate(0deg); }
-          100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }      }
+      }
     }
   }
 
   @keyframes successFlash {
-    0% { background: rgba(0, 0, 0, 0.8); }
-    50% { background: rgba($accent-color, 0.3); }
-    100% { background: rgba(0, 0, 0, 0.8); }
+    0% { background: rgba($background-start, 0.8); }
+    50% { background: rgba($accent, 0.3); }
+    100% { background: rgba($background-start, 0.8); }
   }
 
   @keyframes typeIn {
     0% { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
   }
 }
