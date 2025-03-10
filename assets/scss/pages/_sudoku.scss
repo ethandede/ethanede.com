@@ -553,7 +553,7 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
         gap: 2px !important;
         padding: 2px !important;
         font-size: clamp(10px, 1.5vw, 12px) !important;
-        background: $cell-background !important;
+        // background: $cell-background;
 
         @media (max-width: 991px) {
           font-size: clamp(8px, 1.5vw, 10px) !important;
