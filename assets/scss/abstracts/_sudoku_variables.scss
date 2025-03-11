@@ -30,7 +30,8 @@ $button-close: #e94e77;
 $button-close-hover: lighten(#e94e77, 10%);
 
 // Overlays
-$overlay-background: rgba(0, 0, 0, 0.5);
+$overlay-background: rgba(75, 144, 226, 0.15);
+// $overlay-background: rgba(75, 144, 126, 0.15);
 $notes-overlay-background: rgba(#e0e0e0, 0.9);
 $notes-text: #333333; // Darker for contrast (was #555555)
 

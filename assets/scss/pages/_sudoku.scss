@@ -7,7 +7,7 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
   background: linear-gradient(to bottom, $background-start, $background-end);
   color: $primary-text;
   min-height: 100vh;
-  padding: 100px 0 50px;
+  padding: 2.5rem 0;
 
   @media (max-width: 991px) {
     padding: 20px 0;
@@ -15,7 +15,7 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
 
   .sudoku-container {
     .container {
-      max-width: 1200px;
+      max-width: 1300px;
       margin: 0 auto;
       padding: 0 35px;
 
@@ -38,7 +38,8 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
 
       .start-message {
         background: $background-end;
-        padding: clamp(15px, 3vw, 20px);
+        padding: clamp(1.5rem, 3vw, 2.5rem);
+        border: 1px solid $accent;
         border-radius: 8px;
         text-align: center;
         max-width: 90%;
@@ -64,10 +65,11 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
       color: $primary-text;
       text-shadow: none;
       font-family: $header-font;
-      text-align: center;
+      text-align: left;
 
       @media (max-width: 991px) {
         font-size: clamp(20px, 4vw, $font-xl);
+        text-align: center;
       }
     }
 
@@ -95,8 +97,47 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
 
       @media (max-width: 991px) {
         flex-direction: column;
-        gap: 15px;
+        gap: 0;
         align-items: center;
+      }
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0;
+      width: 100%;
+      max-width: 80%;
+
+      .timer {
+        font-size: $font-sm;
+        color: $primary-text;
+      }
+
+      .current-difficulty {
+        font-size: clamp(16px, 3vw, 20px);
+        color: $accent;
+        margin: 0;
+      }
+
+      .mistake-counter {
+        display: flex;
+        gap: 4px;
+        .dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: rgba($primary-text, 0.3);
+          &.filled {
+            background: $highlight;
+          }
+        }
+      }
+
+      @media (min-width: 992px) {
+        display: none; /* Only show on mobile */
       }
     }
 
@@ -108,15 +149,206 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
 
       @media (max-width: 991px) {
         width: 100%;
+        padding: 15px;
+      }
+
+      .game-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+
+        .start-game {
+          padding: 12px 24px;
+          font-size: $font-sm;
+          background: $button-background;
+          color: $cell-background;
+          border: none;
+          border-radius: 5px;
+          font-weight: bold;
+          &:hover {
+            background: $button-hover;
+          }
+        }
+
+        .setup-row {
+          display: flex;
+          gap: 10px;
+          justify-content: center;
+          flex-wrap: wrap;
+
+          .sudoku-select {
+            padding: 8px 16px;
+            font-size: $font-sm;
+            background: lighten($background-end, 10%);
+            border: 1px solid $accent;
+            color: $primary-text;
+            border-radius: 5px;
+            min-width: 120px;
+            &:hover,
+            &:focus {
+              background: $button-hover;
+            }
+          }
+
+          .cta-button {
+            padding: 8px 16px;
+            font-size: $font-sm;
+            background: $button-background;
+            color: $cell-background;
+            border: none;
+            border-radius: 5px;
+          }
+        }
+
+        .toggle-row {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          label {
+            font-size: $font-sm;
+            color: $primary-text;
+          }
+          .auto-candidates-checkbox {
+            accent-color: $accent;
+          }
+        }
+
+        .action-row {
+          display: flex;
+          gap: 10px;
+          justify-content: center;
+          flex-wrap: wrap;
+          .cta-button {
+            padding: 6px 12px;
+            font-size: clamp(12px, 2vw, 14px);
+            background: lighten($background-end, 10%);
+            color: $primary-text;
+            border: 1px solid $accent;
+            &:hover {
+              background: $button-hover;
+            }
+          }
+        }
+
+        @media (min-width: 992px) {
+          display: none; /* Hide on desktop, use sudoku-controls instead */
+        }
       }
     }
 
+    .sudoku-grid {
+      display: grid;
+      grid-template-columns: repeat(9, clamp(40px, 8vw, 75px));
+      grid-gap: 4px;
+      background: rgba($background-start, 0.8);
+      width: fit-content;
+      border-radius: 8px;
+      position: relative;
+
+      @media (max-width: 991px) {
+        grid-template-columns: repeat(9, clamp(24px, 9vw, 50px));
+        grid-gap: 0;
+        padding: 0;
+        max-width: calc(100% - 20px);
+        margin: 0 auto;
+      }
+    }
+
+    .number-status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, clamp(40px, 6vw, 60px));
+      grid-gap: 4px;
+      background: rgba($background-end, 0.8);
+      padding: 6px;
+      border-radius: 8px;
+    
+      @media (max-width: 991px) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px 0;
+        background: none;
+    
+        .mode-row {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 10px;
+          gap: 0;
+        }
+    
+        .mode-option {
+          padding: 8px 0;
+          font-size: $font-sm;
+          font-weight: bold;
+          background: lighten($background-end, 10%);
+          border: 1px solid rgba($primary-text, 0.2);
+          border-right: none;
+          color: $primary-text;
+          cursor: pointer;
+          transition: background-color 0.3s ease, color 0.3s ease;
+          width: 100px;
+          max-width: 100px;
+          text-align: center;
+    
+          &:last-child {
+            border-right: 1px solid rgba($primary-text, 0.2);
+          }
+    
+          &.guess-option.active {
+            background: rgba($accent, 0.2); // Matches guess-mode number cells
+            color: $primary-text;
+          }
+    
+          &.candidate-option.active {
+            background: rgba($notes-text, 0.2); // Matches notes-mode number cells
+            color: $primary-text;
+          }
+    
+          &:hover:not(.active) {
+            background: lighten($background-end, 5%);
+          }
+        }
+    
+        .number-row {
+          display: flex;
+          flex-wrap: nowrap;
+          justify-content: center;
+          width: 100%;
+        }
+    
+        .number-row .number-cell {
+          width: clamp(32px, 9vw, 50px);
+          height: clamp(32px, 9vw, 50px);
+          font-size: clamp(1rem, 1.5rem, 2rem);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba($accent, 0.2); // Default Guess mode
+          border: 1px solid rgba($primary-text, 0.2);
+          color: $primary-text;
+          cursor: pointer;
+          transition: background-color 0.3s ease, border-color 0.3s ease;
+    
+          &.guess-mode {
+            background: rgba($accent, 0.2); // Matches active Guess tab
+            border-color: $accent;
+          }
+    
+          &.notes-mode {
+            background: rgba($notes-text, 0.2); // Matches active Candidate tab
+            border-color: $notes-text;
+          }
+        }
+      }
+    }
+                    
     .sudoku-controls {
       display: flex;
       flex-direction: column;
-      gap: 3rem;
+      gap: 1.5rem;
       background: rgba($primary-text, 0.05);
-      padding: 10px;
+      padding: 2.5rem;
       border-radius: 8px;
 
       .control-row {
@@ -131,46 +363,7 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
       }
 
       @media (max-width: 991px) {
-        position: fixed;
-        top: auto;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: auto;
-        max-height: 80vh;
-        background: rgba($background-start, 0.9);
-        z-index: 20;
-        padding: 5rem;
-        gap: 1.5rem;
-        transform: translateY(100%);
-        transition: transform 0.3s ease-in-out;
-        display: none;
-
-        &.visible {
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          transform: translateY(0);
-        }
-
-        .control-row {
-          gap: 8px;
-          justify-content: space-between;
-
-          &.close-row {
-            display: flex;
-            justify-content: flex-end;
-          }
-
-          &.start-row {
-            justify-content: center;
-          }
-
-          &.button-row {
-            justify-content: center;
-            gap: 10px;
-          }
-        }
+        display: none; /* Hide on mobile, replaced by game-controls */
       }
 
       .timer {
@@ -179,11 +372,6 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
         padding: 8px;
         font-family: $body-font;
         min-width: 50px;
-
-        @media (max-width: 991px) {
-          padding: 6px;
-          min-width: 40px;
-        }
       }
 
       label {
@@ -212,12 +400,6 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
           background: $button-hover;
           outline: none;
         }
-
-        @media (max-width: 991px) {
-          padding: 6px 12px;
-          min-width: 80px;
-          border-radius: 5px;
-        }
       }
 
       .mistake-counter {
@@ -236,15 +418,6 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
             background: $highlight;
           }
         }
-
-        @media (max-width: 991px) {
-          gap: 4px;
-          padding: 6px;
-          .dot {
-            width: 8px;
-            height: 8px;
-          }
-        }
       }
 
       .cta-button {
@@ -259,7 +432,7 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
         display: flex;
         align-items: center;
         justify-content: center;
-        color: $primary-text;
+        color: $cell-background;
 
         &:hover {
           background: $button-hover;
@@ -315,177 +488,11 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
         &:hover {
           opacity: 0.8;
         }
-
-        @media (max-width: 991px) {
-          margin-left: 8px;
-        }
       }
     }
 
     .menu-toggle {
-      display: none;
-
-      @media (max-width: 991px) {
-        display: block;
-        background: $button-background;
-        color: $primary-text;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 5px;
-        font-size: $font-sm;
-        cursor: pointer;
-        &:hover {
-          background: $button-hover;
-        }
-      }
-    }
-
-    .sudoku-grid {
-      display: grid;
-      grid-template-columns: repeat(9, clamp(40px, 8vw, 75px));
-      grid-gap: 4px;
-      background: rgba($background-start, 0.8);
-      padding: 6px;
-      width: fit-content;
-      border-radius: 8px;
-      position: relative;
-
-      @media (max-width: 991px) {
-        grid-template-columns: repeat(9, clamp(32px, 10vw, 50px));
-        grid-gap: 2px;
-        padding: 4px;
-        max-width: calc(100% - 20px);
-        margin: 0 auto;
-      }
-    }
-
-    .number-status-grid {
-      display: grid;
-      grid-template-columns: repeat(3, clamp(40px, 6vw, 60px));
-      grid-gap: 4px;
-      background: rgba($background-end, 0.8);
-      padding: 6px;
-      border-radius: 8px;
-    
-      @media (max-width: 991px) {
-        grid-template-columns: repeat(9, clamp(32px, 10vw, 50px));
-        grid-gap: 2px;
-        padding: 4px;
-        max-width: calc(100% - 20px);
-        margin: 0 auto;
-    
-        .mode-row {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 2px;
-          margin-bottom: 8px;
-          width: 100%;
-          grid-column: 1 / -1;
-        }
-    
-        .mode-option {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 8px;
-          font-size: clamp(12px, 2vw, $font-sm);
-          background: lighten($background-end, 10%);
-          color: $primary-text;
-          border: 1px solid rgba($primary-text, 0.2);
-          border-radius: 5px;
-          cursor: pointer;
-          transition: background-color 0.3s ease, color 0.3s ease;
-    
-          &.active {
-            background: $accent;
-            color: $primary-text;
-          }
-    
-          &:hover:not(.active) {
-            background: lighten($background-end, 5%);
-          }
-        }
-      }
-    
-      .number-cell {
-        width: clamp(40px, 6vw, 60px);
-        height: clamp(40px, 6vw, 60px);
-        background: rgba($accent, 0);
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(3, 1fr);
-        gap: 1px;
-        font-size: clamp(16px, 2.5vw, 24px);
-        font-family: $body-font;
-        color: $primary-text;
-        border: 1px solid rgba($primary-text, 0.2);
-        cursor: pointer;
-        transition: border-color 0.3s ease, color 0.3s ease;
-        position: relative;
-    
-        @media (max-width: 991px) {
-          width: clamp(32px, 10vw, 50px);
-          height: clamp(32px, 10vw, 50px);
-          font-size: clamp(16px, 2.5vw, 20px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          grid-template-columns: none;
-          grid-template-rows: none;
-          gap: 0;
-          background: rgba($accent, 0.1);
-        }
-    
-        .number-text {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          z-index: 1;
-          transition: color 0.3s ease;
-    
-          @media (max-width: 991px) {
-            position: static;
-            transform: none;
-          }
-        }
-    
-        .segment {
-          background: rgba($accent, 0.2);
-          transition: background-color 0.3s ease;
-    
-          @media (max-width: 991px) {
-            display: none;
-          }
-    
-          &.filled {
-            background: rgba($accent, 0.8);
-          }
-        }
-    
-        &:hover {
-          border-color: $accent;
-        }
-    
-        &.solved {
-          color: #666 !important; // Teal instead of coral
-          .number-text {
-            color: #fff;
-          }
-        }
-    
-        &.noted {
-          opacity: 0.7;
-        }
-    
-        &.guess-mode {
-          border-color: $accent;
-        }
-    
-        &.notes-mode {
-          border-color: $notes-text;
-        }
-      }
+      display: none; /* Always hidden since menu is removed */
     }
 
     .cell {
@@ -503,9 +510,9 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
       font-weight: 900;
 
       @media (max-width: 991px) {
-        width: clamp(32px, 10vw, 50px);
-        height: clamp(32px, 10vw, 50px);
-        font-size: clamp(16px, 2.5vw, 20px);
+        width: clamp(24px, 9vw, 50px);
+        height: clamp(24px, 9vw, 50px);
+        font-size: clamp(1rem, 1.5rem, 2rem);
         cursor: pointer;
       }
 
@@ -553,7 +560,6 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
         gap: 2px !important;
         padding: 2px !important;
         font-size: clamp(10px, 1.5vw, 12px) !important;
-        // background: $cell-background;
 
         @media (max-width: 991px) {
           font-size: clamp(8px, 1.5vw, 10px) !important;
@@ -598,7 +604,6 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
 
       &.button-solved {
         color: lightblue;
-        // color: $cell-button-solved-text;
       }
 
       &.user-solved {
@@ -665,9 +670,9 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
       position: relative;
 
       @media (max-width: 991px) {
-        width: clamp(32px, 10vw, 50px);
-        height: clamp(32px, 10vw, 50px);
-        font-size: clamp(16px, 2.5vw, 20px);
+        width: clamp(32px, 9vw, 50px);
+        height: clamp(32px, 9vw, 50px);
+        font-size: clamp(1rem, 1.5rem, 2rem);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -719,11 +724,6 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
         opacity: 0.7;
       }
 
-      &.mode-toggle {
-        background: $highlight;
-        color: $primary-text;
-      }
-
       &.guess-mode {
         border-color: $accent;
       }
@@ -767,7 +767,9 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
           font-size: clamp(20px, 4vw, $font-xl);
           margin-bottom: 10px;
           color: $highlight;
-          &.success-message h2 { color: $accent; }
+          &.success-message h2 {
+            color: $accent;
+          }
         }
 
         p {

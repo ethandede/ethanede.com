@@ -164,10 +164,11 @@ function editCell(index, event) {
 
 function createNumberStatusGrid() {
   if (!numberStatusGrid) return console.error('Number status grid not found');
-  numberStatusGrid.innerHTML = '';
+  numberStatusGrid.innerHTML = ''; // Clear existing content
   const isMobile = window.innerWidth <= 991;
+
   if (isMobile) {
-    // Create mode selector row
+    // Mode row
     const modeRow = document.createElement('div');
     modeRow.classList.add('mode-row');
 
@@ -193,16 +194,20 @@ function createNumberStatusGrid() {
     modeRow.appendChild(candidateBtn);
     numberStatusGrid.appendChild(modeRow);
 
-    // Create number cells (1-9)
+    // Number row
+    const numberRow = document.createElement('div');
+    numberRow.classList.add('number-row');
     for (let num = 1; num <= 9; num++) {
       const cell = document.createElement('div');
       cell.classList.add('number-cell');
       cell.dataset.number = num;
       cell.textContent = num;
       cell.addEventListener('click', () => handleNumberInput(num));
-      numberStatusGrid.appendChild(cell);
+      numberRow.appendChild(cell);
     }
+    numberStatusGrid.appendChild(numberRow);
   } else {
+    // Desktop logic unchanged
     for (let num = 1; num <= 9; num++) {
       const cell = document.createElement('div');
       cell.classList.add('number-cell');
@@ -220,31 +225,50 @@ function createNumberStatusGrid() {
       numberStatusGrid.appendChild(cell);
     }
   }
-  updateNumberStatusGrid();
+  updateNumberStatusGrid(); // Call to update state after creation
 }
 
 function updateNumberStatusGrid() {
-  const numberCells = document.querySelectorAll('.number-cell');
+  const numberCells = document.querySelectorAll('.number-row .number-cell'); // Scope to .number-row
   const isMobile = window.innerWidth <= 991;
+
   if (isMobile) {
-    const guessBtn = document.querySelector('.guess-option');
-    const candidateBtn = document.querySelector('.candidate-option');
+    const guessBtn = document.querySelector('.mode-row .guess-option');
+    const candidateBtn = document.querySelector('.mode-row .candidate-option');
+
     if (guessBtn && candidateBtn) {
-      guessBtn.classList.toggle('active', inputMode === 'guess');
-      candidateBtn.classList.toggle('active', inputMode === 'notes');
+      // Ensure only one tab is active
+      guessBtn.classList.remove('active');
+      candidateBtn.classList.remove('active');
+      if (inputMode === 'guess') {
+        guessBtn.classList.add('active');
+      } else if (inputMode === 'notes') {
+        candidateBtn.classList.add('active');
+      }
+
+      // Debug logging
+      console.log('inputMode:', inputMode);
+      console.log('Guess classes:', guessBtn.classList.toString());
+      console.log('Candidate classes:', candidateBtn.classList.toString());
+    } else {
+      console.warn('Mode buttons not found:', { guessBtn, candidateBtn });
     }
+
+    // Update number cells
     numberCells.forEach(cell => {
       const num = parseInt(cell.dataset.number);
-      if (num) { // Only apply to number cells, not mode options
-        cell.classList.toggle('guess-mode', inputMode === 'guess');
-        cell.classList.toggle('notes-mode', inputMode === 'notes');
+      if (num) { // Only number cells
+        cell.classList.remove('guess-mode', 'notes-mode');
+        cell.classList.add(inputMode === 'guess' ? 'guess-mode' : 'notes-mode');
       }
     });
   } else {
+    // Desktop logic
     const numberCounts = Array(10).fill(0);
     const noteCounts = Array(10).fill(0);
     board.forEach(val => numberCounts[val]++);
     notes.forEach(noteSet => noteSet.forEach(num => noteCounts[num]++));
+
     numberCells.forEach(cell => {
       const num = parseInt(cell.dataset.number);
       const count = numberCounts[num];
@@ -362,37 +386,6 @@ function updateMistakeCounter() {
     showGameOver();
   } else if (board.every((val, idx) => val !== 0 && isValidMove(idx, val, board)) && !gameWon) {
     showSuccessAnimation();
-  }
-}
-
-function updateNumberStatusGrid() {
-  const numberCells = document.querySelectorAll('.number-cell');
-  const isMobile = window.innerWidth <= 991;
-  if (isMobile) {
-    numberCells.forEach(cell => {
-      const num = parseInt(cell.dataset.number);
-      if (num === 0) {
-        cell.textContent = inputMode === 'guess' ? 'N/G' : 'G/N';
-      } else {
-        cell.classList.toggle('guess-mode', inputMode === 'guess');
-        cell.classList.toggle('notes-mode', inputMode === 'notes');
-      }
-    });
-  } else {
-    const numberCounts = Array(10).fill(0);
-    const noteCounts = Array(10).fill(0);
-    board.forEach(val => numberCounts[val]++);
-    notes.forEach(noteSet => noteSet.forEach(num => noteCounts[num]++));
-    numberCells.forEach(cell => {
-      const num = parseInt(cell.dataset.number);
-      const count = numberCounts[num];
-      const segments = cell.querySelectorAll('.segment');
-      segments.forEach((segment, index) => {
-        segment.classList.toggle('filled', index < count);
-      });
-      cell.classList.toggle('solved', count === 9);
-      cell.classList.toggle('noted', noteCounts[num] > 0 && count < 9);
-    });
   }
 }
 
@@ -1054,6 +1047,19 @@ function countSolutions(board) {
   solveAll(temp);
   return solutions;
 }
+
+function updateDifficultyDisplay() {
+  const difficultyText = document.getElementById('current-difficulty');
+  if (difficultyText) {
+    const difficulty = difficultySelect.value;
+    difficultyText.textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1).replace('-', ' ');
+  }
+}
+
+document.getElementById('difficulty').addEventListener('change', updateDifficultyDisplay);
+document.addEventListener('DOMContentLoaded', () => {
+  updateDifficultyDisplay(); // Initial set
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM loaded, initializing Sudoku');
