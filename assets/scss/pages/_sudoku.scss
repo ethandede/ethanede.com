@@ -1,7 +1,7 @@
 @use "sass:color";
 @use "../abstracts/_sudoku_variables" as *;
 
-$overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded white
+$overgrid-border-color: rgba($primary-text, 0.8);
 
 .sudoku-page {
   background: linear-gradient(to bottom, $background-start, $background-end);
@@ -37,14 +37,13 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
       z-index: 10;
 
       .start-message {
-        background: rgba(255, 255, 255, 0.85);
+        background: $background-end;
         padding: clamp(1.5rem, 3vw, 2.5rem);
-        /* border: 1px solid #4a90e2; */
-        border-radius: 1rem;
+        border: 1px solid $accent;
+        border-radius: 8px;
         text-align: center;
         max-width: 90%;
-        color: #333333;
-        box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.15);
+        color: $primary-text;
 
         h2 {
           font-size: clamp(20px, 4vw, $font-xl);
@@ -103,17 +102,19 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
       }
     }
 
-    /* Status Bar */
     .status-bar {
-      display: none; // Hidden by default
+      display: none;
       @media (max-width: 991px) {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0px 15px; // Updated per your change
-        width: 100%; // Updated per your change
+        padding: 0px 15px;
+        width: 100%;
+        background: rgba($background-end, 0.8);
+        border-bottom: 1px solid rgba($primary-text, 0.2);
 
-        .timer {
+        .timer,
+        #timer {
           font-size: $font-sm;
           color: $primary-text;
         }
@@ -124,7 +125,8 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
           margin: 0;
         }
 
-        .mistake-counter {
+        .mistake-counter,
+        #mistake-counter {
           display: flex;
           gap: 4px;
           .dot {
@@ -138,9 +140,23 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
           }
         }
       }
+    }
 
-      @media (min-width: 992px) {
-        display: none; /* Only show on mobile */
+    .sudoku-grid {
+      display: grid;
+      $cell-size: clamp(40px, calc((100vw - 30px) / 9), 75px); // Unified sizing
+      grid-template-columns: repeat(9, $cell-size);
+      grid-gap: 4px;
+      background: rgba($background-start, 0.8);
+      width: fit-content;
+      border-radius: 8px;
+      position: relative;
+
+      @media (max-width: 991px) {
+        grid-gap: 0;
+        width: 100%;
+        max-width: calc(100vw - 30px);
+        border-radius: 0;
       }
     }
 
@@ -149,137 +165,29 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
       flex-direction: column;
       gap: 20px;
       align-items: center;
-
-      @media (max-width: 991px) {
-        width: 100%;
-        padding: 0; // Remove extra padding
-        gap: 10px; // Tighter gap
-      }
-
-      .game-controls {
-        display: none; // Hidden by default
-        @media (max-width: 991px) {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-          align-items: center;
-          width: 100%;
-        }
-
-        .start-game {
-          padding: 12px 24px;
-          font-size: $font-sm;
-          background: $button-background;
-          color: $cell-background;
-          border: none;
-          border-radius: 5px;
-          font-weight: bold;
-          &:hover {
-            background: $button-hover;
-          }
-        }
-
-        .setup-row {
-          display: flex;
-          gap: 10px;
-          justify-content: center;
-          flex-wrap: wrap;
-
-          .sudoku-select {
-            padding: 8px 16px;
-            font-size: $font-sm;
-            background: lighten($background-end, 10%);
-            border: 1px solid $accent;
-            color: $primary-text;
-            border-radius: 5px;
-            min-width: 120px;
-            &:hover,
-            &:focus {
-              background: $button-hover;
-            }
-          }
-
-          .cta-button {
-            padding: 8px 16px;
-            font-size: $font-sm;
-            background: $button-background;
-            color: $cell-background;
-            border: none;
-            border-radius: 5px;
-          }
-        }
-
-        .toggle-row {
-          display: flex;
-          gap: 8px;
-          align-items: center;
-          label {
-            font-size: $font-sm;
-            color: $primary-text;
-          }
-          .auto-candidates-checkbox {
-            accent-color: $accent;
-          }
-        }
-
-        .action-row {
-          display: flex;
-          gap: 10px;
-          justify-content: center;
-          flex-wrap: wrap;
-          .cta-button {
-            padding: 6px 12px;
-            font-size: clamp(12px, 2vw, 14px);
-            background: lighten($background-end, 10%);
-            color: $primary-text;
-            border: 1px solid $accent;
-            &:hover {
-              background: $button-hover;
-            }
-          }
-        }
-
-        @media (min-width: 992px) {
-          display: none; /* Hide on desktop, use sudoku-controls instead */
-        }
-      }
-    }
-
-    .sudoku-grid {
-      display: grid;
-      grid-template-columns: repeat(9, clamp(40px, 8vw, 75px));
-      grid-gap: 4px;
-      background: rgba($background-start, 0.8);
       width: fit-content;
-      border-radius: 8px;
-      position: relative;
 
       @media (max-width: 991px) {
-        $cell-size: calc((100vw - 30px) / 9); // Full width minus 15px padding on each side
-        grid-template-columns: repeat(9, $cell-size);
-        grid-gap: 0;
-        margin-bottom:2.5rem;
-        padding: 0;
         width: 100%;
-        max-width: calc(100vw - 30px);
-        border-radius: 0; // Cleaner look on mobile
+        padding: 0;
+        gap: 10px;
       }
     }
 
     .number-status-grid {
       display: grid;
-      grid-template-columns: repeat(3, clamp(40px, 6vw, 60px));
+      $cell-size: clamp(40px, calc((100vw - 30px) / 9), 60px); // Match sudoku-grid
+      grid-template-columns: repeat(3, $cell-size);
       grid-gap: 4px;
       background: rgba($background-end, 0.8);
       padding: 6px;
       border-radius: 8px;
-      margin-bottom:2.5rem;
 
       @media (max-width: 991px) {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 0; // No extra padding
+        padding: 0;
         background: none;
 
         .mode-row {
@@ -331,7 +239,6 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
         }
 
         .number-row .number-cell {
-          $cell-size: calc((100vw - 30px) / 9); // Match sudoku-grid
           width: $cell-size;
           height: $cell-size;
           font-size: clamp(1rem, calc($cell-size * 0.5), 2rem);
@@ -364,9 +271,26 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
       background: rgba($primary-text, 0.05);
       padding: 2.5rem;
       border-radius: 8px;
+      width: fit-content;
 
       @media (max-width: 991px) {
-        display: none;
+        background: none;
+        padding: 0;
+        width: 100%;
+        gap: 10px;
+      }
+
+      .start-game {
+        padding: 12px 24px;
+        font-size: $font-sm;
+        background: $button-background;
+        color: $cell-background;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        &:hover {
+          background: $button-hover;
+        }
       }
 
       .control-row {
@@ -375,61 +299,63 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
         align-items: center;
         flex-wrap: wrap;
 
-        &.close-row {
-          display: none;
+        &.setup-row {
+          justify-content: center;
+
+          .sudoku-select {
+            padding: 8px 16px;
+            font-size: $font-sm;
+            background: lighten($background-end, 10%);
+            border: 1px solid $accent;
+            color: $primary-text;
+            border-radius: 5px;
+            min-width: 120px;
+            &:hover,
+            &:focus {
+              background: $button-hover;
+            }
+          }
         }
-      }
 
-      .timer {
-        font-size: $font-sm;
-        color: $primary-text;
-        padding: 8px;
-        font-family: $body-font;
-        min-width: 50px;
-      }
-
-      label {
-        font-size: $font-sm;
-        color: $primary-text;
-        font-family: $body-font;
-
-        @media (max-width: 991px) {
-          margin-bottom: 5px;
+        &.toggle-row {
+          justify-content: center;
         }
-      }
 
-      .sudoku-select {
-        padding: 8px 32px 8px 16px;
-        font-size: $font-sm;
-        font-family: $body-font;
-        background: $button-background;
-        border: 1px solid rgba($primary-text, 0.5);
-        border-radius: 7px;
-        color: $primary-text;
-        transition: background-color 0.3s ease;
-        min-width: 100px;
-
-        &:hover,
-        &:focus {
-          background: $button-hover;
-          outline: none;
+        &.action-row {
+          justify-content: center;
         }
-      }
 
-      .mistake-counter {
-        display: flex;
-        gap: 6px;
-        padding: 8px;
+        label {
+          font-size: $font-sm;
+          color: $primary-text;
+          font-family: $body-font;
+        }
 
-        .dot {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          background: rgba($primary-text, 0.3);
-          transition: background-color 0.3s ease;
+        .timer,
+        #timer {
+          font-size: $font-sm;
+          color: $primary-text;
+          padding: 8px;
+          font-family: $body-font;
+          min-width: 50px;
+        }
 
-          &.filled {
-            background: $highlight;
+        .mistake-counter,
+        #mistake-counter {
+          display: flex;
+          gap: 6px;
+          padding: 8px;
+
+          .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba($primary-text, 0.3);
+            transition: background-color 0.3s ease;
+
+            &.filled {
+              background: $highlight;
+            }
           }
         }
       }
@@ -454,15 +380,7 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
 
         &.start-game {
           padding: 10px 20px;
-          font-size: $font-sm;
           min-width: 120px;
-        }
-
-        &.close-menu {
-          background: $button-close;
-          &:hover {
-            background: $button-close-hover;
-          }
         }
 
         &[disabled] {
@@ -505,29 +423,22 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
       }
     }
 
-    .menu-toggle {
-      display: none; /* Always hidden since menu is removed */
-    }
-
     .cell {
+      $cell-size: clamp(40px, calc((100vw - 30px) / 9), 75px);
       color: $primary-text;
       position: relative;
-      width: clamp(40px, 8vw, 75px);
-      height: clamp(40px, 8vw, 75px);
+      width: $cell-size;
+      height: $cell-size;
       background: $cell-background;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(18px, 2.5vw, 24px);
+      font-size: clamp(18px, calc($cell-size * 0.5), 24px);
       border: 1px solid rgba($primary-text, 0.2);
       cursor: default;
       font-weight: 900;
 
       @media (max-width: 991px) {
-        $cell-size: calc((100vw - 30px) / 9);
-        width: $cell-size;
-        height: $cell-size;
-        font-size: clamp(1rem, calc($cell-size * 0.5), 2rem);
         cursor: pointer;
       }
 
@@ -574,10 +485,9 @@ $overgrid-border-color: rgba($primary-text, 0.8); // Adjusted from hardcoded whi
         grid-template-columns: repeat(3, 1fr) !important;
         gap: 2px !important;
         padding: 2px !important;
-        font-size: clamp(10px, 1.5vw, 12px) !important;
+        font-size: clamp(10px, calc($cell-size * 0.25), 12px) !important;
 
         @media (max-width: 991px) {
-          font-size: clamp(8px, 1.5vw, 10px) !important;
           gap: 1px !important;
           padding: 1px !important;
         }

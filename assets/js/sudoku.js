@@ -30,23 +30,18 @@ function initializeGame() {
 }
 
 function showStartOverlay() {
-  const existingOverlay = document.querySelector('.start-overlay');
-  if (existingOverlay) existingOverlay.remove();
-  const overlay = document.createElement('div');
-  overlay.classList.add('start-overlay');
-  overlay.innerHTML = `
-    <div class="start-message">
-      <h2>Ready to Play?</h2>
-      <p>Choose your difficulty level and click "Start Game" to begin.</p>
-    </div>
-  `;
-  document.querySelector('.sudoku-grid').appendChild(overlay);
+  const overlay = document.querySelector('.start-overlay');
+  if (overlay) overlay.style.display = 'flex';
+}
+
+function hideStartOverlay() {
+  const overlay = document.querySelector('.start-overlay');
+  if (overlay) overlay.style.display = 'none';
 }
 
 function newGame() {
-  // Generate new puzzle (your existing logic)
   const puzzle = generatePuzzle(difficultySelect.value); // Assuming this exists
-  initialBoard = puzzle.slice(); // Store initial state
+  initialBoard = puzzle.slice();
   board = puzzle.slice();
   notes = Array(81).fill().map(() => new Set());
   mistakeCount = 0;
@@ -59,17 +54,12 @@ function newGame() {
     const seconds = secondsElapsed % 60;
     const timeStr = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     document.getElementById('timer').textContent = timeStr;
-    if (window.innerWidth <= 991) {
-      document.getElementById('timer-mobile').textContent = timeStr;
-    }
   }, 1000);
 
   updateGrid();
   updateNumberStatusGrid();
-  document.getElementById('mistake-counter').innerHTML = ''; // Reset dots
-  if (window.innerWidth <= 991) {
-    document.getElementById('mistake-counter-mobile').innerHTML = '';
-  }
+  mistakeCounter.innerHTML = '';
+  hideStartOverlay();
 }
 
 function updateTimerDisplay() {
@@ -138,11 +128,10 @@ function editCell(index, event) {
 
 function createNumberStatusGrid() {
   if (!numberStatusGrid) return console.error('Number status grid not found');
-  numberStatusGrid.innerHTML = ''; // Clear existing content
-  const isMobile = window.innerWidth <= 991;
+  numberStatusGrid.innerHTML = '';
 
+  const isMobile = window.innerWidth <= 991;
   if (isMobile) {
-    // Mode row
     const modeRow = document.createElement('div');
     modeRow.classList.add('mode-row');
 
@@ -168,7 +157,6 @@ function createNumberStatusGrid() {
     modeRow.appendChild(candidateBtn);
     numberStatusGrid.appendChild(modeRow);
 
-    // Number row
     const numberRow = document.createElement('div');
     numberRow.classList.add('number-row');
     for (let num = 1; num <= 9; num++) {
@@ -181,7 +169,6 @@ function createNumberStatusGrid() {
     }
     numberStatusGrid.appendChild(numberRow);
   } else {
-    // Desktop logic unchanged
     for (let num = 1; num <= 9; num++) {
       const cell = document.createElement('div');
       cell.classList.add('number-cell');
@@ -199,45 +186,31 @@ function createNumberStatusGrid() {
       numberStatusGrid.appendChild(cell);
     }
   }
-  updateNumberStatusGrid(); // Call to update state after creation
+  updateNumberStatusGrid();
 }
 
 function updateNumberStatusGrid() {
-  const numberCells = document.querySelectorAll('.number-row .number-cell'); // Scope to .number-row
+  const numberCells = document.querySelectorAll('.number-cell');
   const isMobile = window.innerWidth <= 991;
 
   if (isMobile) {
-    const guessBtn = document.querySelector('.mode-row .guess-option');
-    const candidateBtn = document.querySelector('.mode-row .candidate-option');
-
+    const guessBtn = document.querySelector('.guess-option');
+    const candidateBtn = document.querySelector('.candidate-option');
     if (guessBtn && candidateBtn) {
-      // Ensure only one tab is active
       guessBtn.classList.remove('active');
       candidateBtn.classList.remove('active');
-      if (inputMode === 'guess') {
-        guessBtn.classList.add('active');
-      } else if (inputMode === 'notes') {
-        candidateBtn.classList.add('active');
-      }
-
-      // Debug logging
-      console.log('inputMode:', inputMode);
-      console.log('Guess classes:', guessBtn.classList.toString());
-      console.log('Candidate classes:', candidateBtn.classList.toString());
-    } else {
-      console.warn('Mode buttons not found:', { guessBtn, candidateBtn });
+      if (inputMode === 'guess') guessBtn.classList.add('active');
+      else if (inputMode === 'notes') candidateBtn.classList.add('active');
     }
 
-    // Update number cells
     numberCells.forEach(cell => {
       const num = parseInt(cell.dataset.number);
-      if (num) { // Only number cells
+      if (num) {
         cell.classList.remove('guess-mode', 'notes-mode');
         cell.classList.add(inputMode === 'guess' ? 'guess-mode' : 'notes-mode');
       }
     });
   } else {
-    // Desktop logic
     const numberCounts = Array(10).fill(0);
     const noteCounts = Array(10).fill(0);
     board.forEach(val => numberCounts[val]++);
@@ -986,27 +959,21 @@ function showGameOver() {
 }
 
 function resetGame() {
-  // Stop the timer if running
   if (timerInterval) {
     clearInterval(timerInterval);
     timerInterval = null;
   }
 
-  // Reset game state
-  board = initialBoard.slice(); // Restore initial puzzle
-  notes = Array(81).fill().map(() => new Set()); // Clear notes
+  board = initialBoard.slice();
+  notes = Array(81).fill().map(() => new Set());
   mistakeCount = 0;
   secondsElapsed = 0;
 
-  // Update UI
   updateGrid();
   updateNumberStatusGrid();
-  document.getElementById('mistake-counter').innerHTML = ''; // Clear dots
-  document.getElementById('timer').textContent = '0:00'; // Reset timer
-  if (window.innerWidth <= 991) {
-    document.getElementById('mistake-counter-mobile').innerHTML = ''; // Mobile reset
-    document.getElementById('timer-mobile').textContent = '0:00';
-  }
+  mistakeCounter.innerHTML = '';
+  document.getElementById('timer').textContent = '0:00';
+  hideStartOverlay();
 }
 
 // Count the total number of solutions for a given puzzle
@@ -1034,69 +1001,40 @@ function countSolutions(board) {
 }
 
 function updateDifficultyDisplay() {
-  const difficultyText = document.getElementById('current-difficulty');
-  if (difficultyText) {
-    const difficulty = difficultySelect.value;
-    difficultyText.textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1).replace('-', ' ');
-  }
+  const difficulty = document.getElementById('current-difficulty');
+  if (difficulty) difficulty.textContent = difficultySelect.value.charAt(0).toUpperCase() + difficultySelect.value.slice(1);
 }
 
-document.getElementById('difficulty').addEventListener('change', updateDifficultyDisplay);
-document.addEventListener('DOMContentLoaded', () => {
-  updateDifficultyDisplay(); // Initial set
-});
+// Before this, assume your core game functions (newGame, resetGame, etc.) are defined
 
+document.getElementById('difficulty').addEventListener('change', updateDifficultyDisplay);
+
+// Unified DOMContentLoaded listener
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM loaded, initializing Sudoku');
   if (!grid || !difficultySelect || !mistakeCounter || !numberStatusGrid || !document.getElementById('timer') || !document.getElementById('auto-candidates')) {
     return console.error('Required elements missing');
   }
+
   initializeGame();
   inputMode = 'guess'; // Set default mode
   updateNumberStatusGrid();
 
-  // Desktop listeners
+  // Unified control listeners
   document.getElementById('start-game').addEventListener('click', newGame);
   document.getElementById('difficulty').addEventListener('change', () => {
-    const overlay = document.querySelector('.start-overlay');
-    if (overlay) showStartOverlay();
+    showStartOverlay(); // No need for overlay check, function handles it
     updateDifficultyDisplay();
   });
   document.getElementById('auto-candidates').addEventListener('click', (e) => {
     isAutoCandidatesEnabled = e.target.checked;
-    updateGrid();
+    debouncedUpdateGrid(); // Use debounced version
   });
   document.getElementById('solve-puzzle').addEventListener('click', solvePuzzle);
   document.getElementById('check-solutions').addEventListener('click', () => {
     const numSolutions = countSolutions(board);
     alert(`This puzzle has ${numSolutions} solution${numSolutions === 1 ? '' : 's'}.`);
   });
-
-  // Mobile listeners
-  document.getElementById('start-game-mobile').addEventListener('click', newGame);
-  document.getElementById('difficulty-mobile').addEventListener('change', () => {
-    const overlay = document.querySelector('.start-overlay');
-    if (overlay) showStartOverlay();
-    updateDifficultyDisplay();
-  });
-  document.getElementById('auto-candidates-mobile').addEventListener('click', (e) => {
-    isAutoCandidatesEnabled = e.target.checked;
-    updateGrid();
-  });
-  document.getElementById('solve-puzzle-mobile').addEventListener('click', solvePuzzle);
-  document.getElementById('check-solutions-mobile').addEventListener('click', () => {
-    const numSolutions = countSolutions(board);
-    alert(`This puzzle has ${numSolutions} solution${numSolutions === 1 ? '' : 's'}.`);
-  });
-
-  // Sync mobile and desktop difficulty
-  const syncDifficulty = () => {
-    const desktopDiff = document.getElementById('difficulty');
-    const mobileDiff = document.getElementById('difficulty-mobile');
-    desktopDiff.value = mobileDiff.value = difficultySelect.value;
-  };
-  document.getElementById('difficulty').addEventListener('change', syncDifficulty);
-  document.getElementById('difficulty-mobile').addEventListener('change', syncDifficulty);
 
   // Grid click handler
   grid.addEventListener('click', (e) => {
@@ -1117,20 +1055,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!grid.contains(e.target) && selectedCell && !controls.contains(e.target)) {
       console.log('Outside click detected, clearing selection');
       selectedCell = null;
-      updateGrid();
+      debouncedUpdateGrid(); // Use debounced version
     }
   });
 
   // Resize handler
   window.addEventListener('resize', () => {
     createNumberStatusGrid(); // Rebuild number status grid on resize
-    if (window.innerWidth > 991 && controls) controls.classList.remove('visible');
+    // Removed controls.classList.remove('visible') since no mobile menu exists
   });
 
   // Update difficulty display initially
   updateDifficultyDisplay();
+  showStartOverlay(); // Show overlay on load
 });
 
+// Debounce function
 function debounce(func, wait) {
   let timeout;
   return (...args) => {
