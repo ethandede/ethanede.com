@@ -18,6 +18,7 @@ let userSolved = Array(81).fill(false);
 let selectedCell = null;
 let inputMode = 'guess'; // Added global declaration
 let isLoading = false;
+let secondsElapsed = 0;
 
 function initializeGame() {
   createGrid();
@@ -43,59 +44,32 @@ function showStartOverlay() {
 }
 
 function newGame() {
-  if (!difficultySelect) return console.error('Difficulty select not found');
-  if (isLoading) return; // Prevent multiple calls while loading
-  console.log('New game triggered with difficulty:', difficultySelect.value);
-
-  const newGameBtn = document.querySelector('button[onclick="newGame()"]');
-  if (newGameBtn) {
-    isLoading = true;
-    newGameBtn.disabled = true;
-    newGameBtn.classList.add('loading');
-  }
-
-  board = Array(81).fill(0);
+  // Generate new puzzle (your existing logic)
+  const puzzle = generatePuzzle(difficultySelect.value); // Assuming this exists
+  initialBoard = puzzle.slice(); // Store initial state
+  board = puzzle.slice();
   notes = Array(81).fill().map(() => new Set());
-  initialBoard = [];
-  userSolved = Array(81).fill(false);
   mistakeCount = 0;
-  gameOver = false;
-  gameWon = false;
-  highlightedNumber = null;
-  const cells = document.querySelectorAll('.cell');
-  cells.forEach(cell => {
-    cell.innerHTML = '';
-    cell.classList.remove('notes', 'highlight', 'thinking-type', 'solved', 'user-solved', 'button-solved', 'initial', 'invalid');
-    cell.style.color = '';
-  });
-  const overlay = document.querySelector('.game-over-overlay') || document.querySelector('.success-overlay') || document.querySelector('.start-overlay');
-  if (overlay) overlay.remove();
+  secondsElapsed = 0;
 
   if (timerInterval) clearInterval(timerInterval);
-  startTime = Date.now();
-  timerInterval = setInterval(updateTimerDisplay, 1000);
-  const timerElement = document.getElementById('timer');
-  if (timerElement) timerElement.textContent = '0:00';
-
-  const difficulty = difficultySelect.value;
-  const newBoard = generatePuzzle(difficulty);
-  thinkingAnimation(newBoard).then(() => {
-    board = newBoard;
-    initialBoard = board.slice();
-    notes = Array(81).fill().map(() => new Set());
-    computeAutoCandidates();
-    updateGrid();
-    const numSolutions = countSolutions(board);
-    console.log(`Puzzle with ${board.filter(x => x !== 0).length} clues has ${numSolutions} solutions`);
-    if (numSolutions !== 1) console.warn(`Non-unique puzzle! Solutions: ${numSolutions}`);
-
-    // Re-enable button after loading completes
-    if (newGameBtn) {
-      isLoading = false;
-      newGameBtn.disabled = false;
-      newGameBtn.classList.remove('loading');
+  timerInterval = setInterval(() => {
+    secondsElapsed++;
+    const minutes = Math.floor(secondsElapsed / 60);
+    const seconds = secondsElapsed % 60;
+    const timeStr = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    document.getElementById('timer').textContent = timeStr;
+    if (window.innerWidth <= 991) {
+      document.getElementById('timer-mobile').textContent = timeStr;
     }
-  });
+  }, 1000);
+
+  updateGrid();
+  updateNumberStatusGrid();
+  document.getElementById('mistake-counter').innerHTML = ''; // Reset dots
+  if (window.innerWidth <= 991) {
+    document.getElementById('mistake-counter-mobile').innerHTML = '';
+  }
 }
 
 function updateTimerDisplay() {
@@ -1012,16 +986,27 @@ function showGameOver() {
 }
 
 function resetGame() {
-  board = initialBoard.slice();
-  notes = Array(81).fill().map(() => new Set());
+  // Stop the timer if running
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  // Reset game state
+  board = initialBoard.slice(); // Restore initial puzzle
+  notes = Array(81).fill().map(() => new Set()); // Clear notes
   mistakeCount = 0;
-  gameOver = false;
-  gameWon = false;
-  highlightedNumber = null;
-  const overlay = document.querySelector('.game-over-overlay') || document.querySelector('.success-overlay');
-  if (overlay) overlay.remove();
-  computeAutoCandidates();
+  secondsElapsed = 0;
+
+  // Update UI
   updateGrid();
+  updateNumberStatusGrid();
+  document.getElementById('mistake-counter').innerHTML = ''; // Clear dots
+  document.getElementById('timer').textContent = '0:00'; // Reset timer
+  if (window.innerWidth <= 991) {
+    document.getElementById('mistake-counter-mobile').innerHTML = ''; // Mobile reset
+    document.getElementById('timer-mobile').textContent = '0:00';
+  }
 }
 
 // Count the total number of solutions for a given puzzle
@@ -1067,50 +1052,53 @@ document.addEventListener('DOMContentLoaded', () => {
     return console.error('Required elements missing');
   }
   initializeGame();
-  const startGameBtn = document.getElementById('start-game');
-  const menuToggle = document.getElementById('menu-toggle');
-  const controls = document.getElementById('sudoku-controls');
-  const closeMenuBtn = document.getElementById('close-menu');
+  inputMode = 'guess'; // Set default mode
+  updateNumberStatusGrid();
 
-  console.log('Grid element:', grid); // Debug grid reference
-
-  startGameBtn.addEventListener('click', () => {
-    newGame();
-    if (window.innerWidth <= 991 && controls) controls.classList.remove('visible');
-  });
-  document.getElementById('solve-puzzle').addEventListener('click', solvePuzzle);
-  difficultySelect.addEventListener('change', () => {
+  // Desktop listeners
+  document.getElementById('start-game').addEventListener('click', newGame);
+  document.getElementById('difficulty').addEventListener('change', () => {
     const overlay = document.querySelector('.start-overlay');
     if (overlay) showStartOverlay();
+    updateDifficultyDisplay();
   });
-  document.getElementById('auto-candidates').addEventListener('change', (e) => {
+  document.getElementById('auto-candidates').addEventListener('click', (e) => {
     isAutoCandidatesEnabled = e.target.checked;
-    console.log('Auto-candidates toggled:', isAutoCandidatesEnabled);
     updateGrid();
   });
+  document.getElementById('solve-puzzle').addEventListener('click', solvePuzzle);
   document.getElementById('check-solutions').addEventListener('click', () => {
     const numSolutions = countSolutions(board);
     alert(`This puzzle has ${numSolutions} solution${numSolutions === 1 ? '' : 's'}.`);
   });
 
-  if (menuToggle && controls) {
-    menuToggle.addEventListener('click', () => {
-      controls.classList.toggle('visible');
-    });
-    if (closeMenuBtn) {
-      closeMenuBtn.addEventListener('click', () => {
-        controls.classList.remove('visible');
-      });
-    }
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 991 && controls.classList.contains('visible') && 
-          !controls.contains(e.target) && e.target !== menuToggle) {
-        controls.classList.remove('visible');
-      }
-    });
-  }
+  // Mobile listeners
+  document.getElementById('start-game-mobile').addEventListener('click', newGame);
+  document.getElementById('difficulty-mobile').addEventListener('change', () => {
+    const overlay = document.querySelector('.start-overlay');
+    if (overlay) showStartOverlay();
+    updateDifficultyDisplay();
+  });
+  document.getElementById('auto-candidates-mobile').addEventListener('click', (e) => {
+    isAutoCandidatesEnabled = e.target.checked;
+    updateGrid();
+  });
+  document.getElementById('solve-puzzle-mobile').addEventListener('click', solvePuzzle);
+  document.getElementById('check-solutions-mobile').addEventListener('click', () => {
+    const numSolutions = countSolutions(board);
+    alert(`This puzzle has ${numSolutions} solution${numSolutions === 1 ? '' : 's'}.`);
+  });
 
-  // Debug grid click handler
+  // Sync mobile and desktop difficulty
+  const syncDifficulty = () => {
+    const desktopDiff = document.getElementById('difficulty');
+    const mobileDiff = document.getElementById('difficulty-mobile');
+    desktopDiff.value = mobileDiff.value = difficultySelect.value;
+  };
+  document.getElementById('difficulty').addEventListener('change', syncDifficulty);
+  document.getElementById('difficulty-mobile').addEventListener('change', syncDifficulty);
+
+  // Grid click handler
   grid.addEventListener('click', (e) => {
     const cell = e.target.closest('.cell');
     console.log('Grid click detected, target:', e.target, 'cell:', cell);
@@ -1123,7 +1111,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Outside click to clear selection
   document.addEventListener('click', (e) => {
+    const controls = document.getElementById('sudoku-controls');
     if (!grid.contains(e.target) && selectedCell && !controls.contains(e.target)) {
       console.log('Outside click detected, clearing selection');
       selectedCell = null;
@@ -1131,10 +1121,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Resize handler
   window.addEventListener('resize', () => {
-    createNumberStatusGrid();
+    createNumberStatusGrid(); // Rebuild number status grid on resize
     if (window.innerWidth > 991 && controls) controls.classList.remove('visible');
   });
+
+  // Update difficulty display initially
+  updateDifficultyDisplay();
 });
 
 function debounce(func, wait) {
