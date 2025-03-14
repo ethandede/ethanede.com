@@ -103,43 +103,77 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       }
     }
 
-    .status-bar {
-      display: none;
-      @media (max-width: 991px) {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0px 15px;
-        width: 100%;
-        background: transparent;
-        border-bottom: none;
-        gap: 0;
+    .grid-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: fit-content; // Constrain to content (sudoku-grid width)
 
+      @media (max-width: 991px) {
+        width: 100%; // Full width on mobile
+      }
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between; // Spread items evenly across the row
+      align-items: center;
+      padding: 10px 15px;
+      background: rgba($background-end, 0.8);
+      border-radius: 8px;
+      box-sizing: border-box;
+      width: 100%;
+    
+      .status-item {
+        display: flex;
+        align-items: center; // Vertically align label and value
+        gap: 6px; // Space between label and value
+    
+        .label {
+          font-size: $font-sm;
+          color: $primary-text;
+          font-family: $body-font;
+          font-weight: bold; // Make labels stand out slightly
+        }
+    
         .timer,
         #timer {
           font-size: $font-sm;
           color: $primary-text;
+          font-family: $body-font;
         }
-
+    
         .current-difficulty {
-          font-size: clamp(16px, 3vw, 20px);
+          font-size: clamp(16px, 2vw, 20px);
           color: $accent;
-          margin: 0;
+          margin: 0; // Remove default h3 margins
+          font-weight: bold;
         }
-
+    
         .mistake-counter,
         #mistake-counter {
           display: flex;
-          gap: 4px;
+          gap: 6px;
           .dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: rgba($primary-text, 0.3);
             &.filled {
               background: $highlight;
             }
           }
+        }
+      }
+    
+      @media (max-width: 991px) {
+        padding: 8px 15px;
+        background: transparent;
+        border-bottom: none;
+        margin-bottom: 10px;
+    
+        .status-item {
+          gap: 4px; // Slightly reduce gap on mobile
         }
       }
     }
@@ -284,6 +318,54 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         padding: 0;
         width: 100%;
         gap: 10px;
+      }
+
+      .puzzle-info {
+        display: none; // Hidden by default
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px;
+        background: rgba($background-end, 0.8);
+        border-radius: 5px;
+        font-family: $body-font;
+        color: $primary-text;
+
+        &.visible {
+          display: flex; // Show when puzzle is generated
+          animation: fadeIn 0.3s ease-out forwards; // Optional
+        }
+
+        .info-item {
+          display: flex;
+          gap: 6px;
+          align-items: center;
+
+          .label {
+            font-size: $font-sm;
+            font-weight: bold;
+            color: color.adjust($primary-text, $lightness: 10%);
+          }
+
+          span:not(.label) {
+            font-size: $font-sm;
+            color: $primary-text;
+          }
+
+          #techniques-list {
+            font-style: italic;
+            color: $accent; // Highlight techniques
+          }
+
+          #solution-count {
+            font-weight: bold;
+            color: $solved-color; // Teal for solutions
+          }
+        }
+
+        @media (max-width: 991px) {
+          padding: 8px;
+          background: rgba($background-end, 0.5);
+        }
       }
 
       .cta-button {
@@ -433,33 +515,6 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           font-family: $body-font;
         }
 
-        .timer,
-        #timer {
-          font-size: $font-sm;
-          color: $primary-text;
-          padding: 8px;
-          font-family: $body-font;
-          min-width: 50px;
-        }
-
-        .mistake-counter,
-        #mistake-counter {
-          display: flex;
-          gap: 6px;
-          padding: 8px;
-
-          .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba($primary-text, 0.3);
-            transition: background-color 0.3s ease;
-
-            &.filled {
-              background: $highlight;
-            }
-          }
-        }
       }
 
       .auto-candidates-checkbox {
@@ -823,6 +878,15 @@ $overgrid-border-color: rgba($primary-text, 0.8);
     }
     100% {
       transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
     }
   }
 }

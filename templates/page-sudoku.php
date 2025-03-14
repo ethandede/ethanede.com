@@ -14,17 +14,21 @@ get_header();
       <h2>Sudoku Know!</h2>
       <p class="supporting-text">A little puzzle-solving fun built with JavaScript—test your skills with only 4 mistakes
         allowed!</p>
+
       <div class="sudoku-layout">
-        <!-- Status Bar (Mobile Only) -->
-        <div class="status-bar">
-          <span class="timer mobile-timer" id="mobile-timer">0:00</span>
-          <h3 id="current-difficulty" class="current-difficulty">Easy</h3>
-          <span class="mistake-counter mobile-mistake-counter" id="mobile-mistake-counter"></span>
+        <!-- Grid Wrapper -->
+        <div class="grid-wrapper">
+          <!-- Status Bar -->
+          <div class="status-bar">
+            <span class="status-item"><span class="label">Time:</span> <span class="timer" id="timer">0:00</span></span>
+            <span class="status-item"><span class="label">Difficulty:</span>
+              <h3 id="current-difficulty" class="current-difficulty">---</h3>
+            </span>
+            <span class="status-item"><span class="label">Mistakes:</span> <span class="mistake-counter" id="mistake-counter"></span></span>
+          </div>
+          <!-- Grid -->
+          <div id="sudoku-grid" class="sudoku-grid"></div>
         </div>
-
-        <!-- Grid -->
-        <div id="sudoku-grid" class="sudoku-grid"></div>
-
         <!-- Controls Column -->
         <div class="controls-column">
           <!-- Number Status Grid -->
@@ -32,6 +36,22 @@ get_header();
 
           <!-- Unified Controls -->
           <div id="sudoku-controls" class="sudoku-controls">
+            <!-- New Puzzle Info Section -->
+            <div class="puzzle-info">
+              <div class="info-item">
+                <span class="label">Clues:</span>
+                <span id="clue-count">0</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Techniques:</span>
+                <span id="techniques-list">None</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Solutions:</span>
+                <span id="solution-count">1</span>
+              </div>
+            </div>
+
             <button class="cta-button new-game" id="new-game">
               New Game <i class="fas fa-caret-up"></i>
             </button>
@@ -58,14 +78,6 @@ get_header();
             <div class="control-row toggle-row">
               <label for="auto-candidates">Auto-Candidates:</label>
               <input type="checkbox" id="auto-candidates" class="auto-candidates-checkbox">
-            </div>
-            <div class="control-row hide-on-mobile">
-              <label for="mistake-counter">Mistakes:</label>
-              <span id="mistake-counter" class="mistake-counter"></span>
-            </div>
-            <div class="control-row hide-on-mobile">
-              <label for="timer">Time:</label>
-              <span id="timer" class="timer">0:00</span>
             </div>
             <div class="control-row action-row">
               <button class="cta-button" onclick="resetGame()">Reset Puzzle</button>
