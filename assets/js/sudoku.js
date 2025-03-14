@@ -1411,10 +1411,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Other listeners
   document.getElementById("auto-candidates").addEventListener("click", (e) => {
     isAutoCandidatesEnabled = e.target.checked;
-    debouncedUpdateGrid();
+    if (isAutoCandidatesEnabled) {
+      computeAutoCandidates(); // Compute candidates when enabled
+    }
+    debouncedUpdateGrid(); // Update grid with new candidates
   });
+  
   document
     .getElementById("solve-puzzle")
+  
     .addEventListener("click", solvePuzzle);
   document.getElementById("check-solutions").addEventListener("click", () => {
     const numSolutions = countSolutions(board);
