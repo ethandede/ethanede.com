@@ -1,3 +1,6 @@
+
+@use "sass:color"; // Import the color module
+
 // Core theme colors
 $background-start: #ffffff;        // Pure white start
 $background-end: #e0e0e0;          // Light gray end
@@ -24,10 +27,11 @@ $highlight-number: rgba($accent, 0.4);  // Blue for same-number highlights
 $notes-text: #333333;
 
 // Buttons
+// _sudoku_variables.scss
 $button-background: $accent;
-$button-hover: lighten($accent, 10%);
+$button-hover: color.adjust($accent, $lightness: 10%);
 $button-close: #e94e77;
-$button-close-hover: lighten(#e94e77, 10%);
+$button-close-hover: color.adjust(#e94e77, $lightness: 10%);
 
 // Overlays
 $overlay-background: rgba(75, 144, 226, 0.15);
@@ -39,8 +43,8 @@ $solved-color: #26a69a; // Teal for solved numbers
 
 
 // Fonts (unchanged)
-$header-font: 'Roboto', sans-serif;
-$body-font: 'Roboto', sans-serif;
+$header-font: 'Noto+Sans+KR', sans-serif;
+$body-font: 'Noto+Sans+KR', sans-serif;
 $font-sm: 16px;
 $font-xl: 32px;
 $font-xxl: 40px;

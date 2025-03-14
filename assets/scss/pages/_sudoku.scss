@@ -4,6 +4,7 @@
 $overgrid-border-color: rgba($primary-text, 0.8);
 
 .sudoku-page {
+  font-family: $header-font;
   background: linear-gradient(to bottom, $background-start, $background-end);
   color: $primary-text;
   min-height: 100vh;
@@ -81,7 +82,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       border-left: 4px solid $accent;
       margin-bottom: 2rem;
       max-width: 600px;
-      color: lighten($primary-text, 20%);
+      color: color.adjust($primary-text, $lightness: 20%);
       font-family: $body-font;
 
       @media (max-width: 991px) {
@@ -91,13 +92,13 @@ $overgrid-border-color: rgba($primary-text, 0.8);
 
     .sudoku-layout {
       display: flex;
-      gap: 30px;
+      gap: 30px; // Desktop spacing between grid and controls
       justify-content: center;
       align-items: flex-start;
 
       @media (max-width: 991px) {
         flex-direction: column;
-        gap: 0;
+        gap: 10px; // Add vertical space between stacked elements
         align-items: center;
       }
     }
@@ -110,8 +111,9 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         align-items: center;
         padding: 0px 15px;
         width: 100%;
-        background: rgba($background-end, 0.8);
-        border-bottom: 1px solid rgba($primary-text, 0.2);
+        background: transparent;
+        border-bottom: none;
+        gap: 0;
 
         .timer,
         #timer {
@@ -144,19 +146,18 @@ $overgrid-border-color: rgba($primary-text, 0.8);
 
     .sudoku-grid {
       display: grid;
-      $cell-size: clamp(40px, calc((100vw - 30px) / 9), 75px); // Unified sizing
+      $cell-size: clamp(40px, calc((100vw - 47px) / 9), 75px); // Unified sizing
       grid-template-columns: repeat(9, $cell-size);
-      grid-gap: 4px;
+      grid-gap: 0; // No gaps for mobile or desktop
       background: rgba($background-start, 0.8);
       width: fit-content;
-      border-radius: 8px;
+      border: 8px solid rgba($primary-text, 1);
       position: relative;
 
       @media (max-width: 991px) {
-        grid-gap: 0;
         width: 100%;
         max-width: calc(100vw - 30px);
-        border-radius: 0;
+        border-radius: 0; // Cleaner look on mobile
       }
     }
 
@@ -176,7 +177,11 @@ $overgrid-border-color: rgba($primary-text, 0.8);
 
     .number-status-grid {
       display: grid;
-      $cell-size: clamp(40px, calc((100vw - 30px) / 9), 60px); // Match sudoku-grid
+      $cell-size: clamp(
+        40px,
+        calc((100vw - 30px) / 9),
+        60px
+      ); // Match sudoku-grid
       grid-template-columns: repeat(3, $cell-size);
       grid-gap: 4px;
       background: rgba($background-end, 0.8);
@@ -202,7 +207,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           padding: 8px 0;
           font-size: $font-sm;
           font-weight: bold;
-          background: lighten($background-end, 10%);
+          background: color.adjust($background-end, $lightness: 10%);
           border: 1px solid rgba($primary-text, 0.2);
           border-right: none;
           color: $primary-text;
@@ -227,7 +232,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           }
 
           &:hover:not(.active) {
-            background: lighten($background-end, 5%);
+            background: color.adjust($background-end, $lightness: 5%);
           }
         }
 
@@ -272,6 +277,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       padding: 2.5rem;
       border-radius: 8px;
       width: fit-content;
+      position: relative;
 
       @media (max-width: 991px) {
         background: none;
@@ -280,16 +286,124 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         gap: 10px;
       }
 
-      .start-game {
-        padding: 12px 24px;
-        font-size: $font-sm;
+      .cta-button {
         background: $button-background;
-        color: $cell-background;
-        border: none;
+        border: 1px solid rgba($primary-text, 0.5);
+        padding: 8px 16px;
+        font-size: clamp(10px, 2vw, $font-sm);
+        min-width: 80px;
         border-radius: 5px;
-        font-weight: bold;
+        position: relative;
+        transition: opacity 0.3s ease, background 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $cell-background;
+
         &:hover {
-          background: $button-hover;
+          background: color.adjust($button-background, $lightness: 10%);
+        }
+
+        &.new-game {
+          padding: 16px 32px;
+          font-size: clamp(18px, 3vw, 24px);
+          border: none;
+          border-radius: 8px;
+          font-weight: bold;
+          gap: 10px;
+
+          i {
+            font-size: clamp(14px, 2vw, 18px);
+            transition: transform 0.3s ease;
+            color: $cell-background;
+            transform: rotate(0deg); // Default up
+          }
+
+          &.open {
+            i {
+              transform: rotate(180deg); // Down when open
+            }
+          }
+
+          &:hover {
+            background: $button-hover;
+          }
+        }
+
+        &[disabled] {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        &.loading {
+          pointer-events: none;
+
+          span {
+            visibility: hidden;
+          }
+
+          &::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba($primary-text, 0.3);
+            border-top: 3px solid $primary-text;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+          }
+        }
+      }
+
+      .difficulty-dropup {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: $background-start;
+        border: 2px solid $accent;
+        border-radius: 8px;
+        box-shadow: 0 -2px 10px rgba($primary-text, 0.2);
+        z-index: 20;
+        width: 100%;
+        max-width: inherit;
+        display: none;
+        transition: all 0.3s ease;
+
+        &.open {
+          display: block;
+          max-height: 360px;
+        }
+
+        .difficulty-option {
+          display: flex;
+          align-items: center;
+          padding: 15px 20px;
+          font-size: clamp(16px, 2.5vw, 20px);
+          font-weight: bold;
+          color: $primary-text;
+          cursor: pointer;
+          transition: background 0.3s ease;
+          gap: 1rem;
+
+          &:hover {
+            background: rgba($accent, 0.1);
+          }
+
+          &:not(:last-child) {
+            border-bottom: 1px solid rgba($accent, 0.2);
+          }
+
+          i {
+            margin-right: 15px;
+            color: $accent;
+            font-size: clamp(14px, 2vw, 18px);
+            display: inline-block;
+          }
         }
       }
 
@@ -299,21 +413,9 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         align-items: center;
         flex-wrap: wrap;
 
-        &.setup-row {
-          justify-content: center;
-
-          .sudoku-select {
-            padding: 8px 16px;
-            font-size: $font-sm;
-            background: lighten($background-end, 10%);
-            border: 1px solid $accent;
-            color: $primary-text;
-            border-radius: 5px;
-            min-width: 120px;
-            &:hover,
-            &:focus {
-              background: $button-hover;
-            }
+        &.hide-on-mobile {
+          @media (max-width: 991px) {
+            display: none !important;
           }
         }
 
@@ -360,58 +462,6 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         }
       }
 
-      .cta-button {
-        background: $button-background;
-        border: 1px solid rgba($primary-text, 0.5);
-        padding: 8px 16px;
-        font-size: clamp(10px, 2vw, $font-sm);
-        min-width: 80px;
-        border-radius: 5px;
-        position: relative;
-        transition: opacity 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: $cell-background;
-
-        &:hover {
-          background: $button-hover;
-        }
-
-        &.start-game {
-          padding: 10px 20px;
-          min-width: 120px;
-        }
-
-        &[disabled] {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-
-        &.loading {
-          pointer-events: none;
-
-          span {
-            visibility: hidden;
-          }
-
-          &::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba($primary-text, 0.3);
-            border-top: 3px solid $primary-text;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            transform: translate(-50%, -50%);
-            z-index: 2;
-          }
-        }
-      }
-
       .auto-candidates-checkbox {
         margin-left: 10px;
         accent-color: $accent;
@@ -433,17 +483,18 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(18px, calc($cell-size * 0.5), 24px);
-      border: 1px solid rgba($primary-text, 0.2);
+      font-size: clamp(18px, calc($cell-size * 0.75), 50px);
+      border: 1px solid #aaa;
       cursor: default;
       font-weight: 900;
+      padding: 1px;
 
       @media (max-width: 991px) {
         cursor: pointer;
       }
 
       &:hover {
-        background: rgba($primary-text, 0.25);
+        background: #e5e5e5;
       }
 
       &[contenteditable="true"] {
@@ -480,6 +531,10 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         border: 2px solid $highlight-border;
       }
 
+      &.thinking-type {
+        transform-origin: center; // Default, but explicit for clarity
+      }
+
       &.notes {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
@@ -502,29 +557,38 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         }
       }
 
-      &:nth-child(3n+1) {
-        border-left: 1px solid $overgrid-border-color;
+      // Vertical: 3px right on 3rd and 6th, 3px left on 4th and 7th
+      &:nth-child(3n + 3):not(:nth-child(9n)),
+      &:nth-child(3n + 6):not(:nth-child(9n)) {
+        border-right: 3px solid #aaa;
+      }
+      &:nth-child(3n + 4):not(:nth-child(9n + 1)),
+      &:nth-child(3n + 7):not(:nth-child(9n + 1)) {
+        border-left: 3px solid #aaa;
       }
 
-      &:nth-child(3n) {
-        border-right: 1px solid $overgrid-border-color;
-      }
-
-      &:nth-child(-n+9) {
+      // Top edge (unchanged)
+      &:nth-child(-n + 9) {
         border-top: 1px solid $overgrid-border-color;
       }
 
-      &:nth-child(n+19):nth-child(-n+27),
-      &:nth-child(n+46):nth-child(-n+54) {
-        border-bottom: 1px solid $overgrid-border-color;
+      // Horizontal: 3px bottom on rows 3 and 6, 3px top on rows 4 and 7
+      &:nth-child(n + 19):nth-child(-n + 27),
+      &:nth-child(n + 46):nth-child(-n + 54) {
+        border-bottom: 3px solid #aaa;
+      }
+      &:nth-child(n + 28):nth-child(-n + 36),
+      &:nth-child(n + 55):nth-child(-n + 63) {
+        border-top: 3px solid #aaa;
       }
 
-      &:nth-last-child(-n+9) {
+      // Bottom edge (unchanged)
+      &:nth-last-child(-n + 9) {
         border-bottom: 1px solid $overgrid-border-color;
       }
 
       &.initial {
-        color: $cell-initial-text;
+        color: $primary-text;
       }
 
       &.button-solved {
@@ -588,6 +652,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       gap: 1px;
       font-size: clamp(16px, 2.5vw, 24px);
       font-family: $body-font;
+      font-weight: 600;
       color: $primary-text;
       border: 1px solid rgba($primary-text, 0.2);
       cursor: pointer;
@@ -664,8 +729,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
     }
 
     .thinking-type {
-      opacity: 0;
-      animation: typeIn 0.3s ease-out forwards;
+      animation: growFromCenter 0.4s ease-out forwards;
     }
 
     .game-over-overlay,
@@ -719,19 +783,46 @@ $overgrid-border-color: rgba($primary-text, 0.8);
     }
   }
 
+  @keyframes growFromCenter {
+    0% {
+      transform: scale(0);
+      opacity: 0; // Optional: fade in for smoothness
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
   @keyframes successFlash {
-    0% { background: rgba($background-start, 0.8); }
-    50% { background: rgba($accent, 0.3); }
-    100% { background: rgba($background-start, 0.8); }
+    0% {
+      background: rgba($background-start, 0.8);
+    }
+    50% {
+      background: rgba($accent, 0.3);
+    }
+    100% {
+      background: rgba($background-start, 0.8);
+    }
   }
 
   @keyframes typeIn {
-    0% { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @keyframes spin {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
   }
 }

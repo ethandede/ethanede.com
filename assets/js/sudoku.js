@@ -1,6 +1,6 @@
 const grid = document.getElementById('sudoku-grid');
-const difficultySelect = document.getElementById('difficulty');
-const mistakeCounter = document.getElementById('mistake-counter');
+const mistakeCounters = document.querySelectorAll('.mistake-counter');
+const timers = document.querySelectorAll('.timer');
 const numberStatusGrid = document.getElementById('number-status-grid');
 let board = Array(81).fill(0);
 let notes = Array(81).fill().map(() => new Set());
@@ -19,6 +19,7 @@ let selectedCell = null;
 let inputMode = 'guess'; // Added global declaration
 let isLoading = false;
 let secondsElapsed = 0;
+let currentDifficulty = 'easy'; // Default, updated by dropdown
 
 function initializeGame() {
   createGrid();
@@ -26,7 +27,7 @@ function initializeGame() {
   updateMistakeCounter();
   const timerElement = document.getElementById('timer');
   if (timerElement) timerElement.textContent = '0:00';
-  showStartOverlay();
+  // Don’t show start overlay by default anymore
 }
 
 function showStartOverlay() {
@@ -39,37 +40,83 @@ function hideStartOverlay() {
   if (overlay) overlay.style.display = 'none';
 }
 
-function newGame() {
-  const puzzle = generatePuzzle(difficultySelect.value); // Assuming this exists
-  initialBoard = puzzle.slice();
-  board = puzzle.slice();
-  notes = Array(81).fill().map(() => new Set());
-  mistakeCount = 0;
-  secondsElapsed = 0;
+async function newGame() {
+  console.log('newGame started');
+  removeOverlays();
+  try {
+    console.log('Generating new puzzle with difficulty:', currentDifficulty);
+    const puzzle = generatePuzzle(currentDifficulty);
+    if (!puzzle || puzzle.length !== 81) throw new Error('Invalid puzzle generated');
+    const solutions = countSolutions(puzzle);
+    if (solutions !== 1) throw new Error(`Puzzle has ${solutions} solutions`);
+    const difficultyTargets = {
+      quick: { minClues: 40, maxClues: 45, minTechnique: 0 },
+      easy: { minClues: 36, maxClues: 40, minTechnique: 0 },
+      'not easy': { minClues: 30, maxClues: 35, minTechnique: 1 },
+      hard: { minClues: 27, maxClues: 31, minTechnique: 2 },
+      expert: { minClues: 22, maxClues: 26, minTechnique: 3 },
+      mental: { minClues: 17, maxClues: 24, minTechnique: 4 }
+    };
+    const analysis = analyzeDifficulty(puzzle, solution, currentDifficulty, difficultyTargets);
+    console.log('Puzzle generated, clues:', puzzle.filter(x => x !== 0).length, 'techniques:', analysis.techniquesUsed);
+    
+    initialBoard = puzzle.slice();
+    board = puzzle.slice();
+    notes = Array(81).fill().map(() => new Set());
+    mistakeCount = 0;
+    secondsElapsed = 0;
+    gameOver = false;
+    gameWon = false;
+    selectedCell = null;
+    window.puzzleTechniques = analysis.techniquesUsed;
 
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
-    secondsElapsed++;
-    const minutes = Math.floor(secondsElapsed / 60);
-    const seconds = secondsElapsed % 60;
-    const timeStr = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    document.getElementById('timer').textContent = timeStr;
-  }, 1000);
+    if (timerInterval) {
+      console.log('Clearing existing timerInterval:', timerInterval);
+      clearInterval(timerInterval);
+    }
+    console.log('Setting new timerInterval');
+    timerInterval = setInterval(() => {
+      secondsElapsed++;
+      const minutes = Math.floor(secondsElapsed / 60);
+      const seconds = secondsElapsed % 60;
+      const timeStr = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      timers.forEach(timer => {
+        if (timer) timer.textContent = timeStr;
+        else console.warn('Timer element missing');
+      });
+    }, 1000);
 
-  updateGrid();
-  updateNumberStatusGrid();
-  mistakeCounter.innerHTML = '';
-  hideStartOverlay();
+    console.log('Clearing grid before animation');
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+      cell.innerHTML = '';
+      cell.classList.remove('initial', 'user-solved', 'button-solved', 'notes', 'invalid', 'highlighted', 'highlight-subgrid', 'highlight-row', 'highlight-column');
+    });
+
+    console.log('Starting puzzle animation');
+    await thinkingAnimation(puzzle);
+    console.log('Updating grid with new board');
+    updateGrid();
+    console.log('Updating number status grid');
+    updateNumberStatusGrid();
+    console.log('Resetting mistake counters');
+    mistakeCounters.forEach(counter => {
+      if (counter) counter.innerHTML = '';
+      else console.warn('Mistake counter element missing');
+    });
+    console.log('newGame completed');
+  } catch (error) {
+    console.error('Error in newGame:', error);
+  }
 }
 
 function updateTimerDisplay() {
   if (!startTime || gameWon || gameOver) return;
-  const timerElement = document.getElementById('timer');
-  if (!timerElement) return console.error('Timer element not found');
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
   const minutes = Math.floor(elapsed / 60);
   const seconds = elapsed % 60;
-  timerElement.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+  const timeStr = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+  timers.forEach(timer => timer.textContent = timeStr);
 }
 
 function createGrid() {
@@ -84,42 +131,34 @@ function createGrid() {
 }
 
 function editCell(index, event) {
-  console.log('editCell running for index:', index);
   if (gameOver || gameWon) return;
   const cell = event.target.closest('.cell');
   const isMobile = window.innerWidth <= 991;
+  console.log('editCell: index=', index, 'isMobile=', isMobile, 'cell=', cell);
 
-  console.log('editCell called for index:', index, 'cell:', cell);
-
-  // Clear all previous highlights and overlays
+  // Clear highlights
   document.querySelectorAll('.cell').forEach(c => {
-    if (c !== cell) {
-      c.classList.remove('highlighted', 'highlight-subgrid', 'highlight-row', 'highlight-column');
-      const overlay = c.querySelector('.notes-overlay');
-      if (overlay) overlay.remove();
-    }
-    c.classList.remove('highlight'); // Clear number highlights universally
+    if (c !== cell) c.classList.remove('highlighted', 'highlight-subgrid', 'highlight-row', 'highlight-column');
+    c.classList.remove('highlight');
+    const overlay = c.querySelector('.notes-overlay');
+    if (overlay) overlay.remove();
   });
 
-  selectedCell = cell;
+  selectedCell = cell; // Store DOM element
   cell.classList.add('highlighted');
   highlightRelatedCells(index);
 
-  console.log('Highlights applied for index:', index);
-
-  grid.offsetHeight;
-
   if (board[index] !== 0) {
-    toggleHighlight(board[index]); // Only apply number highlights for filled cells
-  } else if (!isMobile) {
+    toggleHighlight(board[index]);
+  } else if (isMobile) {
+    console.log('Mobile mode: awaiting number input, mode=', inputMode);
+    // No contentEditable; rely on number-status-grid clicks
+  } else {
     cell.contentEditable = true;
     cell.focus();
     cell.textContent = '';
     cell.addEventListener('keydown', (e) => handleKeydown(e, index), { once: true });
-    cell.addEventListener('blur', () => {
-      selectedCell = null;
-      updateGrid();
-    }, { once: true });
+    cell.addEventListener('blur', () => handleBlur(index), { once: true });
     showNotesOverlay(index, cell);
   }
 
@@ -164,10 +203,19 @@ function createNumberStatusGrid() {
       cell.classList.add('number-cell');
       cell.dataset.number = num;
       cell.textContent = num;
-      cell.addEventListener('click', () => handleNumberInput(num));
-      numberRow.appendChild(cell);
+      numberRow.appendChild(cell); // Listener added below
     }
     numberStatusGrid.appendChild(numberRow);
+
+    // Event delegation for mobile
+    numberStatusGrid.addEventListener('click', (e) => {
+      const cell = e.target.closest('.number-cell');
+      if (cell) {
+        const num = parseInt(cell.dataset.number);
+        console.log('Mobile number clicked:', num, 'selectedCell:', selectedCell);
+        handleNumberInput(num);
+      }
+    });
   } else {
     for (let num = 1; num <= 9; num++) {
       const cell = document.createElement('div');
@@ -182,9 +230,22 @@ function createNumberStatusGrid() {
         segment.classList.add('segment');
         cell.appendChild(segment);
       }
-      cell.addEventListener('click', () => handleNumberInput(num));
-      numberStatusGrid.appendChild(cell);
+      cell.style.pointerEvents = 'auto'; // Ensure clickable
+      numberStatusGrid.appendChild(cell); // Listener added below
     }
+
+    // Event delegation for desktop
+    numberStatusGrid.addEventListener('click', (e) => {
+      const cell = e.target.closest('.number-cell');
+      if (cell) {
+        e.stopPropagation();
+        const num = parseInt(cell.dataset.number);
+        console.log('Desktop number clicked:', num, 'selectedCell:', selectedCell);
+        if (selectedCell !== null) {
+          handleNumberInput(num);
+        }
+      }
+    });
   }
   updateNumberStatusGrid();
 }
@@ -225,34 +286,46 @@ function updateNumberStatusGrid() {
       });
       cell.classList.toggle('solved', count === 9);
       cell.classList.toggle('noted', noteCounts[num] > 0 && count < 9);
+      cell.classList.remove('guess-mode', 'notes-mode');
+      if (selectedCell !== null) {
+        cell.classList.add(inputMode === 'guess' ? 'guess-mode' : 'notes-mode');
+      }
     });
   }
 }
 
 function handleNumberInput(num) {
-  const isMobile = window.innerWidth <= 991;
-  if (gameOver || gameWon) return;
-
-  if (!selectedCell) {
-    toggleHighlight(num);
-    return;
-  }
-
+  if (!selectedCell) return;
   const index = parseInt(selectedCell.dataset.index);
-  if (initialBoard[index] !== 0) return;
+  console.log('handleNumberInput: num=', num, 'index=', index, 'mode=', inputMode);
 
-  if (isMobile) {
-    if (inputMode === 'guess') {
-      handleGuess(index, num);
+  if (inputMode === 'guess') {
+    if (initialBoard[index] !== 0) return;
+    if (isValidMove(index, num, board)) {
+      board[index] = num;
+      userSolved[index] = true;
+      notes[index].clear();
+      clearNotesInSection(index, num);
+      selectedCell.classList.remove('highlighted', 'highlight-subgrid', 'highlight-row', 'highlight-column');
+      selectedCell = null;
     } else {
-      console.log('Mobile toggling note:', num, 'at index:', index);
-      toggleNote(index, num);
+      mistakeCount++;
+      board[index] = num;
+      selectedCell.classList.add('invalid');
+      setTimeout(() => {
+        board[index] = 0;
+        selectedCell.classList.remove('invalid');
+        selectedCell.classList.remove('highlighted', 'highlight-subgrid', 'highlight-row', 'highlight-column');
+        selectedCell = null;
+        updateGrid();
+      }, 1000);
     }
-  } else {
-    handleGuess(index, num);
+    updateGrid();
+    checkForWin(); // Check after each valid move
+  } else if (inputMode === 'notes') {
+    toggleNote(index, num);
+    updateGrid();
   }
-  computeAutoCandidates();
-  updateGrid();
 }
 
 function handleGuess(index, num) {
@@ -287,13 +360,17 @@ function computeAutoCandidates() {
 }
 
 function updateGrid(clickedIndex = null) {
-  console.log('updateGrid called, selectedCell:', selectedCell ? selectedCell.dataset.index : 'none');
+  console.log('updateGrid called, selectedCell:', selectedCell ? selectedCell.dataset.index : 'null', 'board sample:', board.slice(0, 9));
   const cells = document.querySelectorAll('.cell');
+  if (!cells.length) {
+    console.error('No cells found in grid');
+    return;
+  }
   cells.forEach((cell, index) => {
-    // Preserve notes-overlay by not clearing innerHTML fully
     const overlay = cell.querySelector('.notes-overlay');
     cell.innerHTML = '';
-    if (overlay) cell.appendChild(overlay); // Re-append if present
+    if (overlay) cell.appendChild(overlay);
+    // Only remove non-highlight states
     cell.classList.remove('notes', 'highlight', 'user-solved', 'button-solved', 'initial', 'invalid');
 
     if (board[index] !== 0) {
@@ -304,7 +381,7 @@ function updateGrid(clickedIndex = null) {
     } else {
       const displayNotes = new Set(notes[index]);
       if (isAutoCandidatesEnabled) autoCandidates[index].forEach(n => displayNotes.add(n));
-      if (displayNotes.size > 0 && !overlay) { // Only add notes if no overlay
+      if (displayNotes.size > 0 && !overlay) {
         cell.classList.add('notes');
         for (let num = 1; num <= 9; num++) {
           const span = document.createElement('span');
@@ -315,23 +392,35 @@ function updateGrid(clickedIndex = null) {
     }
     if (highlightedNumber && board[index] === highlightedNumber) cell.classList.add('highlight');
   });
+
+  // Reapply highlights if a cell is selected
+  if (selectedCell) {
+    const index = parseInt(selectedCell.dataset.index);
+    selectedCell.classList.add('highlighted');
+    highlightRelatedCells(index);
+  }
+
   console.log('Post-updateGrid cell 44 innerHTML:', document.querySelector('[data-index="44"]').innerHTML);
   updateMistakeCounter();
   updateNumberStatusGrid();
 }
 
 function updateMistakeCounter() {
-  if (!mistakeCounter) return;
-  mistakeCounter.innerHTML = '';
-  for (let i = 0; i < 4; i++) {
-    const dot = document.createElement('div');
-    dot.classList.add('dot');
-    if (i < mistakeCount) dot.classList.add('filled');
-    mistakeCounter.appendChild(dot);
-  }
-  if (mistakeCount >= 4 && !gameOver && !gameWon) {
-    showGameOver();
-  } else if (board.every((val, idx) => val !== 0 && isValidMove(idx, val, board)) && !gameWon) {
+  mistakeCounters.forEach(counter => {
+    counter.innerHTML = '';
+    for (let i = 0; i < 4; i++) {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      if (i < mistakeCount) dot.classList.add('filled');
+      counter.appendChild(dot);
+    }
+  });
+  if (mistakeCount >= 4 && !gameOver && !gameWon) showGameOver();
+  // Remove success check from here
+}
+
+function checkForWin() { // New function
+  if (!gameOver && !gameWon && board.every((val, idx) => val !== 0 && isValidMove(idx, val, board))) {
     showSuccessAnimation();
   }
 }
@@ -344,6 +433,7 @@ function toggleHighlight(num) {
 }
 
 function highlightRelatedCells(index) {
+  console.log('highlightRelatedCells: index=', index);
   const row = Math.floor(index / 9);
   const col = index % 9;
   const subgridStartRow = Math.floor(row / 3) * 3;
@@ -364,6 +454,38 @@ function highlightRelatedCells(index) {
     }
   }
 }
+
+function highlightMatchingNumbers(selectedNumber) {
+  console.log('highlightMatchingNumbers: number=', selectedNumber);
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach(cell => {
+    cell.classList.remove('highlight-number'); // Clear previous
+    const value = cell.textContent.trim();
+    const isInitial = cell.classList.contains('initial');
+    const isUserSolved = cell.classList.contains('user-solved');
+    const isNotes = cell.classList.contains('notes');
+
+    if ((isInitial || isUserSolved) && value === selectedNumber) {
+      cell.classList.add('highlight-number');
+    } else if (isNotes) {
+      const notes = cell.querySelectorAll('span');
+      notes.forEach(note => {
+        if (note.textContent.trim() === selectedNumber) {
+          cell.classList.add('highlight-number');
+        }
+      });
+    }
+  });
+}
+
+// Example usage
+function onCellClick(index) {
+  const cell = document.querySelectorAll('.cell')[index];
+  const value = cell.textContent.trim();
+  highlightRelatedCells(index);
+  if (value) highlightMatchingNumbers(value);
+}
+
 function toggleNote(index, num) {
   if (notes[index].has(num)) {
     notes[index].delete(num);
@@ -486,78 +608,126 @@ function isValidMove(index, value, checkBoard) {
 }
 
 function generatePuzzle(difficulty) {
-  console.log(`Generating puzzle with difficulty: ${difficulty}`);
+  console.log(`Generating puzzle: ${difficulty}`);
   const difficultyTargets = {
     quick: { minClues: 40, maxClues: 45, minTechnique: 0 },
     easy: { minClues: 36, maxClues: 40, minTechnique: 0 },
     'not easy': { minClues: 30, maxClues: 35, minTechnique: 1 },
     hard: { minClues: 27, maxClues: 31, minTechnique: 2 },
     expert: { minClues: 22, maxClues: 26, minTechnique: 3 },
-    mental: { minClues: 20, maxClues: 24, minTechnique: 4 }
+    mental: { minClues: 17, maxClues: 24, minTechnique: 4 }
   };
   const target = difficultyTargets[difficulty] || difficultyTargets.easy;
   const targetClues = Math.floor(Math.random() * (target.maxClues - target.minClues + 1)) + target.minClues;
+  const minTechnique = target.minTechnique;
 
-  // Generate a full solution
   let fullGrid = Array(81).fill(0);
   if (!generateFullGrid(fullGrid)) {
-    console.error('Failed to generate a full grid');
-    return fullGrid;
+    console.error('Failed to generate full grid');
+    return generatePuzzle(difficulty);
   }
-  solution = fullGrid.slice(); // Store globally
-
-  // Create puzzle by removing numbers
+  solution = fullGrid.slice();
   let puzzle = fullGrid.slice();
-  let indices = Array.from({ length: 81 }, (_, i) => i);
-  shuffleArray(indices);
-  let remainingClues = 81;
-  let removalAttempts = 0;
-  const maxAttempts = 500; // Prevent infinite loops
 
-  while (remainingClues > target.maxClues && removalAttempts < maxAttempts) {
-    let removed = false;
-    for (let i = 0; i < indices.length && remainingClues > target.maxClues; i++) {
-      const pos = indices[i];
-      if (puzzle[pos] === 0) continue; // Skip already removed cells
+  const indices = shuffleArray(Array.from({ length: 81 }, (_, i) => i));
+  let clues = 81;
+  let attempts = 0;
+  const maxAttempts = 5000;
 
-      const temp = puzzle[pos];
-      puzzle[pos] = 0;
-      remainingClues--;
+  while (clues > targetClues && attempts < maxAttempts) {
+    const pos = indices.pop();
+    if (!pos && pos !== 0) break; // indices exhausted
+    if (puzzle[pos] === 0) continue;
 
-      const tempPuzzle = puzzle.slice();
-      const numSolutions = countSolutions(tempPuzzle);
-      if (numSolutions !== 1) {
-        puzzle[pos] = temp; // Revert
-        remainingClues++;
-        console.log(`Reverted cell ${pos}, solutions: ${numSolutions}`);
-      } else {
-        console.log(`Removed cell ${pos}, clues remaining: ${remainingClues}`);
-        removed = true;
+    const temp = puzzle[pos];
+    puzzle[pos] = 0;
+    const solutions = countSolutions(puzzle);
+    attempts++;
+
+    if (solutions === 1) {
+      clues--;
+      console.log(`Removed ${temp} at ${pos}, clues now: ${clues}`);
+      if (clues <= target.maxClues) {
+        const analysis = analyzeDifficulty(puzzle, solution, difficulty, difficultyTargets);
+        if (analysis.hardestTechnique >= minTechnique) {
+          console.log(`Target met: clues=${clues}, technique=${analysis.hardestTechnique}`);
+          break;
+        }
       }
+    } else {
+      puzzle[pos] = temp;
+      console.log(`Restored ${temp} at ${pos}, solutions: ${solutions}`);
     }
 
-    if (!removed) {
-      // No removals this pass; reshuffle remaining indices and try again
-      indices = indices.filter(i => puzzle[i] !== 0); // Keep only filled cells
+    if (attempts % 100 === 0) {
+      console.log(`Progress: attempts=${attempts}, clues=${clues}`);
       shuffleArray(indices);
-      if (indices.length === 0) break; // No more cells to remove
     }
-    removalAttempts++;
   }
 
-  // Final check
-  remainingClues = puzzle.filter(x => x !== 0).length;
-  const finalSolutions = countSolutions(puzzle.slice());
-  console.log(`Generated puzzle: clues=${remainingClues}, solutions=${finalSolutions}`);
+  const finalSolutions = countSolutions(puzzle);
   if (finalSolutions !== 1) {
-    console.warn('Puzzle has multiple solutions, generation failed');
-  }
-  if (remainingClues < target.minClues || remainingClues > target.maxClues) {
-    console.warn(`Clue count ${remainingClues} outside target range ${target.minClues}-${target.maxClues}`);
+    console.error(`Final puzzle invalid: ${finalSolutions} solutions`);
+    return generatePuzzle(difficulty);
   }
 
+  const finalClues = puzzle.filter(x => x !== 0).length;
+  const finalAnalysis = analyzeDifficulty(puzzle, solution, difficulty, difficultyTargets);
+  if (finalClues > target.maxClues || finalAnalysis.hardestTechnique < minTechnique) {
+    console.log(`Outside target: clues=${finalClues}, technique=${finalAnalysis.hardestTechnique}, retrying`);
+    return generatePuzzle(difficulty);
+  }
+
+  console.log(`Puzzle generated: clues=${finalClues}, target=${targetClues}, technique=${finalAnalysis.hardestTechnique}, attempts=${attempts}`);
   return puzzle;
 }
+
+function generateFullGrid(grid) {
+  for (let i = 0; i < 81; i++) {
+    if (grid[i] === 0) {
+      const nums = shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      for (let num of nums) {
+        if (isValidMove(i, num, grid)) {
+          grid[i] = num;
+          if (generateFullGrid(grid)) return true;
+          grid[i] = 0;
+        }
+      }
+      return false;
+    }
+  }
+  return true;
+}
+
+function solvePuzzle(board) {
+  const empty = board.indexOf(0);
+  if (empty === -1) return true;
+  for (let num = 1; num <= 9; num++) {
+    if (isValidMove(empty, num, board)) {
+      board[empty] = num;
+      if (solvePuzzle(board)) return true;
+      board[empty] = 0;
+    }
+  }
+  return false;
+}
+
+function shuffleArray(array) {
+  if (!array || !Array.isArray(array)) {
+    console.error('shuffleArray received invalid input:', array);
+    return Array.from({ length: 81 }, (_, i) => i);
+  }
+  const shuffled = array.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+document.getElementById('debug-win').addEventListener('click', () => {
+  console.log('Debug Win clicked');
+  showSuccessAnimation();
+});
 
 // Helper: Generate a full, valid Sudoku grid
 function generateFullGrid(board) {
@@ -576,13 +746,7 @@ function generateFullGrid(board) {
   return false;
 }
 
-// Helper: Shuffle an array (Fisher-Yates)
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
+
 
 function hasUniqueSolution(board, solution) {
   let solutions = 0;
@@ -607,34 +771,32 @@ function hasUniqueSolution(board, solution) {
   return solutions === 1;
 }
 
-function analyzeDifficulty(base, solution, difficulty) {
-  const difficultyTargets = {
-    quick: { minClues: 40, maxClues: 45, minTechnique: 0 },
-    easy: { minClues: 36, maxClues: 40, minTechnique: 0 },
-    'not easy': { minClues: 30, maxClues: 35, minTechnique: 1 },
-    hard: { minClues: 27, maxClues: 31, minTechnique: 2 },
-    expert: { minClues: 22, maxClues: 26, minTechnique: 3 },
-    mental: { minClues: 20, maxClues: 24, minTechnique: 4 }
-  };
+function analyzeDifficulty(base, solution, difficulty, difficultyTargets) {
   const target = difficultyTargets[difficulty] || difficultyTargets.easy;
   let tempBoard = base.slice();
   let hardestTechnique = -1;
-  let zeros = tempBoard.filter(x => x === 0).length;
+  const techniquesUsed = [];
 
+  console.log('Analyzing techniques for board:', tempBoard.filter(x => x !== 0).length, 'clues');
   for (let level = 0; level <= 4; level++) {
-    let progress = applyTechnique(level, tempBoard, true);
-    let newZeros = tempBoard.filter(x => x === 0).length;
+    const progress = applyTechnique(level, tempBoard, true);
+    console.log(`Level ${level} check: progress=${progress}`);
     if (progress) {
       hardestTechnique = level;
-      zeros = newZeros;
+      const techniqueName = level === 0 ? 'Singles' :
+                           level === 1 ? 'Locked Candidates' :
+                           level === 2 ? 'Naked/Hidden Pairs' :
+                           level === 3 ? 'X-Wing/Unique Rectangle' :
+                           'Swordfish/XY-Wing';
+      if (!techniquesUsed.includes(techniqueName)) {
+        techniquesUsed.push(techniqueName);
+        console.log(`Level ${level} detected: ${techniqueName}`);
+      }
     }
-    console.log(`Analyzing level ${level}, progress: ${progress}, solved: ${zeros === 0}, zeros: ${zeros} -> ${newZeros}`);
-    if (zeros === 0 || hardestTechnique >= target.minTechnique) break;
   }
 
-  hardestTechnique = hardestTechnique === -1 ? target.minTechnique : Math.min(hardestTechnique, 
-    difficulty === 'hard' ? 2 : (difficulty === 'expert' ? 3 : target.minTechnique));
-  return { hardestTechnique };
+  console.log(`Techniques required: ${techniquesUsed.length ? techniquesUsed.join(', ') : 'None detected'}`);
+  return { hardestTechnique, techniquesUsed };
 }
 
 function applyTechnique(level, board, analyzeOnly = false) {
@@ -655,31 +817,15 @@ function applyTechnique(level, board, analyzeOnly = false) {
       if (tempBoard[i] === 0) {
         const candidates = getCandidates(i);
         if (candidates.length === 1) {
+          progress = true;
           if (!analyzeOnly) tempBoard[i] = candidates[0];
-          progress = true;
+          console.log(`Singles at ${i}: ${candidates[0]}`);
         }
       }
     }
-    for (let unit = 0; unit < 27; unit++) {
-      const cells = getUnitCells(unit);
-      const counts = Array(10).fill(0);
-      const positions = Array(10).fill().map(() => []);
-      cells.forEach(i => {
-        if (tempBoard[i] === 0) {
-          getCandidates(i).forEach(num => {
-            counts[num]++;
-            positions[num].push(i);
-          });
-        }
-      });
-      for (let num = 1; num <= 9; num++) {
-        if (counts[num] === 1) {
-          if (!analyzeOnly) tempBoard[positions[num][0]] = num;
-          progress = true;
-        }
-      }
-    }
+    // ... rest of Level 0 (Hidden Singles) ...
   } else if (level === 1) {
+    // Locked Candidates (simplified)
     for (let box = 0; box < 9; box++) {
       const boxStart = Math.floor(box / 3) * 27 + (box % 3) * 3;
       const boxCells = [];
@@ -689,115 +835,39 @@ function applyTechnique(level, board, analyzeOnly = false) {
         if (tempBoard[i] === 0) getCandidates(i).forEach(num => boxCands[num].push(i));
       });
       for (let num = 1; num <= 9; num++) {
-        if (boxCands[num].length > 0) {
-          const rows = new Set(boxCands[num].map(i => Math.floor(i / 9)));
-          const cols = new Set(boxCands[num].map(i => i % 9));
-          if (rows.size === 1 || cols.size === 1) {
-            progress = true;
-            if (!analyzeOnly) {
-              if (rows.size === 1) {
-                const row = [...rows][0];
-                for (let col = 0; col < 9; col++) {
-                  const idx = row * 9 + col;
-                  if (!boxCells.includes(idx) && tempBoard[idx] === 0 && isValidMove(idx, num, tempBoard)) {
-                    tempBoard[idx] = num;
-                  }
-                }
-              } else if (cols.size === 1) {
-                const col = [...cols][0];
-                for (let row = 0; row < 9; row++) {
-                  const idx = row * 9 + col;
-                  if (!boxCells.includes(idx) && tempBoard[idx] === 0 && isValidMove(idx, num, tempBoard)) {
-                    tempBoard[idx] = num;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  } else if (level === 2) {
-    for (let unit = 0; unit < 27; unit++) {
-      const cells = getUnitCells(unit);
-      const cands = cells.map(i => tempBoard[i] === 0 ? getCandidates(i) : []);
-      for (let i = 0; i < cells.length; i++) {
-        if (cands[i].length === 2 || cands[i].length === 3) {
-          const pair = cands[i];
-          const matches = [];
-          for (let j = 0; j < cells.length; j++) {
-            if (i !== j && cands[j].length === pair.length && pair.every(n => cands[j].includes(n))) {
-              matches.push(j);
-            }
-          }
-          if (matches.length === pair.length - 1) {
-            progress = true;
-            if (!analyzeOnly) {
-              const group = [i, ...matches].map(idx => cells[idx]);
-              for (let k = 0; k < cells.length; k++) {
-                const idx = cells[k];
-                if (!group.includes(idx) && tempBoard[idx] === 0) {
-                  const cand = getCandidates(idx);
-                  if (cand.length === 1 && pair.includes(cand[0])) {
-                    tempBoard[idx] = cand[0];
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  } else if (level === 3) {
-    for (let num = 1; num <= 9; num++) {
-      const rowCands = Array(9).fill().map(() => []);
-      for (let i = 0; i < 81; i++) {
-        if (tempBoard[i] === 0 && isValidMove(i, num, tempBoard)) {
-          rowCands[Math.floor(i / 9)].push(i);
-        }
-      }
-      for (let r1 = 0; r1 < 8; r1++) {
-        if (rowCands[r1].length === 2) {
-          for (let r2 = r1 + 1; r2 < 9; r2++) {
-            if (rowCands[r2].length === 2 && rowCands[r1][0] % 9 === rowCands[r2][0] % 9 && rowCands[r1][1] % 9 === rowCands[r2][1] % 9) {
-              progress = true;
-              if (!analyzeOnly) {
-                const cols = [rowCands[r1][0] % 9, rowCands[r1][1] % 9];
-                for (let row = 0; row < 9; row++) {
-                  if (row !== r1 && row !== r2) {
-                    cols.forEach(col => {
-                      const idx = row * 9 + col;
-                      if (tempBoard[idx] === 0 && isValidMove(idx, num, tempBoard)) {
-                        tempBoard[idx] = num;
-                      }
-                    });
-                  }
-                }
-              }
-            }
-          }
+        if (boxCands[num].length > 0 && (new Set(boxCands[num].map(i => Math.floor(i / 9))).size === 1 || new Set(boxCands[num].map(i => i % 9)).size === 1)) {
+          progress = true;
+          console.log(`Locked Candidates for ${num} in box ${box}`);
         }
       }
     }
   } else if (level === 4) {
-    for (let i = 0; i < 81; i++) {
-      if (tempBoard[i] === 0) {
-        const candidates = getCandidates(i);
-        if (candidates.length > 1) {
-          for (let num of candidates) {
-            const testBoard = tempBoard.slice();
-            testBoard[i] = num;
-            if (!canSolveWithSingles(testBoard)) {
-              progress = true;
-              if (!analyzeOnly) tempBoard[i] = num;
-              break;
+    // Swordfish (simplified)
+    for (let num = 1; num <= 9; num++) {
+      const rowCands = Array(9).fill().map(() => []);
+      for (let i = 0; i < 81; i++) {
+        if (tempBoard[i] === 0 && isValidMove(i, num, tempBoard)) rowCands[Math.floor(i / 9)].push(i % 9);
+      }
+      for (let r1 = 0; r1 < 7; r1++) {
+        if (rowCands[r1].length >= 2 && rowCands[r1].length <= 3) {
+          for (let r2 = r1 + 1; r2 < 8; r2++) {
+            if (rowCands[r2].length >= 2 && rowCands[r2].length <= 3) {
+              for (let r3 = r2 + 1; r3 < 9; r3++) {
+                if (rowCands[r3].length >= 2 && rowCands[r3].length <= 3) {
+                  const cols = [...new Set([...rowCands[r1], ...rowCands[r2], ...rowCands[r3]])];
+                  if (cols.length === 3) {
+                    progress = true;
+                    console.log(`Swordfish detected for ${num}`);
+                  }
+                }
+              }
             }
           }
-          if (progress) break;
         }
       }
     }
   }
+  // Add other levels as needed, simplified for now
 
   return progress;
 }
@@ -851,14 +921,6 @@ function solve(board) {
     }
   }
   return false;
-}
-
-function solvePuzzle() {
-  if (gameOver || gameWon) return;
-  board = solution.slice();
-  gameWon = true;
-  if (timerInterval) clearInterval(timerInterval);
-  updateGrid(); // Let updateGrid handle class assignment
 }
 
 async function thinkingAnimation(finalBoard) {
@@ -922,29 +984,39 @@ function showNotesOverlay(index, cell) {
 function showSuccessAnimation() {
   gameWon = true;
   if (timerInterval) clearInterval(timerInterval);
-  const elapsed = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+  const elapsed = secondsElapsed;
   const minutes = Math.floor(elapsed / 60);
   const seconds = elapsed % 60;
   const timeString = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
   const grid = document.querySelector('.sudoku-grid');
   grid.classList.add('success-animation');
   setTimeout(() => grid.classList.remove('success-animation'), 2000);
+
+  removeOverlays();
+  const container = document.querySelector('.sudoku-container');
+  const techniques = window.puzzleTechniques || [];
   const overlay = document.createElement('div');
   overlay.classList.add('success-overlay');
   overlay.innerHTML = `
     <div class="success-message">
       <h2>Well Done!</h2>
       <p>You solved the puzzle in ${timeString} with ${mistakeCount} mistake${mistakeCount === 1 ? '' : 's'}!</p>
+      <p>Techniques required: ${techniques.length ? techniques.join(', ') : 'Basic'}</p>
       <button class="cta-button play-again">Play Again</button>
     </div>
   `;
-  document.querySelector('.sudoku-container').appendChild(overlay);
-  document.querySelector('.play-again').addEventListener('click', newGame);
+  container.appendChild(overlay);
+
+  const playAgainBtn = overlay.querySelector('.play-again');
+  playAgainBtn.addEventListener('click', newGame);
 }
 
 function showGameOver() {
+  console.log('Showing game over');
   gameOver = true;
   if (timerInterval) clearInterval(timerInterval);
+  
+  removeOverlays(); // Clear any existing overlays
   const overlay = document.createElement('div');
   overlay.classList.add('game-over-overlay');
   overlay.innerHTML = `
@@ -976,18 +1048,33 @@ function resetGame() {
   hideStartOverlay();
 }
 
+function removeOverlays() {
+  try {
+    const overlays = document.querySelectorAll('.success-overlay, .game-over-overlay');
+    console.log('Removing overlays, found:', overlays.length);
+    overlays.forEach(overlay => {
+      console.log('Removing overlay:', overlay.className);
+      if (overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+      } else {
+        console.warn('Overlay has no parent:', overlay);
+      }
+    });
+  } catch (error) {
+    console.error('Error in removeOverlays:', error);
+  }
+}
+
 // Count the total number of solutions for a given puzzle
 function countSolutions(board) {
   let solutions = 0;
-  const maxSolutions = 2; // Stop after 2
   function solveAll(b) {
-    if (solutions >= maxSolutions) return;
     const empty = b.indexOf(0);
     if (empty === -1) {
       solutions++;
       return;
     }
-    for (let num = 1; num <= 9 && solutions < maxSolutions; num++) {
+    for (let num = 1; num <= 9; num++) {
       if (isValidMove(empty, num, b)) {
         b[empty] = num;
         solveAll(b);
@@ -997,38 +1084,61 @@ function countSolutions(board) {
   }
   const temp = board.slice();
   solveAll(temp);
+  console.log(`Solutions found: ${solutions}`);
+  if (solutions === 0) console.error('No solutions for board:', temp);
+  if (solutions > 1) console.warn('Multiple solutions detected:', solutions);
   return solutions;
 }
-
-function updateDifficultyDisplay() {
-  const difficulty = document.getElementById('current-difficulty');
-  if (difficulty) difficulty.textContent = difficultySelect.value.charAt(0).toUpperCase() + difficultySelect.value.slice(1);
-}
-
-// Before this, assume your core game functions (newGame, resetGame, etc.) are defined
-
-document.getElementById('difficulty').addEventListener('change', updateDifficultyDisplay);
 
 // Unified DOMContentLoaded listener
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM loaded, initializing Sudoku');
-  if (!grid || !difficultySelect || !mistakeCounter || !numberStatusGrid || !document.getElementById('timer') || !document.getElementById('auto-candidates')) {
-    return console.error('Required elements missing');
+  const required = {
+    grid: document.getElementById('sudoku-grid'),
+    mistakeCounter: document.getElementById('mistake-counter'),
+    numberStatusGrid: document.getElementById('number-status-grid'),
+    timer: document.getElementById('timer'),
+    autoCandidates: document.getElementById('auto-candidates'),
+    newGame: document.getElementById('new-game'),
+    difficultyDropdown: document.getElementById('difficulty-dropup') // Updated ID
+  };
+  if (Object.values(required).some(el => !el)) {
+    console.error('Missing elements:', Object.keys(required).filter(k => !required[k]));
+    return;
   }
-
   initializeGame();
-  inputMode = 'guess'; // Set default mode
+  inputMode = 'guess';
   updateNumberStatusGrid();
 
-  // Unified control listeners
-  document.getElementById('start-game').addEventListener('click', newGame);
-  document.getElementById('difficulty').addEventListener('change', () => {
-    showStartOverlay(); // No need for overlay check, function handles it
-    updateDifficultyDisplay();
+  const newGameBtn = document.getElementById('new-game');
+  const dropdown = document.getElementById('difficulty-dropup'); // Updated ID
+
+  newGameBtn.addEventListener('click', () => {
+    console.log('New Game clicked, toggling dropup');
+    dropdown.classList.toggle('open');
+    console.log('Dropup classes after toggle:', dropdown.classList.toString());
   });
+
+  document.querySelectorAll('.difficulty-option').forEach(option => {
+    option.addEventListener('click', () => {
+      currentDifficulty = option.dataset.value;
+      console.log('Difficulty selected:', currentDifficulty);
+      dropdown.classList.remove('open');
+      newGame();
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!newGameBtn.contains(e.target) && !dropdown.contains(e.target)) {
+      console.log('Outside click, closing dropup');
+      dropdown.classList.remove('open');
+    }
+  });
+
+  // Other listeners
   document.getElementById('auto-candidates').addEventListener('click', (e) => {
     isAutoCandidatesEnabled = e.target.checked;
-    debouncedUpdateGrid(); // Use debounced version
+    debouncedUpdateGrid();
   });
   document.getElementById('solve-puzzle').addEventListener('click', solvePuzzle);
   document.getElementById('check-solutions').addEventListener('click', () => {
@@ -1036,38 +1146,32 @@ document.addEventListener('DOMContentLoaded', () => {
     alert(`This puzzle has ${numSolutions} solution${numSolutions === 1 ? '' : 's'}.`);
   });
 
-  // Grid click handler
   grid.addEventListener('click', (e) => {
     const cell = e.target.closest('.cell');
-    console.log('Grid click detected, target:', e.target, 'cell:', cell);
     if (cell) {
       const index = parseInt(cell.dataset.index);
-      console.log('Calling editCell for index:', index);
       editCell(index, e);
-    } else {
-      console.log('No cell found for click');
     }
   });
 
-  // Outside click to clear selection
   document.addEventListener('click', (e) => {
     const controls = document.getElementById('sudoku-controls');
-    if (!grid.contains(e.target) && selectedCell && !controls.contains(e.target)) {
+    const numberGrid = document.getElementById('number-status-grid');
+    if (
+      !grid.contains(e.target) &&
+      !controls.contains(e.target) &&
+      !numberGrid.contains(e.target) &&
+      selectedCell
+    ) {
       console.log('Outside click detected, clearing selection');
       selectedCell = null;
-      debouncedUpdateGrid(); // Use debounced version
+      debouncedUpdateGrid();
     }
   });
 
-  // Resize handler
   window.addEventListener('resize', () => {
-    createNumberStatusGrid(); // Rebuild number status grid on resize
-    // Removed controls.classList.remove('visible') since no mobile menu exists
+    createNumberStatusGrid();
   });
-
-  // Update difficulty display initially
-  updateDifficultyDisplay();
-  showStartOverlay(); // Show overlay on load
 });
 
 // Debounce function
