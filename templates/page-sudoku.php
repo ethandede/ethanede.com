@@ -21,7 +21,7 @@ get_header();
           <!-- Status Bar -->
           <div class="status-bar">
             <span class="status-item"><span class="label">Time:</span> <span class="timer" id="timer">0:00</span></span>
-            <span class="status-item"><span class="label">Difficulty:</span>
+            <span class="status-item"><span class="label difficulty">Difficulty:</span>
               <h3 id="current-difficulty" class="current-difficulty">---</h3>
             </span>
             <span class="status-item"><span class="label">Mistakes:</span> <span class="mistake-counter" id="mistake-counter"></span></span>

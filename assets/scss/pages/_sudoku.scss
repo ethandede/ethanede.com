@@ -123,33 +123,33 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       border-radius: 8px;
       box-sizing: border-box;
       width: 100%;
-    
+
       .status-item {
         display: flex;
         align-items: center; // Vertically align label and value
         gap: 6px; // Space between label and value
-    
+
         .label {
           font-size: $font-sm;
           color: $primary-text;
           font-family: $body-font;
           font-weight: bold; // Make labels stand out slightly
         }
-    
+
         .timer,
         #timer {
           font-size: $font-sm;
           color: $primary-text;
           font-family: $body-font;
         }
-    
+
         .current-difficulty {
           font-size: clamp(16px, 2vw, 20px);
           color: $accent;
           margin: 0; // Remove default h3 margins
           font-weight: bold;
         }
-    
+
         .mistake-counter,
         #mistake-counter {
           display: flex;
@@ -165,33 +165,57 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           }
         }
       }
-    
+
       @media (max-width: 991px) {
-        padding: 8px 15px;
+        padding: 8px 1px 0;
         background: transparent;
         border-bottom: none;
-        margin-bottom: 10px;
-    
+        margin-bottom: 1px;
+
         .status-item {
           gap: 4px; // Slightly reduce gap on mobile
+
+          .label {
+            font-weight: 400;
+
+            &.difficulty {
+              display: none;
+            }
+          }
         }
       }
     }
 
     .sudoku-grid {
       display: grid;
-      $cell-size: clamp(40px, calc((100vw - 47px) / 9), 75px); // Unified sizing
+      $outer-border: 8px;
+      $cell-size: clamp(
+        40px,
+        calc((100vw - ($outer-border * 2) - 47px) / 9),
+        75px
+      );
       grid-template-columns: repeat(9, $cell-size);
-      grid-gap: 0; // No gaps for mobile or desktop
+      grid-template-rows: repeat(9, $cell-size); // Explicitly set row height
+      grid-gap: 0;
       background: rgba($background-start, 0.8);
       width: fit-content;
-      border: 8px solid rgba($primary-text, 1);
+      border: $outer-border solid rgba($primary-text, 1);
       position: relative;
+      box-sizing: border-box;
 
       @media (max-width: 991px) {
+        $outer-border: 5px;
+        $cell-size: clamp(
+          40px,
+          calc((100vw - ($outer-border * 2) - 30px) / 9),
+          75px
+        );
+        grid-template-columns: repeat(9, $cell-size);
+        grid-template-rows: repeat(9, $cell-size);
         width: 100%;
         max-width: calc(100vw - 30px);
-        border-radius: 0; // Cleaner look on mobile
+        border: $outer-border solid rgba($primary-text, 1);
+        border-radius: 0;
       }
     }
 
@@ -514,7 +538,6 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           color: $primary-text;
           font-family: $body-font;
         }
-
       }
 
       .auto-candidates-checkbox {
@@ -529,22 +552,35 @@ $overgrid-border-color: rgba($primary-text, 0.8);
     }
 
     .cell {
-      $cell-size: clamp(40px, calc((100vw - 30px) / 9), 75px);
       color: $primary-text;
       position: relative;
-      width: $cell-size;
-      height: $cell-size;
+      // Remove width and height; let grid control them
       background: $cell-background;
       display: flex;
       align-items: center;
       justify-content: center;
+      // Use grid’s $cell-size for font-size reference
+      $outer-border: 8px;
+      $cell-size: clamp(
+        40px,
+        calc((100vw - ($outer-border * 2) - 47px) / 9),
+        75px
+      );
       font-size: clamp(18px, calc($cell-size * 0.75), 50px);
       border: 1px solid #aaa;
       cursor: default;
       font-weight: 900;
       padding: 1px;
+      box-sizing: border-box;
 
       @media (max-width: 991px) {
+        $outer-border: 5px;
+        $cell-size: clamp(
+          40px,
+          calc((100vw - ($outer-border * 2) - 30px) / 9),
+          75px
+        );
+        font-size: clamp(18px, calc($cell-size * 0.6), 50px);
         cursor: pointer;
       }
 
@@ -572,11 +608,11 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       }
 
       &.highlight-row {
-        background: $highlight-row;
+        background: $highlight-row !important;
       }
 
       &.highlight-column {
-        background: $highlight-column;
+        background: $highlight-column !important;
       }
 
       &.highlighted.highlight-subgrid,
@@ -600,6 +636,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         @media (max-width: 991px) {
           gap: 1px !important;
           padding: 1px !important;
+          font-size: clamp(10px, calc($cell-size * 0.25), 10px) !important;
         }
 
         span {
@@ -612,7 +649,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         }
       }
 
-      // Vertical: 3px right on 3rd and 6th, 3px left on 4th and 7th
+      // Subgrid borders
       &:nth-child(3n + 3):not(:nth-child(9n)),
       &:nth-child(3n + 6):not(:nth-child(9n)) {
         border-right: 3px solid #aaa;
@@ -621,13 +658,6 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       &:nth-child(3n + 7):not(:nth-child(9n + 1)) {
         border-left: 3px solid #aaa;
       }
-
-      // Top edge (unchanged)
-      &:nth-child(-n + 9) {
-        border-top: 1px solid $overgrid-border-color;
-      }
-
-      // Horizontal: 3px bottom on rows 3 and 6, 3px top on rows 4 and 7
       &:nth-child(n + 19):nth-child(-n + 27),
       &:nth-child(n + 46):nth-child(-n + 54) {
         border-bottom: 3px solid #aaa;
@@ -637,13 +667,35 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         border-top: 3px solid #aaa;
       }
 
-      // Bottom edge (unchanged)
+      @media (max-width: 991px) {
+        &:nth-child(3n + 3):not(:nth-child(9n)),
+        &:nth-child(3n + 6):not(:nth-child(9n)) {
+          border-right: 2px solid #aaa;
+        }
+        &:nth-child(3n + 4):not(:nth-child(9n + 1)),
+        &:nth-child(3n + 7):not(:nth-child(9n + 1)) {
+          border-left: 2px solid #aaa;
+        }
+        &:nth-child(n + 19):nth-child(-n + 27),
+        &:nth-child(n + 46):nth-child(-n + 54) {
+          border-bottom: 2px solid #aaa;
+        }
+        &:nth-child(n + 28):nth-child(-n + 36),
+        &:nth-child(n + 55):nth-child(-n + 63) {
+          border-top: 2px solid #aaa;
+        }
+      }
+
+      &:nth-child(-n + 9) {
+        border-top: 1px solid $overgrid-border-color;
+      }
       &:nth-last-child(-n + 9) {
         border-bottom: 1px solid $overgrid-border-color;
       }
 
       &.initial {
         color: $primary-text;
+        background-color: #e5e5e5;
       }
 
       &.button-solved {
@@ -780,7 +832,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
     }
 
     .highlight {
-      background: $highlight-number;
+      background: $highlight-number !important;
     }
 
     .thinking-type {
