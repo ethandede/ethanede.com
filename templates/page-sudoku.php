@@ -82,8 +82,8 @@ get_header();
             <div class="control-row action-row">
               <button class="cta-button" onclick="resetGame()">Reset Puzzle</button>
               <button class="cta-button" id="solve-puzzle">Solve Puzzle</button>
-              <!-- <button class="cta-button" id="check-solutions">Check for Unique Solution</button> -->
-              <!-- <button class="cta-button" id="debug-win">Debug Win</button> -->
+              <button class="cta-button" id="check-solutions">Check for Unique Solution</button>
+              <button class="cta-button" id="debug-win">Debug Win</button>
             </div>
           </div>
         </div>
