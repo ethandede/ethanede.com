@@ -1184,7 +1184,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(18px, clamp(40px, (100vw - 16px - 47px) / 9, 75px) * 0.75, 50px);
+  font-size: clamp(18px, clamp(40px, (100vw - 16px - 47px) / 9, 75px) * 0.75, 42px);
   border: 1px solid #aaa;
   cursor: default;
   font-weight: 900;
@@ -1193,7 +1193,7 @@ p {
 }
 @media (max-width: 991px) {
   .sudoku-page .sudoku-container .cell {
-    font-size: clamp(18px, clamp(40px, (100vw - 10px - 30px) / 9, 75px) * 0.6, 50px);
+    font-size: clamp(18px, clamp(40px, (100vw - 10px - 30px) / 9, 75px) * 0.6, 42px);
     cursor: pointer;
   }
 }

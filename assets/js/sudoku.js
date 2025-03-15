@@ -72,12 +72,6 @@ async function newGame() {
       currentDifficulty,
       difficultyTargets
     );
-    console.log(
-      "Puzzle generated, clues:",
-      puzzle.filter((x) => x !== 0).length,
-      "techniques:",
-      analysis.techniquesUsed
-    );
 
     initialBoard = puzzle.slice();
     board = puzzle.slice();
@@ -121,24 +115,25 @@ async function newGame() {
       );
     });
 
-    await thinkingAnimation(puzzle);
-    updateGrid();
-    updateNumberStatusGrid();
+    // Update mistake counter immediately after clearing
     mistakeCounters.forEach((counter) => {
       if (counter) counter.innerHTML = "";
       else console.warn("Mistake counter element missing");
     });
+    updateMistakeCounter(); // Add this line
+
+    await thinkingAnimation(puzzle);
+    updateGrid();
+    updateNumberStatusGrid();
 
     const clues = puzzle.filter((x) => x !== 0).length;
     const techniques = analysis.techniquesUsed;
     const solutionsCount = solutions;
     updatePuzzleInfo(clues, techniques, solutionsCount);
 
-    // Update difficulty display
     const difficultyElement = document.getElementById("current-difficulty");
     if (difficultyElement) {
       difficultyElement.textContent = formatDifficulty(currentDifficulty);
-      console.log("Difficulty updated in DOM:", currentDifficulty);
     } else {
       console.warn("current-difficulty element not found");
     }

@@ -566,7 +566,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         calc((100vw - ($outer-border * 2) - 47px) / 9),
         75px
       );
-      font-size: clamp(18px, calc($cell-size * 0.75), 50px);
+      font-size: clamp(18px, calc($cell-size * 0.75), 42px);
       border: 1px solid #aaa;
       cursor: default;
       font-weight: 900;
@@ -580,7 +580,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           calc((100vw - ($outer-border * 2) - 30px) / 9),
           75px
         );
-        font-size: clamp(18px, calc($cell-size * 0.6), 50px);
+        font-size: clamp(18px, calc($cell-size * 0.6), 42px);
         cursor: pointer;
       }
 
