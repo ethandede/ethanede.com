@@ -1129,7 +1129,7 @@ p {
   transform: translate(-50%, -50%);
   z-index: 2;
 }
-.sudoku-page .sudoku-container .sudoku-controls .difficulty-dropup {
+.sudoku-page .sudoku-container .sudoku-controls .sudoku-controls .difficulty-dropup {
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -1144,12 +1144,14 @@ p {
   display: none;
   transition: max-height 0.3s ease;
 }
-.sudoku-page .sudoku-container .sudoku-controls .difficulty-dropup.open {
+.sudoku-page .sudoku-container .sudoku-controls .sudoku-controls .difficulty-dropup.open {
   display: block !important;
   max-height: 360px;
   visibility: visible;
+  top: calc(100% + 10px);
+  bottom: auto;
 }
-.sudoku-page .sudoku-container .sudoku-controls .difficulty-dropup .difficulty-option {
+.sudoku-page .sudoku-container .sudoku-controls .sudoku-controls .difficulty-option {
   display: flex;
   align-items: center;
   padding: 15px 20px;
@@ -1160,13 +1162,13 @@ p {
   transition: background 0.3s ease;
   gap: 1rem;
 }
-.sudoku-page .sudoku-container .sudoku-controls .difficulty-dropup .difficulty-option:hover {
+.sudoku-page .sudoku-container .sudoku-controls .sudoku-controls .difficulty-option:hover {
   background: rgba(74, 144, 226, 0.1);
 }
-.sudoku-page .sudoku-container .sudoku-controls .difficulty-dropup .difficulty-option:not(:last-child) {
+.sudoku-page .sudoku-container .sudoku-controls .sudoku-controls .difficulty-option:not(:last-child) {
   border-bottom: 1px solid rgba(74, 144, 226, 0.2);
 }
-.sudoku-page .sudoku-container .sudoku-controls .difficulty-dropup .difficulty-option i {
+.sudoku-page .sudoku-container .sudoku-controls .sudoku-controls .difficulty-option i {
   margin-right: 15px;
   color: #4a90e2;
   font-size: clamp(14px, 2vw, 18px);
@@ -1272,7 +1274,7 @@ p {
   .sudoku-page .sudoku-container .cell.notes {
     gap: 0px !important;
     padding: 0 !important;
-    font-size: clamp(8px, clamp(40px, (100vw - 10px - 30px) / 9, 75px) / 8, 10px) !important;
+    font-size: clamp(9px, clamp(40px, (100vw - 10px - 30px) / 9, 75px) / 8, 11px) !important;
   }
 }
 .sudoku-page .sudoku-container .cell.notes span {
