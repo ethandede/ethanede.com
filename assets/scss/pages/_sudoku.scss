@@ -655,7 +655,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         @media (max-width: 991px) {
           gap: 0px !important;
           padding: 0 !important;
-          font-size: clamp(9px, calc($cell-size / 8), 11px) !important; // Slightly larger
+          font-size: clamp(9px, calc($cell-size / 8), 11px) !important;
         }
     
         span {
@@ -760,6 +760,10 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         color: transparent;
         cursor: pointer;
         transition: color 0.4s ease;
+
+        @media (max-width: 991px) {
+          font-size: clamp(9px, calc($cell-size / 8), 11px);
+        }
 
         &:hover {
           color: $notes-text;
