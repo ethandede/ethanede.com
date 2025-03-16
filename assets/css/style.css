@@ -783,14 +783,17 @@ p {
 .sudoku-page .sudoku-container .sudoku-layout {
   display: flex;
   gap: 30px;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
+  max-width: 1300px;
+  margin: 0 auto;
 }
 @media (max-width: 991px) {
   .sudoku-page .sudoku-container .sudoku-layout {
     flex-direction: column;
     gap: 10px;
     align-items: center;
+    margin: 0;
   }
 }
 .sudoku-page .sudoku-container .grid-wrapper {
@@ -798,10 +801,12 @@ p {
   flex-direction: column;
   align-items: center;
   width: fit-content;
+  max-width: 691px;
 }
 @media (max-width: 991px) {
   .sudoku-page .sudoku-container .grid-wrapper {
-    width: 100%;
+    width: 685px;
+    max-width: 100%;
   }
 }
 .sudoku-page .sudoku-container .status-bar {
@@ -877,6 +882,7 @@ p {
   grid-gap: 0;
   background: rgba(255, 255, 255, 0.8);
   width: fit-content;
+  max-width: 691px;
   border: 8px solid #333333;
   position: relative;
   box-sizing: border-box;
@@ -896,22 +902,26 @@ p {
   flex-direction: column;
   gap: 20px;
   align-items: center;
-  width: fit-content;
+  width: 350px;
 }
 @media (max-width: 991px) {
   .sudoku-page .sudoku-container .controls-column {
     width: 100%;
+    max-width: 685px;
     padding: 0;
     gap: 10px;
   }
 }
 .sudoku-page .sudoku-container .number-status-grid {
   display: grid;
-  grid-template-columns: repeat(3, clamp(40px, (100vw - 30px) / 9, 60px));
+  width: 100%;
+  grid-template-columns: repeat(3, 108px);
+  grid-template-rows: repeat(3, 108px);
   grid-gap: 4px;
   background: rgba(224, 224, 224, 0.8);
   padding: 6px;
   border-radius: 8px;
+  box-sizing: border-box;
 }
 @media (max-width: 991px) {
   .sudoku-page .sudoku-container .number-status-grid {
@@ -920,6 +930,7 @@ p {
     align-items: center;
     padding: 0;
     background: none;
+    width: 100%;
   }
   .sudoku-page .sudoku-container .number-status-grid .mode-row {
     display: flex;
@@ -963,9 +974,9 @@ p {
     width: 100%;
   }
   .sudoku-page .sudoku-container .number-status-grid .number-row .number-cell {
-    width: clamp(40px, (100vw - 30px) / 9, 60px);
-    height: clamp(40px, (100vw - 30px) / 9, 60px);
-    font-size: clamp(1rem, clamp(40px, (100vw - 30px) / 9, 60px) * 0.5, 2rem);
+    width: calc((100vw - 30px) / 9);
+    height: calc((100vw - 30px) / 9);
+    font-size: clamp(1rem, (100vw - 30px) / 9 * 0.5, 2rem);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -975,14 +986,6 @@ p {
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease;
   }
-  .sudoku-page .sudoku-container .number-status-grid .number-row .number-cell.guess-mode {
-    background: rgba(74, 144, 226, 0.2);
-    border-color: #4a90e2;
-  }
-  .sudoku-page .sudoku-container .number-status-grid .number-row .number-cell.notes-mode {
-    background: rgba(51, 51, 51, 0.2);
-    border-color: #333333;
-  }
 }
 .sudoku-page .sudoku-container .sudoku-controls {
   display: flex;
@@ -991,7 +994,8 @@ p {
   background: rgba(51, 51, 51, 0.05);
   padding: 2.5rem;
   border-radius: 8px;
-  width: fit-content;
+  width: 100%;
+  box-sizing: border-box;
   position: relative;
 }
 @media (max-width: 991px) {
@@ -1043,6 +1047,14 @@ p {
     padding: 8px;
     background: rgba(224, 224, 224, 0.5);
   }
+}
+.sudoku-page .sudoku-container .sudoku-controls .action-row .reset-puzzle,
+.sudoku-page .sudoku-container .sudoku-controls .action-row .solve-puzzle {
+  display: none;
+}
+.sudoku-page .sudoku-container .sudoku-controls .action-row.visible .reset-puzzle,
+.sudoku-page .sudoku-container .sudoku-controls .action-row.visible .solve-puzzle {
+  display: flex;
 }
 .sudoku-page .sudoku-container .sudoku-controls .cta-button {
   background: #4a90e2;
@@ -1163,6 +1175,12 @@ p {
 }
 .sudoku-page .sudoku-container .sudoku-controls .control-row.action-row {
   justify-content: center;
+}
+.sudoku-page .sudoku-container .sudoku-controls .control-row.auto-candidates-row {
+  display: none;
+}
+.sudoku-page .sudoku-container .sudoku-controls .control-row.auto-candidates-row.visible {
+  display: flex;
 }
 .sudoku-page .sudoku-container .sudoku-controls .control-row label {
   font-size: 16px;
@@ -1331,14 +1349,12 @@ p {
   color: #333333;
 }
 .sudoku-page .sudoku-container .number-cell {
-  width: clamp(40px, 6vw, 60px);
-  height: clamp(40px, 6vw, 60px);
   background: rgba(74, 144, 226, 0);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   gap: 1px;
-  font-size: clamp(16px, 2.5vw, 24px);
+  font-size: 24px;
   font-family: "Noto+Sans+KR", sans-serif;
   font-weight: 600;
   color: #333333;

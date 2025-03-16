@@ -75,15 +75,15 @@ get_header();
                 <i class="fas fa-skull"></i> Mental
               </div>
             </div>
-            <div class="control-row toggle-row">
+            <div class="control-row toggle-row auto-candidates-row">
               <label for="auto-candidates">Auto-Candidates:</label>
               <input type="checkbox" id="auto-candidates" class="auto-candidates-checkbox">
             </div>
             <div class="control-row action-row">
-              <button class="cta-button" onclick="resetGame()">Reset Puzzle</button>
-              <button class="cta-button" id="solve-puzzle">Solve Puzzle</button>
-              <button class="cta-button" id="check-solutions">Check for Unique Solution</button>
-              <button class="cta-button" id="debug-win">Debug Win</button>
+              <button class="cta-button reset-puzzle">Reset Puzzle</button>
+              <button class="cta-button solve-puzzle" id="solve-puzzle">Solve Puzzle</button>
+              <!-- <button class="cta-button" id="check-solutions">Check for Unique Solution</button> -->
+              <!-- <button class="cta-button" id="debug-win">Debug Win</button> -->
             </div>
           </div>
         </div>

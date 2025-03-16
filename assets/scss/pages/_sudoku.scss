@@ -92,25 +92,30 @@ $overgrid-border-color: rgba($primary-text, 0.8);
 
     .sudoku-layout {
       display: flex;
-      gap: 30px; // Desktop spacing between grid and controls
-      justify-content: center;
+      gap: 30px;
+      justify-content: flex-start; // Align left instead of center
       align-items: flex-start;
+      max-width: 1300px; // Match .container’s max-width
+      margin: 0 auto; // Center within page, but contents align left
 
       @media (max-width: 991px) {
         flex-direction: column;
-        gap: 10px; // Add vertical space between stacked elements
+        gap: 10px;
         align-items: center;
+        margin: 0; // No extra margin on mobile
       }
     }
-
+    
     .grid-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: fit-content; // Constrain to content (sudoku-grid width)
-
+      width: fit-content;
+      max-width: calc((75px * 9) + (8px * 2)); // 691px, matches sudoku-grid max
+    
       @media (max-width: 991px) {
-        width: 100%; // Full width on mobile
+        width: 685px;
+        max-width: 100%; // Remove cap on mobile
       }
     }
 
@@ -189,27 +194,20 @@ $overgrid-border-color: rgba($primary-text, 0.8);
     .sudoku-grid {
       display: grid;
       $outer-border: 8px;
-      $cell-size: clamp(
-        40px,
-        calc((100vw - ($outer-border * 2) - 47px) / 9),
-        75px
-      );
+      $cell-size: clamp(40px, calc((100vw - ($outer-border * 2) - 47px) / 9), 75px);
       grid-template-columns: repeat(9, $cell-size);
-      grid-template-rows: repeat(9, $cell-size); // Explicitly set row height
+      grid-template-rows: repeat(9, $cell-size);
       grid-gap: 0;
       background: rgba($background-start, 0.8);
       width: fit-content;
+      max-width: calc((75px * 9) + ($outer-border * 2)); // Cap at max cell size + borders = 691px
       border: $outer-border solid rgba($primary-text, 1);
       position: relative;
       box-sizing: border-box;
-
+    
       @media (max-width: 991px) {
         $outer-border: 5px;
-        $cell-size: clamp(
-          40px,
-          calc((100vw - ($outer-border * 2) - 30px) / 9),
-          75px
-        );
+        $cell-size: clamp(40px, calc((100vw - ($outer-border * 2) - 30px) / 9), 75px);
         grid-template-columns: repeat(9, $cell-size);
         grid-template-rows: repeat(9, $cell-size);
         width: 100%;
@@ -224,10 +222,11 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       flex-direction: column;
       gap: 20px;
       align-items: center;
-      width: fit-content;
-
+      width: 350px; // Fixed width to match post-load state
+    
       @media (max-width: 991px) {
         width: 100%;
+        max-width: 685px;
         padding: 0;
         gap: 10px;
       }
@@ -235,24 +234,26 @@ $overgrid-border-color: rgba($primary-text, 0.8);
 
     .number-status-grid {
       display: grid;
-      $cell-size: clamp(
-        40px,
-        calc((100vw - 30px) / 9),
-        60px
-      ); // Match sudoku-grid
+      width: 100%; // Fill controls-column width (344px)
+      $grid-width: 344px - 12px; // Total width minus 6px padding on each side
+      $gap: 4px;
+      $cell-size: calc(($grid-width - ($gap * 2)) / 3); // ≈ 108px
       grid-template-columns: repeat(3, $cell-size);
-      grid-gap: 4px;
+      grid-template-rows: repeat(3, $cell-size); // Set rows to match columns
+      grid-gap: $gap;
       background: rgba($background-end, 0.8);
       padding: 6px;
       border-radius: 8px;
-
+      box-sizing: border-box;
+    
       @media (max-width: 991px) {
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 0;
         background: none;
-
+        width: 100%;
+    
         .mode-row {
           display: flex;
           justify-content: center;
@@ -260,7 +261,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           gap: 0;
           width: 100%;
         }
-
+    
         .mode-option {
           padding: 8px 0;
           font-size: $font-sm;
@@ -274,34 +275,35 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           width: 100px;
           max-width: 100px;
           text-align: center;
-
+    
           &:last-child {
             border-right: 1px solid rgba($primary-text, 0.2);
           }
-
+    
           &.guess-option.active {
             background: rgba($accent, 0.2);
             color: $primary-text;
           }
-
+    
           &.candidate-option.active {
             background: rgba($notes-text, 0.2);
             color: $primary-text;
           }
-
+    
           &:hover:not(.active) {
             background: color.adjust($background-end, $lightness: 5%);
           }
         }
-
+    
         .number-row {
           display: flex;
           flex-wrap: nowrap;
           justify-content: center;
           width: 100%;
         }
-
+    
         .number-row .number-cell {
+          $cell-size: calc((100vw - 30px) / 9); // Match sudoku-grid mobile size
           width: $cell-size;
           height: $cell-size;
           font-size: clamp(1rem, calc($cell-size * 0.5), 2rem);
@@ -313,20 +315,10 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           color: $primary-text;
           cursor: pointer;
           transition: background-color 0.3s ease, border-color 0.3s ease;
-
-          &.guess-mode {
-            background: rgba($accent, 0.2);
-            border-color: $accent;
-          }
-
-          &.notes-mode {
-            background: rgba($notes-text, 0.2);
-            border-color: $notes-text;
-          }
         }
       }
     }
-
+    
     .sudoku-controls {
       display: flex;
       flex-direction: column;
@@ -334,18 +326,19 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       background: rgba($primary-text, 0.05);
       padding: 2.5rem;
       border-radius: 8px;
-      width: fit-content;
+      width: 100%; // Fills the 344px controls-column
+      box-sizing: border-box; // Include padding in width
       position: relative;
-
+    
       @media (max-width: 991px) {
         background: none;
         padding: 0;
         width: 100%;
         gap: 10px;
       }
-
+    
       .puzzle-info {
-        display: none; // Hidden by default
+        display: none;
         flex-direction: column;
         gap: 8px;
         padding: 10px;
@@ -353,45 +346,58 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         border-radius: 5px;
         font-family: $body-font;
         color: $primary-text;
-
+    
         &.visible {
-          display: flex; // Show when puzzle is generated
-          animation: fadeIn 0.3s ease-out forwards; // Optional
+          display: flex;
+          animation: fadeIn 0.3s ease-out forwards;
         }
-
+    
         .info-item {
           display: flex;
           gap: 6px;
           align-items: center;
-
+    
           .label {
             font-size: $font-sm;
             font-weight: bold;
             color: color.adjust($primary-text, $lightness: 10%);
           }
-
+    
           span:not(.label) {
             font-size: $font-sm;
             color: $primary-text;
           }
-
+    
           #techniques-list {
             font-style: italic;
-            color: $accent; // Highlight techniques
+            color: $accent;
           }
-
+    
           #solution-count {
             font-weight: bold;
-            color: $solved-color; // Teal for solutions
+            color: $solved-color;
           }
         }
-
+    
         @media (max-width: 991px) {
           padding: 8px;
           background: rgba($background-end, 0.5);
         }
       }
-
+    
+      .action-row {
+        .reset-puzzle,
+        .solve-puzzle {
+          display: none;
+        }
+        &.visible {
+          .reset-puzzle,
+          .solve-puzzle {
+            display: flex;
+          }
+        }
+      }
+    
       .cta-button {
         background: $button-background;
         border: 1px solid rgba($primary-text, 0.5);
@@ -405,11 +411,11 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         align-items: center;
         justify-content: center;
         color: $cell-background;
-
+    
         &:hover {
           background: color.adjust($button-background, $lightness: 10%);
         }
-
+    
         &.new-game {
           padding: 16px 32px;
           font-size: clamp(18px, 3vw, 24px);
@@ -417,37 +423,37 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           border-radius: 8px;
           font-weight: bold;
           gap: 10px;
-
+    
           i {
             font-size: clamp(14px, 2vw, 18px);
             transition: transform 0.3s ease;
             color: $cell-background;
             transform: rotate(0deg); // Default up
           }
-
+    
           &.open {
             i {
               transform: rotate(180deg); // Down when open
             }
           }
-
+    
           &:hover {
             background: $button-hover;
           }
         }
-
+    
         &[disabled] {
           opacity: 0.6;
           cursor: not-allowed;
         }
-
+    
         &.loading {
           pointer-events: none;
-
+    
           span {
             visibility: hidden;
           }
-
+    
           &::after {
             content: "";
             position: absolute;
@@ -464,7 +470,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           }
         }
       }
-
+    
       .difficulty-dropup {
         position: absolute;
         bottom: 100%;
@@ -479,12 +485,12 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         max-width: inherit;
         display: none;
         transition: all 0.3s ease;
-
+    
         &.open {
           display: block;
           max-height: 360px;
         }
-
+    
         .difficulty-option {
           display: flex;
           align-items: center;
@@ -495,15 +501,15 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           cursor: pointer;
           transition: background 0.3s ease;
           gap: 1rem;
-
+    
           &:hover {
             background: rgba($accent, 0.1);
           }
-
+    
           &:not(:last-child) {
             border-bottom: 1px solid rgba($accent, 0.2);
           }
-
+    
           i {
             margin-right: 15px;
             color: $accent;
@@ -512,25 +518,32 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           }
         }
       }
-
+    
       .control-row {
         display: flex;
         gap: 10px;
         align-items: center;
         flex-wrap: wrap;
-
+    
         &.hide-on-mobile {
           @media (max-width: 991px) {
             display: none !important;
           }
         }
-
+    
         &.toggle-row {
           justify-content: center;
         }
-
+    
         &.action-row {
           justify-content: center;
+        }
+
+        &.auto-candidates-row {
+          display: none;
+          &.visible {
+            display: flex;
+          }
         }
 
         label {
@@ -539,12 +552,12 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           font-family: $body-font;
         }
       }
-
+    
       .auto-candidates-checkbox {
         margin-left: 10px;
         accent-color: $accent;
         cursor: pointer;
-
+    
         &:hover {
           opacity: 0.8;
         }
@@ -750,14 +763,13 @@ $overgrid-border-color: rgba($primary-text, 0.8);
     }
 
     .number-cell {
-      width: clamp(40px, 6vw, 60px);
-      height: clamp(40px, 6vw, 60px);
       background: rgba($accent, 0);
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
       gap: 1px;
-      font-size: clamp(16px, 2.5vw, 24px);
+      $cell-size: calc((344px - 12px - (4px * 2)) / 3); // ≈ 108px
+      font-size: clamp(16px, calc($cell-size * 0.5), 24px);
       font-family: $body-font;
       font-weight: 600;
       color: $primary-text;
@@ -765,7 +777,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       cursor: pointer;
       transition: border-color 0.3s ease, color 0.3s ease;
       position: relative;
-
+    
       @media (max-width: 991px) {
         $cell-size: calc((100vw - 30px) / 9);
         width: $cell-size;
@@ -779,7 +791,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         gap: 0;
         background: rgba($accent, 0.2);
       }
-
+    
       .number-text {
         position: absolute;
         top: 50%;
@@ -787,45 +799,45 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         transform: translate(-50%, -50%);
         z-index: 1;
         transition: color 0.3s ease;
-
+    
         @media (max-width: 991px) {
           position: static;
           transform: none;
         }
       }
-
+    
       .segment {
         background: rgba($accent, 0.2);
         transition: background-color 0.3s ease;
-
+    
         @media (max-width: 991px) {
           display: none;
         }
-
+    
         &.filled {
           background: rgba($accent, 0.8);
         }
       }
-
+    
       &:hover {
         border-color: $accent;
       }
-
+    
       &.solved {
         color: $highlight !important;
         .number-text {
           color: $highlight;
         }
       }
-
+    
       &.noted {
         opacity: 0.7;
       }
-
+    
       &.guess-mode {
         border-color: $accent;
       }
-
+    
       &.notes-mode {
         border-color: $notes-text;
       }

@@ -34,7 +34,13 @@ function initializeGame() {
   const timerElement = document.getElementById("timer");
   if (timerElement) timerElement.textContent = "0:00";
   else console.warn("Timer element not found");
-  resetPuzzleInfo(); // Ensure hidden on start
+  resetPuzzleInfo(); // Hides puzzle-info
+
+  // Ensure controls are hidden on initial load
+  const autoCandidatesRow = document.querySelector(".auto-candidates-row");
+  const actionRow = document.querySelector(".action-row");
+  if (autoCandidatesRow) autoCandidatesRow.classList.remove("visible");
+  if (actionRow) actionRow.classList.remove("visible");
 }
 
 function showStartOverlay() {
@@ -115,12 +121,11 @@ async function newGame() {
       );
     });
 
-    // Update mistake counter immediately after clearing
     mistakeCounters.forEach((counter) => {
       if (counter) counter.innerHTML = "";
       else console.warn("Mistake counter element missing");
     });
-    updateMistakeCounter(); // Add this line
+    updateMistakeCounter();
 
     await thinkingAnimation(puzzle);
     updateGrid();
@@ -129,7 +134,13 @@ async function newGame() {
     const clues = puzzle.filter((x) => x !== 0).length;
     const techniques = analysis.techniquesUsed;
     const solutionsCount = solutions;
-    updatePuzzleInfo(clues, techniques, solutionsCount);
+    updatePuzzleInfo(clues, techniques, solutionsCount); // Shows puzzle-info
+
+    // Show controls after puzzle loads
+    const autoCandidatesRow = document.querySelector(".auto-candidates-row");
+    const actionRow = document.querySelector(".action-row");
+    if (autoCandidatesRow) autoCandidatesRow.classList.add("visible");
+    if (actionRow) actionRow.classList.add("visible");
 
     const difficultyElement = document.getElementById("current-difficulty");
     if (difficultyElement) {
@@ -872,10 +883,10 @@ function shuffleArray(array) {
   return shuffled;
 }
 
-document.getElementById("debug-win").addEventListener("click", () => {
-  console.log("Debug Win clicked");
-  showSuccessAnimation();
-});
+// document.getElementById("debug-win").addEventListener("click", () => {
+//   console.log("Debug Win clicked");
+//   showSuccessAnimation();
+// });
 
 // Helper: Generate a full, valid Sudoku grid
 function generateFullGrid(board) {
@@ -1353,7 +1364,6 @@ function countSolutions(board) {
   return solutions;
 }
 
-// Unified DOMContentLoaded listener
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM loaded, initializing Sudoku");
   const required = {
@@ -1365,13 +1375,10 @@ document.addEventListener("DOMContentLoaded", () => {
     newGame: document.getElementById("new-game"),
     difficultyDropdown: document.getElementById("difficulty-dropup"),
     puzzleInfo: document.querySelector(".puzzle-info"),
-    currentDifficulty: document.getElementById("current-difficulty"), // Add this
+    currentDifficulty: document.getElementById("current-difficulty"),
   };
   if (Object.values(required).some((el) => !el)) {
-    console.error(
-      "Missing elements:",
-      Object.keys(required).filter((k) => !required[k])
-    );
+    console.error("Missing elements:", Object.keys(required).filter((k) => !required[k]));
     return;
   }
   initializeGame();
@@ -1403,23 +1410,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Other listeners
   document.getElementById("auto-candidates").addEventListener("click", (e) => {
     isAutoCandidatesEnabled = e.target.checked;
     if (isAutoCandidatesEnabled) {
-      computeAutoCandidates(); // Compute candidates when enabled
+      computeAutoCandidates();
+      console.log("Auto-candidates enabled and computed");
+    } else {
+      console.log("Auto-candidates disabled");
     }
-    debouncedUpdateGrid(); // Update grid with new candidates
+    debouncedUpdateGrid();
   });
-  
-  document
-    .getElementById("solve-puzzle")
-  
-    .addEventListener("click", solvePuzzle);
-  document.getElementById("check-solutions").addEventListener("click", () => {
-    const numSolutions = countSolutions(board);
-    alert(`This puzzle has ${numSolutions} solution${numSolutions === 1 ? "" : "s"}.`);
-  });
+
+  document.querySelector(".reset-puzzle").addEventListener("click", resetGame);
+
+  document.getElementById("solve-puzzle").addEventListener("click", solvePuzzle);
 
   grid.addEventListener("click", (e) => {
     const cell = e.target.closest(".cell");
