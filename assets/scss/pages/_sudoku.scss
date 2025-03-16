@@ -650,9 +650,9 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
         grid-template-rows: repeat(3, 1fr) !important;
-        gap: 0.5px !important; // Tightened from 1px
+        gap: 0.25px !important; // Tightened from 1px
         padding: 0 !important;
-        font-size: clamp(7px, calc($cell-size / 8), 12px) !important; // Raised min, adjusted ratio
+        font-size: clamp(12px, calc($cell-size / 8), 14px) !important; // Raised min, adjusted ratio
         overflow: hidden;
     
         @media (max-width: 991px) {

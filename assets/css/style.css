@@ -1261,9 +1261,9 @@ p {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
   grid-template-rows: repeat(3, 1fr) !important;
-  gap: 0.5px !important;
+  gap: 0.25px !important;
   padding: 0 !important;
-  font-size: clamp(7px, clamp(40px, (100vw - 10px - 30px) / 9, 75px) / 8, 12px) !important;
+  font-size: clamp(12px, clamp(40px, (100vw - 10px - 30px) / 9, 75px) / 8, 14px) !important;
   overflow: hidden;
 }
 @media (max-width: 991px) {
