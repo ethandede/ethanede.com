@@ -55,6 +55,12 @@ function hideStartOverlay() {
 
 async function newGame() {
   console.log("newGame started");
+  const newGameBtn = document.getElementById("new-game");
+  if (newGameBtn) {
+    newGameBtn.disabled = true;
+    newGameBtn.classList.add("loading");
+  }
+
   resetPuzzleInfo();
   removeOverlays();
   try {
@@ -134,9 +140,8 @@ async function newGame() {
     const clues = puzzle.filter((x) => x !== 0).length;
     const techniques = analysis.techniquesUsed;
     const solutionsCount = solutions;
-    updatePuzzleInfo(clues, techniques, solutionsCount); // Shows puzzle-info
+    updatePuzzleInfo(clues, techniques, solutionsCount);
 
-    // Show controls after puzzle loads
     const autoCandidatesRow = document.querySelector(".auto-candidates-row");
     const actionRow = document.querySelector(".action-row");
     if (autoCandidatesRow) autoCandidatesRow.classList.add("visible");
@@ -152,6 +157,11 @@ async function newGame() {
     console.log("newGame completed");
   } catch (error) {
     console.error("Error in newGame:", error);
+  } finally {
+    if (newGameBtn) {
+      newGameBtn.disabled = false;
+      newGameBtn.classList.remove("loading");
+    }
   }
 }
 

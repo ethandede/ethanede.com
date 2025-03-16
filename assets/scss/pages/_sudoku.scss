@@ -403,11 +403,11 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         align-items: center;
         justify-content: center;
         color: $cell-background;
-    
+      
         &:hover {
           background: color.adjust($button-background, $lightness: 10%);
         }
-    
+      
         &.new-game {
           padding: 16px 32px;
           font-size: clamp(18px, 3vw, 24px);
@@ -415,37 +415,60 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           border-radius: 8px;
           font-weight: bold;
           gap: 10px;
-    
+      
           i {
             font-size: clamp(14px, 2vw, 18px);
             transition: transform 0.3s ease;
             color: $cell-background;
-            transform: rotate(0deg); // Default up
+            transform: rotate(0deg);
           }
-    
+      
           &.open {
             i {
-              transform: rotate(180deg); // Down when open
+              transform: rotate(180deg);
             }
           }
-    
+      
           &:hover {
             background: $button-hover;
           }
+      
+          &.loading {
+            pointer-events: none;
+      
+            i {
+              display: none; // Hide caret-up
+            }
+      
+            &::after {
+              content: "";
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              width: 20px;
+              height: 20px;
+              border: 3px solid rgba($primary-text, 0.3);
+              border-top: 3px solid $primary-text;
+              border-radius: 50%;
+              animation: spin 1s linear infinite;
+              transform: translate(-50%, -50%);
+              z-index: 2;
+            }
+          }
         }
-    
+      
         &[disabled] {
           opacity: 0.6;
           cursor: not-allowed;
         }
-    
+      
         &.loading {
           pointer-events: none;
-    
+      
           span {
             visibility: hidden;
           }
-    
+      
           &::after {
             content: "";
             position: absolute;
