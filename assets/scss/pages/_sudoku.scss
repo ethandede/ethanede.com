@@ -762,7 +762,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         transition: color 0.4s ease;
 
         @media (max-width: 991px) {
-          font-size: clamp(9px, calc($cell-size / 8), 11px);
+          font-size: clamp(9px, 10px, 11px);
         }
 
         &:hover {
