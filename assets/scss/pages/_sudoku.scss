@@ -93,16 +93,16 @@ $overgrid-border-color: rgba($primary-text, 0.8);
     .sudoku-layout {
       display: flex;
       gap: 30px;
-      justify-content: flex-start; // Align left instead of center
+      justify-content: flex-start;
       align-items: flex-start;
-      max-width: 1300px; // Match .container’s max-width
-      margin: 0 auto; // Center within page, but contents align left
+      max-width: 1300px;
+      margin: 0 auto;
 
       @media (max-width: 991px) {
         flex-direction: column;
         gap: 10px;
         align-items: center;
-        margin: 0; // No extra margin on mobile
+        margin: 0;
       }
     }
     
@@ -111,17 +111,17 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       flex-direction: column;
       align-items: center;
       width: fit-content;
-      max-width: calc((75px * 9) + (8px * 2)); // 691px, matches sudoku-grid max
+      max-width: calc((75px * 9) + (8px * 2));
     
       @media (max-width: 991px) {
         width: 685px;
-        max-width: 100%; // Remove cap on mobile
+        max-width: 100%;
       }
     }
 
     .status-bar {
       display: flex;
-      justify-content: space-between; // Spread items evenly across the row
+      justify-content: space-between;
       align-items: center;
       padding: 10px 15px;
       background: rgba($background-end, 0.8);
@@ -131,14 +131,14 @@ $overgrid-border-color: rgba($primary-text, 0.8);
 
       .status-item {
         display: flex;
-        align-items: center; // Vertically align label and value
-        gap: 6px; // Space between label and value
+        align-items: center;
+        gap: 6px;
 
         .label {
           font-size: $font-sm;
           color: $primary-text;
           font-family: $body-font;
-          font-weight: bold; // Make labels stand out slightly
+          font-weight: bold;
         }
 
         .timer,
@@ -151,7 +151,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         .current-difficulty {
           font-size: clamp(16px, 2vw, 20px);
           color: $accent;
-          margin: 0; // Remove default h3 margins
+          margin: 0;
           font-weight: bold;
         }
 
@@ -178,7 +178,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         margin-bottom: 1px;
 
         .status-item {
-          gap: 4px; // Slightly reduce gap on mobile
+          gap: 4px;
 
           .label {
             font-weight: 400;
@@ -200,7 +200,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       grid-gap: 0;
       background: rgba($background-start, 0.8);
       width: fit-content;
-      max-width: calc((75px * 9) + ($outer-border * 2)); // Cap at max cell size + borders = 691px
+      max-width: calc((75px * 9) + ($outer-border * 2));
       border: $outer-border solid rgba($primary-text, 1);
       position: relative;
       box-sizing: border-box;
@@ -210,8 +210,6 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         $cell-size: clamp(40px, calc((100vw - ($outer-border * 2) - 30px) / 9), 75px);
         grid-template-columns: repeat(9, $cell-size);
         grid-template-rows: repeat(9, $cell-size);
-        // width: 100%;
-        // max-width: calc(100vw - 30px);
         border: $outer-border solid rgba($primary-text, 1);
         border-radius: 0;
       }
@@ -222,8 +220,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       flex-direction: column;
       gap: 20px;
       align-items: center;
-      width: clamp(250px, calc(100vw - 691px - 30px - 70px), 344px); // Responsive scaling
-      // 691px (grid-wrapper) + 30px (gap) + 70px (container padding) = 791px base
+      width: clamp(250px, calc(100vw - 691px - 30px - 70px), 344px);
       margin-top: 50px;
     
       @media (max-width: 991px) {
@@ -247,7 +244,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       padding: 6px;
       border-radius: 8px;
       box-sizing: border-box;
-      min-height: calc((($grid-width - ($gap * 2)) / 3) * 3 + ($gap * 2) + 12px); // Ensure total height
+      min-height: calc((($grid-width - ($gap * 2)) / 3) * 3 + ($gap * 2) + 12px);
       justify-content: center;
       align-content: center;
       padding-bottom: 12px;
@@ -259,7 +256,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         padding: 0;
         background: none;
         width: 100%;
-        min-height: 0; // Reset for mobile
+        min-height: 0;
     
         .mode-row {
           display: flex;
@@ -318,9 +315,8 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       background: rgba($primary-text, 0.05);
       padding: 2.5rem;
       border-radius: 8px;
-      width: 100%; // Fills the 344px controls-column
-      box-sizing: border-box; // Include padding in width
-      position: relative;
+      width: 100%;
+      box-sizing: border-box;
     
       @media (max-width: 991px) {
         background: none;
@@ -437,7 +433,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
             pointer-events: none;
       
             i {
-              display: none; // Hide caret-up
+              display: none;
             }
       
             &::after {
@@ -643,22 +639,22 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       }
 
       &.thinking-type {
-        transform-origin: center; // Default, but explicit for clarity
+        transform-origin: center;
       }
 
       &.notes {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
         grid-template-rows: repeat(3, 1fr) !important;
-        gap: 0.25px !important; // Tightened from 1px
+        gap: 0.25px !important;
         padding: 0 !important;
-        font-size: clamp(12px, calc($cell-size / 8), 14px) !important; // Raised min, adjusted ratio
+        font-size: clamp(12px, calc($cell-size / 8), 14px) !important;
         overflow: hidden;
     
         @media (max-width: 991px) {
-          gap: 0px !important; // Even tighter
+          gap: 0px !important;
           padding: 0 !important;
-          font-size: clamp(8px, calc($cell-size / 8), 10px) !important; // Min 7px, max 10px
+          font-size: clamp(8px, calc($cell-size / 8), 10px) !important;
         }
     
         span {
@@ -790,7 +786,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       cursor: pointer;
       transition: border-color 0.3s ease, color 0.3s ease;
       position: relative;
-      height: $cell-size; // Enforce height matching grid
+      height: $cell-size;
     
       @media (max-width: 991px) {
         $cell-size: calc((100vw - 30px) / 9);
@@ -919,7 +915,7 @@ $overgrid-border-color: rgba($primary-text, 0.8);
   @keyframes growFromCenter {
     0% {
       transform: scale(0);
-      opacity: 0; // Optional: fade in for smoothness
+      opacity: 0;
     }
     100% {
       transform: scale(1);

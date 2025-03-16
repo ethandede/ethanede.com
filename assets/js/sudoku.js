@@ -20,10 +20,10 @@ let autoCandidates = Array(81)
 let isAutoCandidatesEnabled = false;
 let userSolved = Array(81).fill(false);
 let selectedCell = null;
-let inputMode = "guess"; // Added global declaration
+let inputMode = "guess";
 let isLoading = false;
 let secondsElapsed = 0;
-let currentDifficulty = "easy"; // Default, updated by dropdown
+let currentDifficulty = "easy";
 
 
 function initializeGame() {
@@ -34,7 +34,7 @@ function initializeGame() {
   const timerElement = document.getElementById("timer");
   if (timerElement) timerElement.textContent = "0:00";
   else console.warn("Timer element not found");
-  resetPuzzleInfo(); // Hides puzzle-info
+  resetPuzzleInfo();
 
   // Ensure controls are hidden on initial load
   const autoCandidatesRow = document.querySelector(".auto-candidates-row");
@@ -241,7 +241,7 @@ function editCell(index, event) {
     if (overlay) overlay.remove();
   });
 
-  selectedCell = cell; // Store DOM element
+  selectedCell = cell;
   cell.classList.add("highlighted");
   highlightRelatedCells(index);
 
@@ -249,7 +249,6 @@ function editCell(index, event) {
     toggleHighlight(board[index]);
   } else if (isMobile) {
     console.log("Mobile mode: awaiting number input, mode=", inputMode);
-    // No contentEditable; rely on number-status-grid clicks
   } else {
     cell.contentEditable = true;
     cell.focus();
@@ -302,7 +301,7 @@ function createNumberStatusGrid() {
       cell.classList.add("number-cell");
       cell.dataset.number = num;
       cell.textContent = num;
-      numberRow.appendChild(cell); // Listener added below
+      numberRow.appendChild(cell);
     }
     numberStatusGrid.appendChild(numberRow);
 
@@ -334,8 +333,8 @@ function createNumberStatusGrid() {
         segment.classList.add("segment");
         cell.appendChild(segment);
       }
-      cell.style.pointerEvents = "auto"; // Ensure clickable
-      numberStatusGrid.appendChild(cell); // Listener added below
+      cell.style.pointerEvents = "auto";
+      numberStatusGrid.appendChild(cell);
     }
 
     // Event delegation for desktop
@@ -447,7 +446,7 @@ function handleNumberInput(num) {
       }, 1000);
     }
     updateGrid();
-    checkForWin(); // Check after each valid move
+    checkForWin();
   } else if (inputMode === "notes") {
     toggleNote(index, num);
     updateGrid();
@@ -503,7 +502,6 @@ function updateGrid(clickedIndex = null) {
     const overlay = cell.querySelector(".notes-overlay");
     cell.innerHTML = "";
     if (overlay) cell.appendChild(overlay);
-    // Only remove non-highlight states
     cell.classList.remove(
       "notes",
       "highlight",
@@ -535,7 +533,6 @@ function updateGrid(clickedIndex = null) {
       cell.classList.add("highlight");
   });
 
-  // Reapply highlights if a cell is selected
   if (selectedCell) {
     const index = parseInt(selectedCell.dataset.index);
     selectedCell.classList.add("highlighted");
@@ -561,11 +558,9 @@ function updateMistakeCounter() {
     }
   });
   if (mistakeCount >= 4 && !gameOver && !gameWon) showGameOver();
-  // Remove success check from here
 }
 
 function checkForWin() {
-  // New function
   if (
     !gameOver &&
     !gameWon &&
@@ -614,7 +609,7 @@ function highlightMatchingNumbers(selectedNumber) {
   console.log("highlightMatchingNumbers: number=", selectedNumber);
   const cells = document.querySelectorAll(".cell");
   cells.forEach((cell) => {
-    cell.classList.remove("highlight-number"); // Clear previous
+    cell.classList.remove("highlight-number");
     const value = cell.textContent.trim();
     const isInitial = cell.classList.contains("initial");
     const isUserSolved = cell.classList.contains("user-solved");
@@ -633,7 +628,6 @@ function highlightMatchingNumbers(selectedNumber) {
   });
 }
 
-// Example usage
 function onCellClick(index) {
   const cell = document.querySelectorAll(".cell")[index];
   const value = cell.textContent.trim();
@@ -682,19 +676,19 @@ function handleKeydown(event, index) {
     );
     if (isValidMove(index, value, board)) {
       board[index] = value;
-      userSolved[index] = true; // Mark as user-solved
+      userSolved[index] = true;
       notes[index].clear();
       clearNotesInSection(index, value);
       cell.textContent = value;
       cell.classList.remove("button-solved", "initial", "invalid");
-      cell.classList.add("user-solved"); // White (#fff)
+      cell.classList.add("user-solved");
       cell.contentEditable = false;
       computeAutoCandidates();
       updateGrid(index);
     } else {
       mistakeCount++;
       cell.textContent = value;
-      cell.classList.add("invalid"); // Pink (#BF3978)
+      cell.classList.add("invalid");
       setTimeout(() => {
         board[index] = 0;
         cell.textContent = "";
@@ -707,7 +701,7 @@ function handleKeydown(event, index) {
   } else if (key === "Backspace" || key === "Delete") {
     event.preventDefault();
     board[index] = 0;
-    userSolved[index] = false; // Clear user-solved status
+    userSolved[index] = false;
     notes[index].clear();
     cell.textContent = "";
     cell.classList.remove("user-solved", "button-solved", "initial", "invalid");
@@ -735,14 +729,14 @@ function handleBlur(index) {
     const num = parseInt(value);
     if (isValidMove(index, num, board)) {
       board[index] = num;
-      userSolved[index] = true; // Mark as user-solved
+      userSolved[index] = true;
       notes[index].clear();
       clearNotesInSection(index, num);
       cell.classList.remove("button-solved", "initial", "invalid");
-      cell.classList.add("user-solved"); // White (#fff)
+      cell.classList.add("user-solved");
     } else {
       mistakeCount++;
-      cell.classList.add("invalid"); // Pink (#BF3978)
+      cell.classList.add("invalid");
       setTimeout(() => {
         board[index] = 0;
         cell.textContent = "";
@@ -796,7 +790,7 @@ function generatePuzzle(difficulty) {
 
   let fullGrid = Array(81).fill(0);
   if (!generateFullGrid(fullGrid)) return generatePuzzle(difficulty);
-  solution = fullGrid.slice(); // Set global solution
+  solution = fullGrid.slice();
   let puzzle = fullGrid.slice();
 
   const indices = shuffleArray(Array.from({ length: 81 }, (_, i) => i));
@@ -805,7 +799,7 @@ function generatePuzzle(difficulty) {
   const maxAttempts = 5000;
 
   while (clues > targetClues && attempts < maxAttempts) {
-    const pos = indices[attempts % indices.length]; // Cycle through indices
+    const pos = indices[attempts % indices.length];
     if (puzzle[pos] === 0) {
       attempts++;
       continue;
@@ -893,18 +887,12 @@ function shuffleArray(array) {
   return shuffled;
 }
 
-// document.getElementById("debug-win").addEventListener("click", () => {
-//   console.log("Debug Win clicked");
-//   showSuccessAnimation();
-// });
-
-// Helper: Generate a full, valid Sudoku grid
 function generateFullGrid(board) {
   const empty = board.indexOf(0);
   if (empty === -1) return true;
 
   const nums = Array.from({ length: 9 }, (_, i) => i + 1);
-  shuffleArray(nums); // Randomize for variety
+  shuffleArray(nums);
   for (let num of nums) {
     if (isValidMove(empty, num, board)) {
       board[empty] = num;
@@ -940,7 +928,7 @@ function hasUniqueSolution(board, solution) {
 
 function analyzeDifficulty(base, solution, difficulty, difficultyTargets) {
   const target = difficultyTargets[difficulty] || difficultyTargets.easy;
-  let tempBoard = base.slice(); // Fresh copy each time
+  let tempBoard = base.slice();
   let hardestTechnique = -1;
   const techniquesUsed = [];
 
@@ -950,7 +938,6 @@ function analyzeDifficulty(base, solution, difficulty, difficultyTargets) {
     "clues"
   );
 
-  // Run through technique levels until solved or all checked
   let solved = false;
   for (let level = 0; level <= 4 && !solved; level++) {
     const progress = applyTechnique(level, tempBoard, true);
@@ -967,9 +954,7 @@ function analyzeDifficulty(base, solution, difficulty, difficultyTargets) {
         techniquesUsed.push(techniqueName);
         console.log(`Level ${level} required: ${techniqueName}`);
       }
-      // Reapply to tempBoard if not just analyzing
       applyTechnique(level, tempBoard, false);
-      // Check if solved
       solved = tempBoard.every((val, i) => val === solution[i]);
     }
   }
@@ -1009,7 +994,7 @@ function applyTechnique(level, board, analyzeOnly = false) {
       }
     }
     // Hidden Singles
-    for (let unit = 0; unit < 27; unit++) { // 9 rows, 9 cols, 9 boxes
+    for (let unit = 0; unit < 27; unit++) {
       const cells = getUnitCells(unit);
       const counts = Array(10).fill(0);
       const positions = Array(10).fill().map(() => []);
@@ -1053,7 +1038,6 @@ function applyTechnique(level, board, analyzeOnly = false) {
             progress = true;
             console.log(`Locked Candidates for ${num} in box ${box}`);
             if (!analyzeOnly) {
-              // Simplified: apply if needed
             }
           }
         }
@@ -1095,7 +1079,6 @@ function applyTechnique(level, board, analyzeOnly = false) {
               progress = true;
               console.log(`X-Wing for ${num} in rows ${r1}, ${r2}`);
               if (!analyzeOnly) {
-                // Apply eliminations
               }
             }
           }
@@ -1124,7 +1107,6 @@ function applyTechnique(level, board, analyzeOnly = false) {
                     progress = true;
                     console.log(`Swordfish for ${num} in rows ${r1}, ${r2}, ${r3}`);
                     if (!analyzeOnly) {
-                      // Apply eliminations
                     }
                   }
                 }
@@ -1230,7 +1212,7 @@ function showNotesOverlay(index, cell) {
   overlay.style.left = "0";
   overlay.style.width = "100%";
   overlay.style.height = "100%";
-  overlay.style.background = "rgba(224, 224, 224, 0.9)"; // Inline for JS (matches $notes-overlay-background)
+  overlay.style.background = "rgba(224, 224, 224, 0.9)";
   overlay.style.zIndex = "10";
 
   function updateOverlay() {
@@ -1296,7 +1278,7 @@ function showGameOver() {
   gameOver = true;
   if (timerInterval) clearInterval(timerInterval);
 
-  removeOverlays(); // Clear any existing overlays
+  removeOverlays();
   const overlay = document.createElement("div");
   overlay.classList.add("game-over-overlay");
   overlay.innerHTML = `

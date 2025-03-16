@@ -987,7 +987,6 @@ p {
   border-radius: 8px;
   width: 100%;
   box-sizing: border-box;
-  position: relative;
 }
 @media (max-width: 991px) {
   .sudoku-page .sudoku-container .sudoku-controls {
