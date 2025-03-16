@@ -317,6 +317,8 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       border-radius: 8px;
       width: 100%;
       box-sizing: border-box;
+      position: relative; // Ensure absolute children position correctly
+      overflow: visible; // Prevent clipping of dropdown
     
       @media (max-width: 991px) {
         background: none;
@@ -495,11 +497,12 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         width: 100%;
         max-width: inherit;
         display: none;
-        transition: all 0.3s ease;
+        transition: max-height 0.3s ease;
     
         &.open {
-          display: block;
+          display: block !important;
           max-height: 360px;
+          visibility: visible;
         }
     
         .difficulty-option {
@@ -574,8 +577,6 @@ $overgrid-border-color: rgba($primary-text, 0.8);
         }
       }
     }
-
-
 
     .cell {
       color: $primary-text;

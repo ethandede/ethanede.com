@@ -1380,13 +1380,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const newGameBtn = document.getElementById("new-game");
   const dropdown = document.getElementById("difficulty-dropup");
 
+  if (!newGameBtn) console.error("New Game button not found");
+  if (!dropdown) console.error("Difficulty dropdown not found");
+
   newGameBtn.addEventListener("click", (e) => {
     console.log("New Game clicked, toggling dropup");
-    dropdown.classList.toggle("open");
+    if (dropdown.classList.contains("open")) {
+      dropdown.classList.remove("open");
+      console.log("Dropdown closed");
+    } else {
+      dropdown.classList.add("open");
+      console.log("Dropdown opened, classList:", dropdown.classList.toString());
+      if (window.getComputedStyle(dropdown).display === "none") {
+        console.warn("Dropdown still hidden, forcing display");
+        dropdown.style.display = "block"; // Fallback
+      }
+    }
     e.stopPropagation();
   });
 
-  document.querySelectorAll(".difficulty-option").forEach((option) => {
+  const difficultyOptions = document.querySelectorAll(".difficulty-option");
+  if (difficultyOptions.length === 0) console.error("No difficulty options found");
+  difficultyOptions.forEach((option) => {
     option.addEventListener("click", () => {
       currentDifficulty = option.dataset.value;
       console.log("Difficulty selected:", currentDifficulty);

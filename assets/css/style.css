@@ -987,6 +987,8 @@ p {
   border-radius: 8px;
   width: 100%;
   box-sizing: border-box;
+  position: relative;
+  overflow: visible;
 }
 @media (max-width: 991px) {
   .sudoku-page .sudoku-container .sudoku-controls {
@@ -1140,11 +1142,12 @@ p {
   width: 100%;
   max-width: inherit;
   display: none;
-  transition: all 0.3s ease;
+  transition: max-height 0.3s ease;
 }
 .sudoku-page .sudoku-container .sudoku-controls .difficulty-dropup.open {
-  display: block;
+  display: block !important;
   max-height: 360px;
+  visibility: visible;
 }
 .sudoku-page .sudoku-container .sudoku-controls .difficulty-dropup .difficulty-option {
   display: flex;
