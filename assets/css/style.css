@@ -1260,15 +1260,17 @@ p {
 .sudoku-page .sudoku-container .cell.notes {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
-  gap: 2px !important;
-  padding: 2px !important;
-  font-size: clamp(10px, clamp(40px, (100vw - 10px - 30px) / 9, 75px) * 0.25, 12px) !important;
+  grid-template-rows: repeat(3, 1fr) !important;
+  gap: 0.5px !important;
+  padding: 0 !important;
+  font-size: clamp(7px, clamp(40px, (100vw - 10px - 30px) / 9, 75px) / 8, 12px) !important;
+  overflow: hidden;
 }
 @media (max-width: 991px) {
   .sudoku-page .sudoku-container .cell.notes {
-    gap: 1px !important;
-    padding: 1px !important;
-    font-size: clamp(10px, clamp(40px, (100vw - 10px - 30px) / 9, 75px) * 0.25, 10px) !important;
+    gap: 0px !important;
+    padding: 0 !important;
+    font-size: clamp(8px, clamp(40px, (100vw - 10px - 30px) / 9, 75px) / 8, 10px) !important;
   }
 }
 .sudoku-page .sudoku-container .cell.notes span {
@@ -1278,6 +1280,9 @@ p {
   font-size: inherit !important;
   color: #333333 !important;
   background: transparent !important;
+  min-width: 0;
+  min-height: 0;
+  line-height: 1;
 }
 .sudoku-page .sudoku-container .cell:nth-child(3n+3):not(:nth-child(9n)), .sudoku-page .sudoku-container .cell:nth-child(3n+6):not(:nth-child(9n)) {
   border-right: 3px solid #aaa;

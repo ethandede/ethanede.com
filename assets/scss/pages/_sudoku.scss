@@ -579,35 +579,27 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       }
     }
 
+
+
     .cell {
       color: $primary-text;
       position: relative;
-      // Remove width and height; let grid control them
       background: $cell-background;
       display: flex;
       align-items: center;
       justify-content: center;
-      // Use grid’s $cell-size for font-size reference
       $outer-border: 8px;
-      $cell-size: clamp(
-        40px,
-        calc((100vw - ($outer-border * 2) - 47px) / 9),
-        75px
-      );
+      $cell-size: clamp(40px, calc((100vw - ($outer-border * 2) - 47px) / 9), 75px);
       font-size: clamp(18px, calc($cell-size * 0.75), 42px);
       border: 1px solid #aaa;
       cursor: default;
       font-weight: 900;
       padding: 1px;
       box-sizing: border-box;
-
+    
       @media (max-width: 991px) {
         $outer-border: 5px;
-        $cell-size: clamp(
-          40px,
-          calc((100vw - ($outer-border * 2) - 30px) / 9),
-          75px
-        );
+        $cell-size: clamp(40px, calc((100vw - ($outer-border * 2) - 30px) / 9), 75px);
         font-size: clamp(18px, calc($cell-size * 0.6), 42px);
         cursor: pointer;
       }
@@ -657,16 +649,18 @@ $overgrid-border-color: rgba($primary-text, 0.8);
       &.notes {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 2px !important;
-        padding: 2px !important;
-        font-size: clamp(10px, calc($cell-size * 0.25), 12px) !important;
-
+        grid-template-rows: repeat(3, 1fr) !important;
+        gap: 0.5px !important; // Tightened from 1px
+        padding: 0 !important;
+        font-size: clamp(7px, calc($cell-size / 8), 12px) !important; // Raised min, adjusted ratio
+        overflow: hidden;
+    
         @media (max-width: 991px) {
-          gap: 1px !important;
-          padding: 1px !important;
-          font-size: clamp(10px, calc($cell-size * 0.25), 10px) !important;
+          gap: 0px !important; // Even tighter
+          padding: 0 !important;
+          font-size: clamp(8px, calc($cell-size / 8), 10px) !important; // Min 7px, max 10px
         }
-
+    
         span {
           display: flex;
           align-items: center;
@@ -674,6 +668,9 @@ $overgrid-border-color: rgba($primary-text, 0.8);
           font-size: inherit !important;
           color: $notes-text !important;
           background: transparent !important;
+          min-width: 0;
+          min-height: 0;
+          line-height: 1;
         }
       }
 
