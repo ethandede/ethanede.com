@@ -6,26 +6,29 @@
 }
 
 #home {
-  max-width: 1300px;
   margin: 0 auto;
   position: relative;
+
+  @media screen and (max-width: 767px) {
+    max-width: 90vw;
+  }
   
   .hero {
     position: relative;
     overflow: hidden;
     color: #fff;
     text-align: left;
-    padding: 200px 0;
-
+    padding: 140px 0;
+    
     @media screen and (max-width: 768px) {
       padding:3.5rem 0;
     }
     
     .container {
+      max-width: 1300px;
+      margin: 0 auto;
       position: relative;
       z-index: 1;
-      max-width: 1200px;
-      margin: 0;
     }
     
     h1 {

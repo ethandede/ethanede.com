@@ -7,7 +7,7 @@
 ?>
 <footer class="site-footer">
   <div class="container">
-    <p>&copy; <?php echo date('Y'); ?> Sudoku Sudoku Online. All rights reserved.</p>
+    <p>&copy; <?php echo date('Y'); ?> EE Creative, LLC | All rights reserved.</p>
   </div>
 </footer>
 <?php wp_footer(); ?>

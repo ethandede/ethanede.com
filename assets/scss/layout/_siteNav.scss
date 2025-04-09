@@ -1,103 +1,159 @@
-// Sticky Navigation
+@use "../abstracts/variables" as vars;
+@use "sass:color";
+
 .site-nav {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  top: 0; // Desktop at top
+  left: 0;
   width: 100%;
-  background: rgba(31, 28, 44, 0.95); // Slightly transparent secondary-color
-  backdrop-filter: blur(5px); // Subtle blur for modern feel
-  z-index: 1000;
-  padding: 15px 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 900;
+  background: rgba(vars.$secondary-color, 0.9);
 
   .container {
     display: flex;
-    flex-direction: column;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 35px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
   }
 
   .nav-content {
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 2rem;
+    align-items: center; // Vertically center title and links
+    gap: 20px; // Space between title and links
+    width: auto; // Allow content to shrink to fit
+  }
 
-    .nav-title {
-      margin: 0;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: var(--primary-color);
+  .nav-title {
+    margin: 0;
+    padding: 5px 10px; // Keep padding, remove background
+
+    a {
+      color: vars.$primary-color;
+      font-family: vars.$header-font;
+      font-size: vars.$font-lg; // 1.563rem (~26px)
+      text-decoration: none;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: vars.$accent-color;
+      }
+    }
+  }
+
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 901;
+
+    .bar {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background: vars.$primary-color;
+      margin: 5px 0;
+      transition: all 0.3s ease;
+    }
+  }
+
+  .nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-start; // Left-justify links
+
+    li {
+      margin: 0 10px;
     }
 
-    .nav-links {
+    a {
+      color: vars.$primary-color;
+      font-family: vars.$header-font;
+      font-size: vars.$font-sm;
+      text-decoration: none;
+      padding: 10px;
+      transition: color 0.3s ease;
+      display: block;
+
+      &:hover {
+        color: vars.$accent-color;
+      }
+    }
+  }
+
+  .mobile-menu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    min-width: 100vw;
+    height: 50vh;
+    background: rgba(15, 14, 22, 0.975);
+    z-index: 900;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+
+    &.active {
+      transform: translateY(0);
+    }
+
+    .mobile-nav-links {
       list-style: none;
-      display: flex;
-      gap: 1.5rem;
       margin: 0;
+      padding: 2rem;
+      text-align: left;
 
       li {
-        a {
-          color: var(--primary-color);
-          text-decoration: none;
-          font-size: 1rem;
-          font-family: "Roboto", sans-serif;
-          transition: color 0.3s ease;
+        margin: 5px 0;
+        border-bottom: 1px solid rgba(vars.$accent-color, 0.3);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding-bottom: 5px;
+      }
 
-          &:hover {
-            color: var(--accent-color-light);
-          }
+      a {
+        color: vars.$primary-color;
+        font-family: vars.$header-font;
+        font-size: vars.$font-md;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 0.3s ease;
+        display: block;
+        padding: 5px 0;
+
+        &:hover {
+          color: vars.$accent-color;
         }
       }
     }
   }
 
   .persistent-cta {
-    display: flex;
-    justify-content: flex-start;
-    opacity: 0; // Initially hidden
-    transform: translateY(-100%); // Start above nav
-    transition: opacity 0.5s ease, transform 0.5s ease;
-
-    &.visible {
-      opacity: 1;
-      transform: translateY(0); // Slide down below nav
-    }
-
-    .cta-button {
-      // Inherits your existing CTA styles
-      background-color: var(--accent-color);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      padding: 10px 20px;
-
-      &:hover {
-        background-color: var(--accent-color-light);
-      }
-    }
+    // Assuming unchanged
   }
 
-  // Mobile adjustments
-  @media (max-width: 767px) {
-    padding: 10px 0;
+  @media screen and (max-width: 768px) {
+    top: auto;
+    bottom: 0; // Mobile at bottom
+    background: rgb(13 12 18);
+    width: 100vw !important;
 
-    .nav-content {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
+    .nav-title {
+      // No background already set for mobile
+    }
 
-      .nav-title {
-        font-size: 1.25rem;
-      }
-      
+    .nav-links {
+      display: none;
+    }
 
-      .nav-links {
-        flex-direction: column;
-        gap: 0.75rem;
-      }
+    .hamburger {
+      display: block;
     }
 
     .persistent-cta {
-      justify-content: center;
+      display: none;
     }
   }
 }

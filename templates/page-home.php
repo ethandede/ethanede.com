@@ -9,7 +9,8 @@ get_header();
 
 <!-- Include Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap"
+  rel="stylesheet">
 
 
 <!-- Background Animation Container -->
@@ -19,26 +20,41 @@ get_header();
 
 <main id="home">
 
-<!-- Color controls UI -->
-  <?php get_template_part('partials/color-controls'); ?>
-
-  <!-- Sticky Navigation with Integrated CTA -->
-  <nav class="site-nav">
+<!-- Navigation (Back at Top for Desktop) -->
+<nav class="site-nav">
     <div class="container">
       <div class="nav-content">
-        <h3 class="nav-title">Ethan Ede</h3>
+        <h3 class="nav-title"><a href="#home">Ethan Ede</a></h3>
+        <button class="hamburger" aria-label="Toggle mobile menu">
+          <span class="bar top"></span>
+          <span class="bar middle"></span>
+          <span class="bar bottom"></span>
+        </button>
         <ul class="nav-links">
-          <li><a href="#home">Home</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#skills">Skills & Experience</a></li>
-          <li><a href="/contact">Contact</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
       </div>
       <div class="persistent-cta">
-        <a href="/contact" class="cta-button">Let’s Work Together <i class="fa fa-arrow-right"></i></a>
+        <div class="container">
+          <a href="#contact" class="cta-button contact-trigger">Let’s Work Together <i class="fa fa-arrow-right"></i></a>
+        </div>
       </div>
     </div>
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu">
+      <ul class="mobile-nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills & Experience</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
   </nav>
+
+  <!-- Color controls UI -->
+  <?php get_template_part('partials/color-controls'); ?>
 
   <!-- Hero Section without the SVG -->
   <section class="hero">
@@ -49,21 +65,23 @@ get_header();
         I build marketing websites <br>that
         <span class=rotating-word-break><br></span>
         <span class="rotating-word"></span>
-    </h1>    
-    <p>20+ years blending tech and creativity, now powered by AI</p>
+      </h1>
+      <p>20+ years blending tech and creativity, now powered by AI</p>
       <a href="/contact" class="hero-button cta-button">Let's work together <i class="fa fa-arrow-right"></i></a>
-    </div>  
-  </section>  
-  
+    </div>
+  </section>
+
   <!-- Things I Do Section -->
-  <section class="what-i-do">
+  <section class="what-i-do" id="about">
     <div class="container">
       <h2>What I Do</h2>
-      <p class="supporting-text">I combine creative vision with marketing insight and technical expertise to build digital experiences that engage users and convert.</p>
+      <p class="supporting-text">I combine creative vision with marketing insight and technical expertise to build
+        digital experiences that engage users and convert.</p>
       <div class="grid">
         <div class="item">
           <h4>Strategy + Vision</h4>
-          <p>I transform challenges into clear, actionable roadmaps that align business goals with emerging opportunities.</p>
+          <p>I transform challenges into clear, actionable roadmaps that align business goals with emerging
+            opportunities.</p>
         </div>
         <div class="item">
           <h4>Design + Experience</h4>
@@ -81,71 +99,76 @@ get_header();
     </div>
   </section>
 
-<!-- Clients Section -->
-<section class="clients">
-  <div class="container">
-    <h2>Clients I've Worked With</h2>
-    <p class="supporting-text">I have collaborated with industry-leading companies to bring creative digital solutions to life.</p>
-  </div>
-  <div class="logo-banner">
-  <div class="logo-track">
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_lightspeedSystems.svg" alt="Lightspeed Systems">
+  <!-- Clients Section -->
+  <section class="clients">
+    <div class="container">
+      <h2>Clients I've Worked With</h2>
+      <p class="supporting-text">I have collaborated with industry-leading companies to bring creative digital solutions
+        to life.</p>
     </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_experian.svg" alt="Experian">
-    </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_staples.svg" alt="Staples">
-    </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_d-link.svg" alt="D-Link">
-    </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_laClippers.svg" alt="Los Angeles Clippers">
-    </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_liveops.svg" alt="Liveops">
-    </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_bosch.svg" alt="Bosch">
-    </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_actOn.svg" alt="Act-On">
+    <div class="logo-banner">
+      <div class="logo-track">
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_lightspeedSystems.svg"
+            alt="Lightspeed Systems">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_experian.svg" alt="Experian">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_staples.svg" alt="Staples">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_d-link.svg" alt="D-Link">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_laClippers.svg"
+            alt="Los Angeles Clippers">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_liveops.svg" alt="Liveops">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_bosch.svg" alt="Bosch">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_actOn.svg" alt="Act-On">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_bestBuy.svg" alt="Best Buy">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_rehau.svg" alt="Rehau">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_toshiba.svg" alt="Toshiba">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_quiksilver.svg" alt="Quiksilver">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_portlandJapaneseGarden.svg"
+            alt="Portland Japanese Garden">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_nba.svg" alt="NBA">
+        </div>
+        <div class="logo-container">
+          <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_kong.svg" alt="Kong, Inc.">
+        </div>
       </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_bestBuy.svg" alt="Best Buy">
     </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_rehau.svg" alt="Rehau">
-    </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_toshiba.svg" alt="Toshiba">
-    </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_quiksilver.svg" alt="Quiksilver">
-    </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_portlandJapaneseGarden.svg" alt="Portland Japanese Garden">
-    </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_nba.svg" alt="NBA">
-    </div>
-    <div class="logo-container">
-      <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo_kong.svg" alt="Kong, Inc.">
-    </div>
-  </div>
-</div>
-</section>
+  </section>
 
 
   <!-- Portfolio Section -->
-  <section class="portfolio">
+  <section class="portfolio" id="skills">
     <div class="container">
       <h2>Skills & Experience</h2>
-      <p class="supporting-text">Not just a list of projects, this is a curated collection of articles that reveal how I apply practical expertise to real-world challenges, from website management to digital strategy.</p>
+      <p class="supporting-text">Not just a list of projects, this is a curated collection of articles that reveal how I
+        apply practical expertise to real-world challenges, from website management to digital strategy.</p>
       <div class="portfolio-grid">
-        <?php 
+        <?php
         // Sample Portfolio Items with Picsum Placeholder Images
         $portfolio_items = [
           [
@@ -194,42 +217,44 @@ get_header();
 
         // Loop through and display portfolio items
         foreach ($portfolio_items as $item): ?>
-            <!-- Wrap the entire card in an anchor to make it clickable -->
-            <a class="portfolio-link" href="<?php echo $item['link']; ?>">
-              <div class="portfolio-item">
-                <!-- NEW: Overlay with a search icon -->
-                <div class="portfolio-overlay">
-                </div>
-          
-                <div class="portfolio-tags">
-                  <?php foreach ($item['tags'] as $tag): ?>
-                    <span class="tag"><?php echo $tag; ?></span>
-                  <?php endforeach; ?>
-                </div>
-                <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['title']; ?>">
-                <div class="portfolio-copy">
-                  <h3><?php echo $item['title']; ?></h3>
-                  <p><?php echo $item['description']; ?></p>
-                </div>
-                <div class="portfolio-arrow">
-                  <i class="fas fa-arrow-right"></i>
-                </div>
+          <!-- Wrap the entire card in an anchor to make it clickable -->
+          <a class="portfolio-link" href="<?php echo $item['link']; ?>">
+            <div class="portfolio-item">
+              <!-- NEW: Overlay with a search icon -->
+              <div class="portfolio-overlay">
               </div>
-            </a>
-          <?php endforeach; ?>
+
+              <div class="portfolio-tags">
+                <?php foreach ($item['tags'] as $tag): ?>
+                  <span class="tag"><?php echo $tag; ?></span>
+                <?php endforeach; ?>
+              </div>
+              <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['title']; ?>">
+              <div class="portfolio-copy">
+                <h3><?php echo $item['title']; ?></h3>
+                <p><?php echo $item['description']; ?></p>
+              </div>
+              <div class="portfolio-arrow">
+                <i class="fas fa-arrow-right"></i>
+              </div>
+            </div>
+          </a>
+        <?php endforeach; ?>
       </div>
     </div>
-</section>
+  </section>
 
   <!-- AI Tools Section -->
   <section class="ai-tools">
     <div class="container">
       <h2>AI Tools & Technologies</h2>
-      <p class="supporting-text">I leverage cutting-edge AI to amplify creativity, efficiency, and impact in digital solutions.</p>
+      <p class="supporting-text">I leverage cutting-edge AI to amplify creativity, efficiency, and impact in digital
+        solutions.</p>
       <div class="grid">
         <div class="item">
           <h4>ChatGPT</h4>
-          <p>Automating content creation and ideation—generated SEO-optimized posts for [Company Z], cutting time by 30%.</p>
+          <p>Automating content creation and ideation—generated SEO-optimized posts for [Company Z], cutting time by
+            30%.</p>
         </div>
         <div class="item">
           <h4>Grok</h4>
@@ -246,7 +271,23 @@ get_header();
       </div>
     </div>
   </section>
-  
+
+<!-- Contact Section (Overlay) -->
+  <section class="contact-section" id="contact">
+    <div class="contact-overlay">
+      <div class="container">
+        <div class="contact-form-container">
+          <header class="contact-header">
+            <h2>Get in Touch</h2>
+            <p>Please fill out the form below and I'll get back to you as soon as possible.</p>
+            <button class="contact-close">×</button>
+          </header>
+          <?php echo do_shortcode('[contact-form-7 id="eb95201" title="Contact Form - Ethan Ede"]'); ?>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <?php get_footer(); ?>
