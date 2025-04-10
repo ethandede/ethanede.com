@@ -20,7 +20,7 @@ get_header();
 
 <main id="home">
 
-<!-- Navigation (Back at Top for Desktop) -->
+<!-- Navigation -->
 <nav class="site-nav">
     <div class="container">
       <div class="nav-content">
@@ -36,22 +36,25 @@ get_header();
           <li><a href="#contact">Contact</a></li>
         </ul>
       </div>
-      <div class="persistent-cta">
-        <div class="container">
-          <a href="#contact" class="cta-button contact-trigger">Let’s Work Together <i class="fa fa-arrow-right"></i></a>
-        </div>
-      </div>
-    </div>
-    <!-- Mobile Menu Overlay -->
-    <div class="mobile-menu">
-      <ul class="mobile-nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills & Experience</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
     </div>
   </nav>
+
+  <!-- Persistent CTA -->
+  <div class="persistent-cta">
+    <div class="container">
+      <a href="#contact" class="cta-button contact-trigger">Let’s Work Together <i class="fa fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu">
+    <ul class="mobile-nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills & Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
 
   <!-- Color controls UI -->
   <?php get_template_part('partials/color-controls'); ?>
@@ -273,7 +276,7 @@ get_header();
   </section>
 
 <!-- Contact Section (Overlay) -->
-  <section class="contact-section" id="contact">
+<section class="contact-section" id="contact">
     <div class="contact-overlay">
       <div class="container">
         <div class="contact-form-container">

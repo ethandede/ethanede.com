@@ -1,13 +1,14 @@
 @use "../abstracts/variables" as vars;
 @use "../components/buttons" as *;
 
+// Contact Section Overlay
 .contact-section {
   position: fixed;
-  top: 0; // Align with top of viewport (above desktop nav)
+  top: 0;
   left: 0;
   width: 100%;
-  max-height: 100vh; // Never exceed viewport height
-  z-index: 1000; // Above nav (z-index: 900)
+  height: 100%;
+  z-index: 1000;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease-in-out;
@@ -18,97 +19,117 @@
   }
 
   .contact-overlay {
-    background: rgba(vars.$secondary-color, 0.9); // Match nav background
     width: 100%;
-    height: 100%; // Fill the max-height of .contact-section
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8); // Dark backdrop for takeover effect
     display: flex;
-    align-items: center; // Center vertically within 100vh
-    justify-content: center; // Center horizontally
+    align-items: center;
+    justify-content: center;
   }
 
   .contact-form-container {
-    background: #fff;
-    padding: 2rem;
+    max-width: 600px;
+    width: 90%;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.8); // Dark backdrop for takeover effect
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
-    max-width: 600px; // Limit width
-    width: 90%; // Responsive width
-    max-height: calc(100vh - 4rem); // Account for padding (2rem top + bottom)
-    overflow-y: auto; // Scroll if content exceeds height
-    position: relative;
-    transform: translateY(0); // Default position
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(20px); // Initial animation state
     transition: transform 0.3s ease-in-out;
+    position: relative;
+    margin: 0 auto;
 
-    .contact-section:not(.active) & {
-      transform: translateY(50px); // Slide up effect when inactive
-    }
-  }
-
-  .contact-header {
-    margin-bottom: 1rem;
-
-    h2 {
-      color: vars.$secondary-color;
-      font-family: vars.$header-font;
-      font-size: vars.$font-xl;
-      margin-bottom: 10px;
+    .contact-section.active & {
+      transform: translateY(0); // Slide in when active
     }
 
-    p {
-      color: vars.$secondary-color;
+    .contact-header {
+      margin-bottom: 20px;
+      position: relative;
+
+      h2 {
+        color: #fff;
+        font-family: vars.$header-font;
+        margin-bottom: 10px;
+      }
+
+      p {
+        color: #ccc;
+        font-family: vars.$body-font;
+      }
+
+      .contact-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: #fff;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: var(--accent-color);
+        }
+      }
+    }
+
+    .wpcf7-form {
+      .wpcf7-form-control-wrap {
+        margin-bottom: 20px;
+
+        label {
+          display: block;
+          margin-bottom: 5px;
+          font-family: vars.$header-font;
+          color: #fff;
+        }
+
+        input,
+        textarea {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          font-family: vars.$body-font;
+          font-size: 1rem;
+          background: rgba(255, 255, 255, 0.2);
+          color: #fff;
+          transition: border-color 0.3s ease, background 0.3s ease;
+          margin-bottom: 20px;
+
+          &:focus {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+          }
+        }
+      }
+
+      .wpcf7-submit {
+        @include cta-button-styles;
+        width: 100%;
+        text-align: center;
+        cursor: pointer;
+      }
+    }
+
+    .wpcf7-response-output {
+      margin-top: 15px;
+      font-size: 1rem;
       font-family: vars.$body-font;
-      font-size: vars.$font-sm;
-    }
-  }
 
-  .contact-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: vars.$secondary-color;
-    cursor: pointer;
-    transition: color 0.3s ease;
+      &.wpcf7-mail-sent-ok {
+        color: green;
+      }
 
-    &:hover {
-      color: vars.$accent-color;
-    }
-  }
-
-  .wpcf7-form {
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-family: vars.$header-font;
-      color: vars.$secondary-color;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid vars.$accent-color;
-      border-radius: 4px;
-      font-family: vars.$body-font;
-      font-size: vars.$font-sm;
-    }
-
-    input[type="submit"] {
-      background: vars.$accent-color;
-      color: vars.$primary-color;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: vars.$header-font;
-      font-size: vars.$font-md;
-      transition: background 0.3s ease;
-
-      &:hover {
-        background: darken(vars.$accent-color, 10%);
+      &.wpcf7-validation-errors,
+      &.wpcf7-mail-sent-ng {
+        color: red;
       }
     }
   }
@@ -117,12 +138,13 @@
 // Contact Trigger Buttons
 .contact-trigger {
   @include cta-button-styles;
+  background-color: rgba(var(--secondary-color-rgb), 0.1);
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 20px;
-  font-family: vars.$header-font;
-  font-size: vars.$font-md;
+  // padding: 12px 20px;
+  // font-family: vars.$header-font;
+  // font-size: vars.$font-md;
   color: #fff;
   text-decoration: none;
   transition: all 0.3s ease;

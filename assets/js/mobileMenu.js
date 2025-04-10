@@ -1,8 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const hamburger = document.querySelector('.hamburger');
+  const hamburger = document.querySelector('.site-nav .hamburger');
   const mobileMenu = document.querySelector('.mobile-menu');
-  const bars = document.querySelectorAll('.bar');
+  const bars = document.querySelectorAll('.site-nav .bar');
   const mobileLinks = document.querySelectorAll('.mobile-nav-links a');
+
+  if (!hamburger || !mobileMenu) {
+    console.error('Hamburger or mobile menu not found');
+    return;
+  }
 
   let isOpen = false;
 

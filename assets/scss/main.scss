@@ -9,8 +9,9 @@
 
 // Layout
 @use 'layout/header';
-@use 'layout/persistentCTA';
 @use 'layout/siteNav';
+@use 'layout/mobileMenu';
+@use 'layout/persistentCTA';
 @use 'layout/footer';
 @use 'layout/backgroundAnimation';
 
