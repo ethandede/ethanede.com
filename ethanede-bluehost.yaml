@@ -1,19 +1,23 @@
-name: Deploy Ethan Ede to Bluehost
+name: Deploy Sudoku to Bluehost
 on:
   push:
     branches:
       - main
-    workflow_dispatch:
+  workflow_dispatch:
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Install SSH Key and Known Hosts
+        run: |
+          echo "${{ secrets.BLUEHOST_SSH_KEY }}" > key
+          chmod 600 key
+          mkdir -p ~/.ssh
+          echo "ezf.jsl.mybluehost.me ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILym/yVa3ddENwpcvknWOcIwJ/0AbKVlHb7a4aD1CVoz" > ~/.ssh/known_hosts
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.BLUEHOST_HOST }}
-          username: ${{ secrets.BLUEHOST_USERNAME }}
-          key: ${{ secrets.BLUEHOST_SSH_KEY }}
-          script: |
-            cd /public_html/wp-content/themes/ethanede
-            git pull origin main
+        run: |
+          ssh -i key -o IdentitiesOnly=yes -o KexAlgorithms=diffie-hellman-group-exchange-sha256 -o UserKnownHostsFile=~/.ssh/known_hosts -o StrictHostKeyChecking=accept-new ezfjslmy@${{ secrets.BLUEHOST_HOST }} "cd ~/public_html/wp-content/themes/ethanede && git remote set-url origin https://github.com/ethandede/ethanede.com.git && git fetch origin && git reset --hard origin/main"
+      - name: Clean Up
+        if: always()
+        run: |
+          rm -f key
