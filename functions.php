@@ -60,5 +60,12 @@ function enqueue_custom_scripts() {
         wp_enqueue_script('typed-js', 'https://cdn.jsdelivr.net/npm/typed.js@2.0.12', array(), '2.0.12', true);
         wp_enqueue_script('logo-scroll', get_template_directory_uri() . '/assets/js/logoScroll.js', array(), '1.0', true);
     }
-}
+}   
 add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
+
+?>
+
+<!-- Include Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
