@@ -1,4 +1,4 @@
-name: Deploy Sudoku to Bluehost
+name: Deploy ethanede to Bluehost
 on:
   push:
     branches:
