@@ -97,8 +97,7 @@ get_header();
   <section class="clients">
     <div class="container">
       <h2>Clients I've worked with</h2>
-      <p class="supporting-text">I have collaborated with industry-leading companies to bring creative digital solutions
-        to life.I’ve had the privilege of partnering with industry-leading companies, collaborating with their teams to bring creative and impactful digital solutions to life.</p>
+      <p class="supporting-text">I've had the privilege of partnering with industry-leading companies, collaborating with their teams to bring creative and impactful digital solutions to life.</p>
     </div>
     <div class="logo-banner">
       <div class="logo-track">
