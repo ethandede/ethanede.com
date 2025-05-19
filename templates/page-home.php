@@ -36,7 +36,7 @@ get_header();
   <!-- Persistent CTA -->
   <div class="persistent-cta">
     <div class="container">
-      <a href="#contact" class="cta-button contact-trigger">Let’s Work Together <i class="fa fa-arrow-right"></i></a>
+      <a href="#contact" class="cta-button contact-trigger">Let’s work together <i class="fa fa-arrow-right"></i></a>
     </div>
   </div>
 
@@ -56,41 +56,38 @@ get_header();
   <!-- Hero Section without the SVG -->
   <section class="hero">
     <div class="container">
-      <h5>Hello.</h5>
-      <h4>My name is Ethan Ede.</h4>
+      <h4>Welcome.</h4>
       <h1>
-        I build marketing websites <br>that
+        Let's build a website <br>that
         <span class=rotating-word-break><br></span>
         <span class="rotating-word"></span>
       </h1>
-      <p>20+ years blending tech and creativity, now powered by AI</p>
-      <a href="/contact" class="hero-button cta-button">Let's work together <i class="fa fa-arrow-right"></i></a>
+      <p class="supporting-text">I'm a digital strategist with over 20 years of experience blending technology, creativity, and marketing to build websites that deliver results. My passion is collaborating with teams to craft digital experiences that engage users and drive growth, powered by modern tools and AI innovation.</p>
+      <a href="/contact" class="hero-button cta-button">Let's build something together <i class="fa fa-arrow-right"></i></a>
     </div>
   </section>
 
   <!-- Things I Do Section -->
   <section class="what-i-do" id="about">
     <div class="container">
-      <h2>What I Do</h2>
-      <p class="supporting-text">I combine creative vision with marketing insight and technical expertise to build
-        digital experiences that engage users and convert.</p>
+      <h2>What I do</h2>
+      <p class="supporting-text">I partner with businesses and creative teams to create digital solutions that align with their vision and goals. By combining strategic insight, intuitive design, and technical expertise, I help deliver experiences that resonate with audiences and achieve measurable outcomes.</p>
       <div class="grid">
         <div class="item">
           <h4>Strategy + Vision</h4>
-          <p>I transform challenges into clear, actionable roadmaps that align business goals with emerging
-            opportunities.</p>
+          <p>Working closely with stakeholders, I help transform complex challenges into clear, actionable plans that align business objectives with emerging opportunities.</p>
         </div>
         <div class="item">
           <h4>Design + Experience</h4>
-          <p>I create engaging digital experiences where intuitive design meets seamless functionality.</p>
+          <p>Collaborating with designers and developers, I craft intuitive, user-focused digital experiences that balance aesthetics with seamless functionality.</p>
         </div>
         <div class="item">
           <h4>Development + Engineering</h4>
-          <p>I build robust, scalable solutions using modern technologies that power innovative ideas.</p>
+          <p>I work alongside engineering teams to build robust, scalable solutions using modern technologies, ensuring innovative ideas come to life reliably.</p>
         </div>
         <div class="item">
           <h4>Marketing + Analytics</h4>
-          <p>I craft data-driven campaigns that connect brands with their audiences and fuel growth.</p>
+          <p>Partnering with marketing teams, I develop data-driven campaigns that connect brands with their audiences and deliver actionable insights for growth.</p>
         </div>
       </div>
     </div>
@@ -99,9 +96,9 @@ get_header();
   <!-- Clients Section -->
   <section class="clients">
     <div class="container">
-      <h2>Clients I've Worked With</h2>
+      <h2>Clients I've worked with</h2>
       <p class="supporting-text">I have collaborated with industry-leading companies to bring creative digital solutions
-        to life.</p>
+        to life.I’ve had the privilege of partnering with industry-leading companies, collaborating with their teams to bring creative and impactful digital solutions to life.</p>
     </div>
     <div class="logo-banner">
       <div class="logo-track">
@@ -161,9 +158,8 @@ get_header();
   <!-- Portfolio Section -->
   <section class="portfolio" id="skills">
     <div class="container">
-      <h2>Skills & Experience</h2>
-      <p class="supporting-text">Not just a list of projects, this is a curated collection of articles that reveal how I
-        apply practical expertise to real-world challenges, from website management to digital strategy.</p>
+      <h2>How I Work</h2>
+      <p class="supporting-text">My approach is rooted in collaboration, communication, and a commitment to shared success. I thrive in team environments, bringing clarity, creativity, and technical expertise to every project. Below are examples of how I've worked with teams to solve real-world challenges and deliver results.</p>
       <div class="portfolio-grid">
         <?php
         // Sample Portfolio Items with Picsum Placeholder Images
@@ -171,42 +167,42 @@ get_header();
           [
             "image" => get_template_directory_uri() . "/assets/img/image_websiteManagement.png",
             "title" => "Website Management",
-            "description" => "Your website should be fast, provide a smooth experience, and be reliably engineered. Every digital journey is elegant, well-designed, and a joy to drive.",
+            "description" => "Partnering with teams to ensure websites are fast, reliable, and user-friendly, creating digital journeys that are elegant and a joy to experience.",
             "tags" => ["Development", "UX Design", "Strategy"],
             "link" => "#"
           ],
           [
             "image" => get_template_directory_uri() . "/assets/img/image_websiteDevelopment.png",
             "title" => "Website Development",
-            "description" => "A complete redesign that improved usability and accessibility.",
+            "description" => "Collaborating with developers and designers to build websites that are intuitive, accessible, and high-performing, delivering seamless and engaging digital experiences for all users.",
             "tags" => ["UX Design", "Analytics", "Reporting"],
             "link" => "#"
           ],
           [
             "image" => get_template_directory_uri() . "/assets/img/image_seoCRO.png",
             "title" => "SEO and CRO",
-            "description" => "An analytics dashboard that helps businesses make data-driven decisions.",
+            "description" => "Working closely with marketing teams to optimize digital presence and boost conversions, using data-driven strategies that connect with users and achieve goals.",
             "tags" => ["Analytics", "Strategy", "Development"],
             "link" => "#"
           ],
           [
             "image" => get_template_directory_uri() . "/assets/img/image_analyticsReporting.png",
-            "title" => "Analytics & Reporting",
-            "description" => "The ocean of data is vast, to find the treasure often takes a deep dive to gain insights and create actionable reporting.",
+            "title" => "Analytics and Reporting",
+            "description" => "Partnering with data experts to transform complex datasets into clear, actionable insights, empowering businesses to make smart decisions with confidence and clarity.",
             "tags" => ["Development", "Strategy", "E-Commerce"],
             "link" => "#"
           ],
           [
             "image" => get_template_directory_uri() . "/assets/img/image_uxUiDesign.png",
             "title" => "UX/UI Design",
-            "description" => "A marketing campaign that drove significant engagement through A/B testing.",
+            "description" => "Collaborating with creative teams to craft interfaces that are visually stunning and easy to use, designing experiences that prioritize users at every step.",
             "tags" => ["Marketing", "Analytics", "A/B Testing"],
             "link" => "#"
           ],
           [
             "image" => get_template_directory_uri() . "/assets/img/image_strategyVision.png",
             "title" => "Strategy and Vision",
-            "description" => "A reporting dashboard providing in-depth insights into user behavior.",
+            "description" => "Working hand-in-hand with stakeholders to shape innovative digital strategies that align with business objectives, paving the way for long-term growth and success.",
             "tags" => ["Reporting", "Data Analysis", "Strategy"],
             "link" => "#"
           ],
@@ -244,7 +240,7 @@ get_header();
   <!-- AI Tools Section -->
   <section class="ai-tools">
     <div class="container">
-      <h2>AI Tools & Technologies</h2>
+      <h2>AI tools and technologies</h2>
       <p class="supporting-text">I leverage cutting-edge AI to amplify creativity, efficiency, and impact in digital
         solutions.</p>
       <div class="grid">

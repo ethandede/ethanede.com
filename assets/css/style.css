@@ -177,7 +177,7 @@ p {
 }
 .site-nav .nav-links a {
   color: #fff;
-  font-family: "Merriweather", serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1rem;
   text-decoration: none;
   padding: 10px;
@@ -352,6 +352,8 @@ p {
   margin-right: calc(50% - 50vw);
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: 0;
+  border-left: 0;
   border-radius: 0;
   padding: 20px;
   box-sizing: border-box;
@@ -388,7 +390,7 @@ p {
   color: #fff;
   border-radius: 7px;
   text-decoration: none;
-  font-family: "Merriweather", serif;
+  font-family: "Roboto", sans-serif;
   transition: background-color 0.3s ease;
 }
 .cta-button.sm {
@@ -482,6 +484,10 @@ p {
   margin-bottom: 1rem;
   font-family: "Merriweather", serif;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+#home .hero h4, #home .hero h5 {
+  font-family: "Roboto", sans-serif;
+  font-weight: 100;
 }
 @media screen and (min-width: 1024px) {
   #home .hero .rotating-word-break {
@@ -1751,7 +1757,7 @@ p {
   color: #fff;
   border-radius: 7px;
   text-decoration: none;
-  font-family: "Merriweather", serif;
+  font-family: "Roboto", sans-serif;
   transition: background-color 0.3s ease;
   width: 100%;
   text-align: center;
@@ -1793,7 +1799,7 @@ p {
   color: #fff;
   border-radius: 7px;
   text-decoration: none;
-  font-family: "Merriweather", serif;
+  font-family: "Roboto", sans-serif;
   transition: background-color 0.3s ease;
   background-color: rgba(var(--secondary-color-rgb), 0.1);
   display: inline-flex;
