@@ -487,7 +487,7 @@ p {
 }
 #home .hero h4, #home .hero h5 {
   font-family: "Merriweather", serif;
-  font-weight: 100;
+  font-weight: 700;
 }
 @media screen and (min-width: 1024px) {
   #home .hero .rotating-word-break {
