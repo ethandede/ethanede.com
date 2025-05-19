@@ -39,7 +39,7 @@ get_header();
       <a href="#contact" class="cta-button contact-trigger">Let's work together <i class="fa fa-arrow-right"></i></a>
     </div>
   </div>
-  
+
   <!-- Mobile Menu Overlay -->
   <div class="mobile-menu">
     <ul class="mobile-nav-links">
@@ -62,7 +62,7 @@ get_header();
         <span class=rotating-word-break><br></span>
         <span class="rotating-word"></span>
       </h1>
-      <p class="supporting-text">I'm a digital strategist with over 20 years of experience blending technology, creativity, and marketing to build websites that deliver results. My passion is collaborating with teams to craft digital experiences that engage users and drive growth, powered by modern tools and AI innovation.</p>
+      <p class="supporting-text">I'm a digital strategist with over 20 years of experience blending technology, creativity, and marketing to build web experiences that deliver results. My passion is collaborating with teams to craft digital experiences that engage users and drive growth, powered by modern tools and AI innovation.</p>
       <a href="/contact" class="hero-button cta-button">Let's build something together <i class="fa fa-arrow-right"></i></a>
     </div>
   </section>
