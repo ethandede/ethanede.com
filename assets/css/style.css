@@ -486,7 +486,7 @@ p {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 #home .hero h4, #home .hero h5 {
-  font-family: "Roboto", sans-serif;
+  font-family: "Merriweather", serif;
   font-weight: 100;
 }
 @media screen and (min-width: 1024px) {

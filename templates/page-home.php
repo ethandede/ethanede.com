@@ -36,10 +36,10 @@ get_header();
   <!-- Persistent CTA -->
   <div class="persistent-cta">
     <div class="container">
-      <a href="#contact" class="cta-button contact-trigger">Let’s work together <i class="fa fa-arrow-right"></i></a>
+      <a href="#contact" class="cta-button contact-trigger">Let's work together <i class="fa fa-arrow-right"></i></a>
     </div>
   </div>
-
+  
   <!-- Mobile Menu Overlay -->
   <div class="mobile-menu">
     <ul class="mobile-nav-links">
