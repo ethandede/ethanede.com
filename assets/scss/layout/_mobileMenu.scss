@@ -3,10 +3,10 @@
 
 .mobile-menu {
   position: fixed;
-  bottom: 0;
+  bottom: 80px;
   left: 0;
   width: 100vw;
-  height: 80px;
+  height: fit-content;
   max-height: 50vh;
   background: rgba(15, 14, 22, 0.975);
   backdrop-filter: blur(10px);
