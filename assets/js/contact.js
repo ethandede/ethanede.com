@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const triggers = document.querySelectorAll('.contact-trigger, .nav-links a[href="#contact"]');
+  const triggers = document.querySelectorAll('.contact-trigger, a[href="#contact"]');
   const contactSection = document.querySelector('.contact-section');
   const closeBtn = document.querySelector('.contact-close');
   const formContainer = document.querySelector('.contact-form-container');

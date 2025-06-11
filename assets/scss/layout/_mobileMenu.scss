@@ -31,13 +31,16 @@
 
     a {
       color: vars.$primary-color;
-      font-family: vars.$header-font;
+      font-family: vars.$body-font;
       font-size: vars.$font-md;
       text-decoration: none;
-      text-transform: uppercase;
       transition: color 0.3s ease;
       display: block;
       padding: 5px 0;
+
+      &.contact-trigger {
+        border: none;
+      }
 
       &:hover {
         color: vars.$accent-color;

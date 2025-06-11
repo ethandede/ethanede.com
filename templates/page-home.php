@@ -46,7 +46,7 @@ get_header();
       <li><a href="#home">Home</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#skills">Skills & Experience</a></li>
-      <li><a href="#contact">Contact</a></li>
+      <li><a href="#contact" class="contact-trigger">Contact</a></li>
     </ul>
   </div>
 
@@ -62,8 +62,8 @@ get_header();
         <span class=rotating-word-break><br></span>
         <span class="rotating-word"></span>
       </h1>
-      <p class="supporting-text">I'm a digital strategist with over 20 years of experience blending technology, creativity, and marketing to build web experiences that deliver results. My passion is collaborating with teams to craft digital experiences that engage users and drive growth, powered by modern tools and AI innovation.</p>
-      <a href="/contact" class="hero-button cta-button">Let's build something together <i class="fa fa-arrow-right"></i></a>
+      <p class="supporting-text">I'm a digital strategist with over 20 years of experience blending technology, creativity, and marketing to build web experiences that deliver results.</p>
+      <a href="#contact" class="hero-button cta-button">Let's work together <i class="fa fa-arrow-right"></i></a>
     </div>
   </section>
 
@@ -71,7 +71,7 @@ get_header();
   <section class="what-i-do" id="about">
     <div class="container">
       <h2>What I do</h2>
-      <p class="supporting-text">I partner with businesses and creative teams to create digital solutions that align with their vision and goals. By combining strategic insight, intuitive design, and technical expertise, I help deliver experiences that resonate with audiences and achieve measurable outcomes.</p>
+      <p class="supporting-text">My passion is collaborating with teams to craft digital experiences that engage users and drive growth, powered by modern tools and AI innovation. I help deliver experiences that resonate with audiences and achieve measurable outcomes.</p>
       <div class="grid">
         <div class="item">
           <h4>Strategy + Vision</h4>
@@ -168,42 +168,42 @@ get_header();
             "title" => "Website Management",
             "description" => "Partnering with teams to ensure websites are fast, reliable, and user-friendly, creating digital journeys that are elegant and a joy to experience.",
             "tags" => ["Development", "UX Design", "Strategy"],
-            "link" => "#"
+            "link" => "website-management"
           ],
           [
             "image" => get_template_directory_uri() . "/assets/img/image_websiteDevelopment.png",
             "title" => "Website Development",
             "description" => "Collaborating with developers and designers to build websites that are intuitive, accessible, and high-performing, delivering seamless and engaging digital experiences for all users.",
             "tags" => ["UX Design", "Analytics", "Reporting"],
-            "link" => "#"
+            "link" => "website-development"
           ],
           [
             "image" => get_template_directory_uri() . "/assets/img/image_seoCRO.png",
             "title" => "SEO and CRO",
             "description" => "Working closely with marketing teams to optimize digital presence and boost conversions, using data-driven strategies that connect with users and achieve goals.",
             "tags" => ["Analytics", "Strategy", "Development"],
-            "link" => "#"
+            "link" => "seo-and-cro"
           ],
           [
             "image" => get_template_directory_uri() . "/assets/img/image_analyticsReporting.png",
             "title" => "Analytics and Reporting",
             "description" => "Partnering with data experts to transform complex datasets into clear, actionable insights, empowering businesses to make smart decisions with confidence and clarity.",
             "tags" => ["Development", "Strategy", "E-Commerce"],
-            "link" => "#"
+            "link" => "analytics-and-reporting"
           ],
           [
             "image" => get_template_directory_uri() . "/assets/img/image_uxUiDesign.png",
             "title" => "UX/UI Design",
             "description" => "Collaborating with creative teams to craft interfaces that are visually stunning and easy to use, designing experiences that prioritize users at every step.",
             "tags" => ["Marketing", "Analytics", "A/B Testing"],
-            "link" => "#"
+            "link" => "ux-ui-design"
           ],
           [
             "image" => get_template_directory_uri() . "/assets/img/image_strategyVision.png",
             "title" => "Strategy and Vision",
             "description" => "Working hand-in-hand with stakeholders to shape innovative digital strategies that align with business objectives, paving the way for long-term growth and success.",
             "tags" => ["Reporting", "Data Analysis", "Strategy"],
-            "link" => "#"
+            "link" => "strategy-and-vision"
           ],
         ];
 
@@ -270,7 +270,7 @@ get_header();
       <div class="container">
         <div class="contact-form-container">
           <header class="contact-header">
-            <h2>Get in Touch</h2>
+            <h3>Get in Touch</h3>
             <p>Please fill out the form below and I'll get back to you as soon as possible.</p>
             <button class="contact-close">×</button>
           </header>

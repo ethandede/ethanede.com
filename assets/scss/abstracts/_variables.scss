@@ -24,6 +24,9 @@ $initial-color: #999;   // Gray for initial numbers (renamed from $solved-color)
 
 // Typography Variables & Global Settings
 $base-font-size: 17px;   // 1rem
+@media screen and (max-width: 768px) {
+  $base-font-size: 15px;
+}
 $scale-ratio: 1.25;
 
 // Typographical Scale
