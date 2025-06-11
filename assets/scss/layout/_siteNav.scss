@@ -52,12 +52,12 @@
   }
 
   .hamburger {
-    display: none; // Hidden on desktop
+    display: none;
     background: none;
     border: none;
     padding: 10px;
     cursor: pointer;
-    z-index: 950; // Above .mobile-menu (900)
+    z-index: 950;
 
     .bar {
       display: block;
@@ -66,10 +66,6 @@
       background: vars.$primary-color;
       margin: 5px 0;
       transition: all 0.3s ease;
-    }
-
-    .mobile-menu.active + .site-nav & {
-      z-index: 950; // Ensure it stays above when menu is open (redundant but explicit)
     }
   }
 
@@ -103,18 +99,36 @@
 
   @media screen and (max-width: 768px) {
     top: auto;
-    bottom: 0; // Mobile at bottom
-    background: rgb(13 12 18);
-    width: 100vw; // Ensure full viewport width on mobile
+    bottom: 0;
+    background: rgba(13, 12, 18, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+    width: 100vw;
+    height: 80px;
 
     .container {
-      width: 100vw; // Use viewport width
+      width: 100vw;
       max-width: 100vw;
-      padding: 1rem 5vw;
+      padding: 0 5vw;
+      height: 100%;
+      display: flex;
+      align-items: center;
     }
     
     .nav-content {
       justify-content: space-between;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-title {
+      a {
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.4rem;
+      }
     }
 
     .nav-links {
@@ -123,6 +137,15 @@
 
     .hamburger {
       display: block;
+      padding: 10px;
+      
+      .bar {
+        background: #fff;
+        width: 25px;
+        height: 3px;
+        margin: 5px 0;
+        transition: all 0.3s ease;
+      }
     }
   }
 }

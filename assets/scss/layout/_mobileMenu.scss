@@ -6,14 +6,49 @@
   bottom: 0;
   left: 0;
   width: 100vw;
-  height: 50vh;
+  height: 80px;
+  max-height: 50vh;
   background: rgba(15, 14, 22, 0.975);
+  backdrop-filter: blur(10px);
   z-index: 850;
   transform: translateY(100%);
-  transition: transform 0.3s ease;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 14, 22, 0.975);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, vars.$accent-color, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
   &.active {
     transform: translateY(0);
+
+    &::before {
+      opacity: 1;
+    }
+
+    &::after {
+      opacity: 1;
+    }
   }
 
   .mobile-nav-links {
@@ -21,12 +56,25 @@
     margin: 0;
     padding: 2rem;
     text-align: left;
+    display: block;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 
     li {
       margin: 5px 0;
       border-bottom: 1px solid rgba(vars.$accent-color, 0.3);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       padding-bottom: 5px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+
+      @for $i from 1 through 10 {
+        &:nth-child(#{$i}) {
+          transition-delay: #{0.1 + ($i * 0.05)}s;
+        }
+      }
     }
 
     a {
@@ -37,9 +85,32 @@
       transition: color 0.3s ease;
       display: block;
       padding: 5px 0;
+      background: none;
+      border: none;
+      border-radius: 0;
 
       &.contact-trigger {
+        background: none;
         border: none;
+        padding: 5px 0;
+        font-family: vars.$body-font;
+        font-size: vars.$font-md;
+        color: vars.$primary-color;
+        
+        i {
+          margin-left: 0.5rem;
+          transition: transform 0.3s ease;
+        }
+
+        &:hover {
+          background: none;
+          border: none;
+          color: vars.$accent-color;
+
+          i {
+            transform: translateX(5px);
+          }
+        }
       }
 
       &:hover {
