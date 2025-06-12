@@ -1840,52 +1840,19 @@ section.portfolio .portfolio-grid .project-card {
 }
 .single-project .project-deliverables {
   margin-bottom: 3rem;
-  padding: 2rem;
-  background: rgba(var(--secondary-color-rgb), 0.8);
-  border-radius: 8px;
 }
 .single-project .project-deliverables h3 {
-  margin-bottom: 1.5rem;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--primary-color);
+  margin-bottom: 1rem;
 }
 .single-project .project-deliverables .deliverables-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
 }
-.single-project .project-deliverables .deliverables-grid .deliverable-item {
-  background: var(--primary-color);
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-.single-project .project-deliverables .deliverables-grid .deliverable-item img, .single-project .project-deliverables .deliverables-grid .deliverable-item video {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-.single-project .project-deliverables .deliverables-grid .deliverable-item a {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  color: var(--secondary-color);
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-.single-project .project-deliverables .deliverables-grid .deliverable-item a:hover {
-  background: var(--accent-color-light);
-  color: var(--primary-color);
-}
-.single-project .project-deliverables .deliverables-grid .deliverable-item a i {
-  color: var(--accent-color);
-}
 .single-project .project-meta {
   margin-top: 3rem;
   padding: 2rem;
-  background: rgba(var(--secondary-color-rgb), 0.8);
+  background: var(--color-background-alt);
   border-radius: 8px;
 }
 .single-project .project-meta__item {
@@ -1898,7 +1865,7 @@ section.portfolio .portfolio-grid .project-card {
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--primary-color);
+  color: var(--color-text);
 }
 .single-project .project-meta__terms {
   display: flex;
@@ -1914,13 +1881,13 @@ section.portfolio .portfolio-grid .project-card {
   transition: all 0.2s ease;
 }
 .single-project .project-meta .project-categories .project-meta__term {
-  background: var(--accent-color);
-  color: var(--primary-color);
+  background: var(--color-primary);
+  color: var(--color-background);
 }
 .single-project .project-meta .project-tags .project-meta__term {
-  background: var(--primary-color);
-  color: var(--secondary-color);
-  border: 1px solid var(--accent-color);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
 }
 
 .grecaptcha-badge {
@@ -2969,4 +2936,4 @@ section.portfolio .portfolio-grid .project-card {
 @tailwind components;
 @tailwind utilities;
 
-/*# sourceMappingURL=style.css.map */
+/*# sourceMappingURL=main.css.map */

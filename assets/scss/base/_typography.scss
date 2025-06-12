@@ -7,11 +7,13 @@ body {
   color: var(--primary-color);
   background: linear-gradient(to bottom, #000, #1f1c2c);
   font-family: vars.$body-font;
+  font-weight: 400;
 }
 
 // Global Typography for Headings and Paragraphs
 h1, h2, h3, h4, h5, h6 {
   font-family: vars.$header-font;
+  font-weight: 700;
 }
 
 h1 {
@@ -44,6 +46,8 @@ h6 {
 p {
   font-size: vars.$font-sm;
   margin-bottom: 1rem;
+  font-family: vars.$body-font;
+  font-weight: 400;
 }
 
 .supporting-text {

@@ -1,0 +1,75 @@
+// Breakpoint Variables
+$breakpoint-xs: 480px;    // Extra small devices
+$breakpoint-sm: 768px;    // Small devices
+$breakpoint-md: 991px;    // Medium devices
+$breakpoint-lg: 1024px;   // Large devices
+$breakpoint-xl: 1200px;   // Extra large devices
+$breakpoint-xxl: 1370px;  // 2X Extra large devices
+
+// Media Query Mixins
+@mixin xs {
+  @media (max-width: $breakpoint-xs) {
+    @content;
+  }
+}
+
+@mixin sm {
+  @media (max-width: $breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin md {
+  @media (max-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin lg {
+  @media (max-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin xl {
+  @media (max-width: $breakpoint-xl) {
+    @content;
+  }
+}
+
+@mixin xxl {
+  @media (max-width: $breakpoint-xxl) {
+    @content;
+  }
+}
+
+// Min-width Mixins
+@mixin min-sm {
+  @media (min-width: $breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin min-md {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin min-lg {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin min-xl {
+  @media (min-width: $breakpoint-xl) {
+    @content;
+  }
+}
+
+@mixin min-xxl {
+  @media (min-width: $breakpoint-xxl) {
+    @content;
+  }
+} 

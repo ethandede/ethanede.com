@@ -1,3 +1,6 @@
+// Import portfolio styles for associated projects
+@use 'portfolio';
+
 // Single Post Page Styles
 .hero {
   padding: 120px 0 60px;
@@ -224,5 +227,68 @@
         }
       }
     }
+  }
+}
+
+// Project Meta Styles
+.project-meta {
+  margin-bottom: 2rem;
+}
+
+.project-meta {
+  padding: 1.5rem;
+  background-color: var(--background-secondary);
+  border-radius: 8px;
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  p, a {
+    font-size: 1.125rem;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--accent-color);
+    }
+  }
+
+  > div {
+    margin-bottom: 1.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .project-image {
+    margin-bottom: 2rem;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    .project-featured-image {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+  }
+
+  .project-description {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
   }
 } 

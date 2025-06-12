@@ -97,11 +97,74 @@ get_header();
           <?php
         endif;
         ?>
+
+        <!-- Associated Projects Section -->
+        <section class="associated-projects">
+          <h2>Related Projects</h2>
+          <div class="project-cards">
+            <?php
+            // Get the current post's title
+            $current_title = get_the_title();
+
+            // Query projects with the current post's title as a category or tag
+            $projects_query = new WP_Query([
+              'post_type' => 'project',
+              'posts_per_page' => -1,
+              'tax_query' => [
+                'relation' => 'OR',
+                [
+                  'taxonomy' => 'project_category',
+                  'field' => 'name',
+                  'terms' => $current_title,
+                ],
+                [
+                  'taxonomy' => 'project_tag',
+                  'field' => 'name',
+                  'terms' => $current_title,
+                ],
+              ],
+            ]);
+
+            if ($projects_query->have_posts()) :
+              while ($projects_query->have_posts()) : $projects_query->the_post();
+                $image = get_field('project_image');
+                $description = get_field('project_description');
+                ?>
+                <a href="<?php the_permalink(); ?>" class="project-card-link">
+                  <div class="project-card">
+                    <div class="project-card-overlay"></div>
+                    <?php if ($image) : ?>
+                      <img src="<?php echo esc_url($image['url']); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
+                    <?php endif; ?>
+                    <div class="project-card-copy">
+                      <h3><?php the_title(); ?></h3>
+                      <p><?php 
+                        $description = wp_strip_all_tags($description);
+                        echo strlen($description) > 150 ? substr($description, 0, 150) . '...' : $description;
+                      ?></p>
+                    </div>
+                    <div class="project-card-arrow">
+                      <i class="fas fa-arrow-right"></i>
+                    </div>
+                  </div>
+                </a>
+              <?php
+              endwhile;
+              wp_reset_postdata();
+            else :
+              ?>
+              <p class="supporting-text">No associated projects found.</p>
+            <?php endif; ?>
+          </div>
+        </section>
       </div>
       <aside class="single-sidebar">
         <h3>How I Work</h3>
         <div class="sidebar-posts">
           <?php
+          // Test string to confirm sidebar code execution
+          echo "SIDEBAR TEST";
+
           // Query for other posts
           $sidebar_query = new WP_Query([
             'post_type' => 'post',
@@ -129,21 +192,7 @@ get_header();
   </section>
 
   <!-- Contact Section (Overlay) -->
-  <section class="contact-section" id="contact">
-    <div class="contact-overlay">
-      <div class="container">
-        <div class="contact-form-container">
-          <header class="contact-header">
-            <h3>Get in Touch</h3>
-            <p class="supporting-text">Please fill out the form below and I'll get back to you as soon as possible.</p>
-            <button class="contact-close">×</button>
-          </header>
-          <?php echo do_shortcode('[contact-form-7 id="eb95201" title="Contact Form - Ethan Ede"]'); ?>
-        </div>
-      </div>
-    </div>
-  </section>
-
+  <?php get_template_part('partials/contact'); ?>
 </main>
 
 <?php get_footer(); ?>

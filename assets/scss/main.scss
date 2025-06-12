@@ -1,32 +1,37 @@
-@use "sass:color";
-
 // Abstracts
-@use "abstracts/variables" as vars;
+@use 'abstracts/variables';
 
 // Base
 @use 'base/reset';
 @use 'base/typography';
 
-// Layout
-@use 'layout/header';
-@use 'layout/siteNav';
-@use 'layout/mobileMenu';
-@use 'layout/persistentCTA';
-@use 'layout/footer';
-@use 'layout/backgroundAnimation';
-
 // Components
+@use 'components/buttons';
 @use 'components/logoBanner';
-@use "components/buttons" as *;
 @use 'components/color-controls';
 
+// Layout
+@use 'layout/header';
+@use 'layout/footer';
+@use 'layout/projectCards';
+@use 'layout/siteNav';
+@use 'layout/persistentCTA';
+@use 'layout/mobileMenu';
+@use 'layout/backgroundAnimation';
+
 // Pages
+@use 'pages/contact';
+@use 'pages/single';
+@use 'pages/single-project';
 @use 'pages/home';
 @use 'pages/about';
 @use 'pages/what-i-do';
-@use 'pages/ai-tools';
-@use 'pages/clients';
 @use 'pages/portfolio';
+@use 'pages/clients';
 @use 'pages/sudoku';
-@use 'pages/contact';
-@use 'pages/single';
+@use 'pages/ai-tools';
+
+// Tailwind
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

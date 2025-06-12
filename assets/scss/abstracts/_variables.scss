@@ -1,4 +1,5 @@
 @use "sass:color";
+@use "breakpoints" as *;
 
 // Global Colors
 $primary-color: #fff;
@@ -20,11 +21,12 @@ $initial-color: #999;   // Gray for initial numbers (renamed from $solved-color)
   --highlight-color: #{$highlight-color};
   --highlight-color-rgb: #{color.channel($highlight-color, "red", $space: rgb)}, #{color.channel($highlight-color, "green", $space: rgb)}, #{color.channel($highlight-color, "blue", $space: rgb)};
   --initial-color: #{$initial-color}; // New variable for initial numbers
-  --initial-color-rgb: #{color.channel($initial-color, "red", $space: rgb)}, #{color.channel($initial-color, "green", $space: rgb)}, #{color.channel($initial-color, "blue", $space: rgb)};}
+  --initial-color-rgb: #{color.channel($initial-color, "red", $space: rgb)}, #{color.channel($initial-color, "green", $space: rgb)}, #{color.channel($initial-color, "blue", $space: rgb)};
+}
 
 // Typography Variables & Global Settings
 $base-font-size: 17px;   // 1rem
-@media screen and (max-width: 768px) {
+@include sm {
   $base-font-size: 15px;
 }
 $scale-ratio: 1.25;

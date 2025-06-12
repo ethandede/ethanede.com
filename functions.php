@@ -28,7 +28,7 @@ function ee_enqueue_assets() {
 
     wp_enqueue_style(
         'ee-style',
-        get_template_directory_uri() . '/assets/css/' . $style_file,
+        get_template_directory_uri() . '/assets/css/style.css',
         [],
         null,
         'all'
@@ -164,3 +164,14 @@ function ethanede_setup() {
     add_theme_support('responsive-embeds');
 }
 add_action('after_setup_theme', 'ethanede_setup');
+
+// Save ACF JSON files to the acf-json directory
+add_filter('acf/settings/save_json', function ($path) {
+    $path = get_stylesheet_directory() . '/acf-json';
+    return $path;
+});
+// Load ACF JSON files from the acf-json directory
+add_filter('acf/settings/load_json', function ($paths) {
+    $paths[] = get_stylesheet_directory() . '/acf-json';
+    return $paths;
+});

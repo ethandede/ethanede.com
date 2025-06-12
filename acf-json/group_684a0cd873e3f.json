@@ -1,0 +1,404 @@
+{
+    "key": "group_684a0cd873e3f",
+    "title": "Projects",
+    "fields": [
+        {
+            "key": "field_684b22839f499",
+            "label": "Project Title",
+            "name": "project_title",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Enter the title of the project or role (e.g., ‘Marketing Website Manager at Act-On’ or ‘Hero Animation Project’).”",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_684b229c9f49a",
+            "label": "Company Name",
+            "name": "company_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Enter the name of the company associated with this project (e.g., ‘Act-On’).",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_684b550b2d118",
+            "label": "Company Description",
+            "name": "company_description",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Enter a description of the company associated with this project (e.g., ‘Act-On’).",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_684b5539ea03b",
+            "label": "Company Logo",
+            "name": "company_logo",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Add the company logo associated with this project (e.g., ‘Act-On’), preferably in vector (SVG) file format.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "svg, jpg, png",
+            "allow_in_bindings": 0,
+            "preview_size": "medium"
+        },
+        {
+            "key": "field_684b22b39f49b",
+            "label": "Role Description",
+            "name": "role_description",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Provide a brief 2–3 sentence description of your role or the project’s purpose.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "rows": -4,
+            "placeholder": "",
+            "new_lines": "br"
+        },
+        {
+            "key": "field_684b22dd9f49c",
+            "label": "Key Responsibilities",
+            "name": "key_responsibilities",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Add key responsibilities for this role or project, one per row (e.g., ‘Oversaw hosting and uptime,’ ‘Led content updates’).",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "pagination": 0,
+            "min": 1,
+            "max": 10,
+            "collapsed": "",
+            "button_label": "Add Row",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_684b2632ff5c3",
+                    "label": "Responsibility",
+                    "name": "responsibility",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_684b22dd9f49c"
+                }
+            ]
+        },
+        {
+            "key": "field_684b23019f49d",
+            "label": "Deliverables",
+            "name": "deliverables",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Add deliverables such as screenshots, videos, or live site links. Specify the type and provide a file or URL with a brief description.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "pagination": 0,
+            "min": 0,
+            "max": 0,
+            "collapsed": "",
+            "button_label": "Add Row",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_684b26fdff5c4",
+                    "label": "Deliverable Type",
+                    "name": "deliverable_type",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "Image": "Image",
+                        "Video": "Video",
+                        "PDF": "PDF",
+                        "Link": "Link"
+                    },
+                    "default_value": false,
+                    "return_format": "value",
+                    "multiple": 0,
+                    "allow_null": 0,
+                    "allow_in_bindings": 0,
+                    "ui": 0,
+                    "ajax": 0,
+                    "placeholder": "",
+                    "create_options": 0,
+                    "save_options": 0,
+                    "parent_repeater": "field_684b23019f49d"
+                },
+                {
+                    "key": "field_684b27e9ff5c5",
+                    "label": "Deliverable File",
+                    "name": "deliverable_file",
+                    "aria-label": "",
+                    "type": "file",
+                    "instructions": "Upload an image or video.",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_684b26fdff5c4",
+                                "operator": "==",
+                                "value": "Image"
+                            }
+                        ],
+                        [
+                            {
+                                "field": "field_684b26fdff5c4",
+                                "operator": "==",
+                                "value": "Video"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "library": "all",
+                    "min_size": "",
+                    "max_size": "",
+                    "mime_types": "",
+                    "allow_in_bindings": 0,
+                    "parent_repeater": "field_684b23019f49d"
+                },
+                {
+                    "key": "field_684b2846ff5c7",
+                    "label": "Deliverable URL",
+                    "name": "deliverable_url",
+                    "aria-label": "",
+                    "type": "url",
+                    "instructions": "Add external link.",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_684b26fdff5c4",
+                                "operator": "==",
+                                "value": "Link"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": "",
+                    "parent_repeater": "field_684b23019f49d"
+                },
+                {
+                    "key": "field_684b2875ff5c8",
+                    "label": "Deliverable PDF",
+                    "name": "deliverable_pdf",
+                    "aria-label": "",
+                    "type": "file",
+                    "instructions": "PDF upload.",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_684b26fdff5c4",
+                                "operator": "==",
+                                "value": "PDF"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "library": "all",
+                    "min_size": "",
+                    "max_size": "",
+                    "mime_types": "",
+                    "allow_in_bindings": 0,
+                    "parent_repeater": "field_684b23019f49d"
+                }
+            ]
+        },
+        {
+            "key": "field_684b28f1b8ded",
+            "label": "Categories",
+            "name": "project_categories",
+            "aria-label": "",
+            "type": "taxonomy",
+            "instructions": "Select one or more categories for this project (e.g., Website Management, Video & Animation).",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "taxonomy": "project_category",
+            "add_term": 1,
+            "save_terms": 1,
+            "load_terms": 1,
+            "return_format": "id",
+            "field_type": "checkbox",
+            "allow_in_bindings": 0,
+            "bidirectional": 0,
+            "multiple": 0,
+            "allow_null": 0,
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_684b29b3b8dee",
+            "label": "Tags",
+            "name": "project_tags",
+            "aria-label": "",
+            "type": "taxonomy",
+            "instructions": "Select or add tags for specific skills or tools (e.g., Hero Animations, Act-On, After Effects).",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "taxonomy": "project_tag",
+            "add_term": 1,
+            "save_terms": 1,
+            "load_terms": 1,
+            "return_format": "id",
+            "field_type": "checkbox",
+            "allow_in_bindings": 0,
+            "bidirectional": 0,
+            "multiple": 0,
+            "allow_null": 0,
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_684b29e73a391",
+            "label": "Featured Image or Video",
+            "name": "featured_media",
+            "aria-label": "",
+            "type": "file",
+            "instructions": "Upload a featured image or video to represent this project (e.g., a screenshot or hero animation video).",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "url",
+            "library": "all",
+            "min_size": "",
+            "max_size": "",
+            "mime_types": "jpg, png, webp, mp4, webm",
+            "allow_in_bindings": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "project"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1749767579
+}
