@@ -1,5 +1,7 @@
 // Abstracts
 @use 'abstracts/variables';
+@use 'abstracts/mixins';
+@use 'abstracts/breakpoints';
 
 // Base
 @use 'base/reset';
@@ -13,25 +15,32 @@
 // Layout
 @use 'layout/header';
 @use 'layout/footer';
-@use 'layout/projectCards';
 @use 'layout/siteNav';
-@use 'layout/persistentCTA';
 @use 'layout/mobileMenu';
+@use 'layout/projectCards';
+@use 'layout/persistentCTA';
 @use 'layout/backgroundAnimation';
 
 // Pages
-@use 'pages/contact';
-@use 'pages/single';
-@use 'pages/single-project';
 @use 'pages/home';
 @use 'pages/about';
-@use 'pages/what-i-do';
 @use 'pages/portfolio';
+@use 'pages/contact';
 @use 'pages/clients';
-@use 'pages/sudoku';
 @use 'pages/ai-tools';
+@use 'pages/what-i-do';
+@use 'pages/single';
+@use 'pages/single-project';
+@use 'pages/single-deliverable';
+@use 'pages/sudoku';
+@use 'pages/technology-archive';
 
 // Tailwind
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+// Apply container styles globally
+.container {
+  @include mixins.container;
+}

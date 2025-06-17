@@ -1,0 +1,149 @@
+.deliverable-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.gallery-item {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.gallery-item img,
+.gallery-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img,
+.gallery-item:hover video {
+    transform: scale(1.05);
+}
+
+/* Overlay Styles */
+.gallery-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    overflow-y: auto;
+}
+
+.gallery-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.gallery-overlay-content {
+    position: relative;
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.gallery-overlay-content.tall-content {
+    align-items: flex-start;
+}
+
+.gallery-carousel {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.carousel-item {
+    display: none;
+    width: auto;
+    height: auto;
+    margin-top: 0;
+    max-width: 65%;
+}
+
+.carousel-item.active {
+    display: block;
+}
+
+.carousel-item img,
+.carousel-item video {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .carousel-item {
+        max-width: 80%;
+    }
+}
+
+/* Navigation Buttons */
+.gallery-close,
+.gallery-prev,
+.gallery-next {
+    position: fixed;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 1001;
+}
+
+.gallery-close {
+    top: 1rem;
+    right: 1rem;
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gallery-prev,
+.gallery-next {
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gallery-prev {
+    left: 1rem;
+}
+
+.gallery-next {
+    right: 1rem;
+}
+
+.gallery-close:hover,
+.gallery-prev:hover,
+.gallery-next:hover {
+    background: rgba(255, 255, 255, 0.2);
+} 

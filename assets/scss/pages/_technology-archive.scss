@@ -1,0 +1,221 @@
+@use "../abstracts/breakpoints" as *;
+
+/* Technology Archive Styles */
+#technology-archive.technology-archive {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 0;
+    min-height: 100vh;
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Archive Header */
+.technology-archive {
+    .archive-header {
+        text-align: center;
+        padding: 4rem 0;
+        background: var(--background-color);
+        position: relative;
+        z-index: 2;
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .supporting-text {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+    }
+
+    /* Archive Stats */
+    .archive-stats {
+        padding: 2rem 0;
+        background: var(--background-color);
+        position: relative;
+        z-index: 2;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 2rem;
+        background: var(--card-background);
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+
+        &:hover {
+            transform: translateY(-5px);
+        }
+    }
+
+    .stat-value {
+        display: block;
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--accent-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        color: var(--text-color);
+        opacity: 0.8;
+    }
+
+    /* Deliverables Grid */
+    .deliverables-grid {
+        padding: 4rem 0;
+        background: var(--background-color);
+        position: relative;
+        z-index: 2;
+
+        h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: var(--text-color);
+        }
+    }
+
+    .filter-controls {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .filter-group {
+        display: inline-block;
+        margin: 0 1rem;
+
+        label {
+            margin-right: 0.5rem;
+            color: var(--text-color);
+        }
+
+        select {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--card-background);
+            color: var(--text-color);
+            cursor: pointer;
+        }
+    }
+
+    .deliverables-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 0 1rem;
+    }
+
+    .deliverable-card {
+        background: var(--card-background);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+
+        &:hover {
+            transform: translateY(-5px);
+        }
+
+        &__image {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+            overflow: hidden;
+
+            img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+        }
+
+        &:hover &__image img {
+            transform: scale(1.05);
+        }
+
+        &__content {
+            padding: 1.5rem;
+
+            h3 {
+                margin: 0 0 1rem;
+                font-size: 1.25rem;
+
+                a {
+                    color: var(--text-color);
+                    text-decoration: none;
+                    transition: color 0.3s ease;
+
+                    &:hover {
+                        color: var(--accent-color);
+                    }
+                }
+            }
+        }
+
+        &__type {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+
+            .type {
+                font-size: 0.875rem;
+                padding: 0.25rem 0.75rem;
+                background: var(--accent-color);
+                color: white;
+                border-radius: 20px;
+            }
+        }
+    }
+
+    .no-deliverables {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-color);
+        opacity: 0.8;
+    }
+}
+
+/* Responsive Design */
+@include md {
+    .technology-archive {
+        .archive-header {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .supporting-text {
+                font-size: 1rem;
+            }
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .deliverables-list {
+            grid-template-columns: 1fr;
+        }
+    }
+} 

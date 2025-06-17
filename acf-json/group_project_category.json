@@ -1,0 +1,43 @@
+{
+    "key": "group_project_category",
+    "title": "Project Category",
+    "fields": [
+        {
+            "key": "field_category_image",
+            "label": "Category Image",
+            "name": "category_image",
+            "type": "image",
+            "instructions": "Upload an image to represent this category",
+            "required": 0,
+            "return_format": "url",
+            "preview_size": "medium",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "jpg, png, webp"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "project_category"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1749949259
+} 

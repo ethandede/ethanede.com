@@ -1,0 +1,15 @@
+// Container Mixins
+@mixin container {
+  max-width: 1300px;
+  margin: 0 auto;
+  width: 100%;
+
+  @media screen and (max-width: 1370px) {
+    max-width: 90vw;
+  }
+}
+
+// Apply container mixin to .container class
+.container {
+  @include container;
+} 

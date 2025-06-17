@@ -15,26 +15,7 @@ get_header();
 <main id="main" class="site-main">
 
   <!-- Navigation -->
-  <nav class="site-nav">
-    <div class="container">
-      <div class="nav-content">
-        <h3 class="nav-title"><a href="<?php echo esc_url(home_url('/')); ?>">Ethan Ede</a></h3>
-        <button class="hamburger" aria-label="Toggle mobile menu">
-          <span class="bar top"></span>
-          <span class="bar middle"></span>
-          <span class="bar bottom"></span>
-        </button>
-        <?php
-        wp_nav_menu([
-          'theme_location' => 'main_navigation',
-          'menu_class' => 'nav-links',
-          'container' => false,
-          'walker' => new WP_Bootstrap_Navwalker(),
-        ]);
-        ?>
-      </div>
-    </div>
-  </nav>
+  <?php get_template_part('partials/site-navigation'); ?>
 
   <!-- Persistent CTA -->
   <div class="persistent-cta">
@@ -127,19 +108,19 @@ get_header();
 
             if ($projects_query->have_posts()) :
               while ($projects_query->have_posts()) : $projects_query->the_post();
-                $image = get_field('project_image');
-                $description = get_field('project_description');
+                $featured_media = get_field('featured_media');
+                $role_description = get_field('role_description');
                 ?>
                 <a href="<?php the_permalink(); ?>" class="project-card-link">
                   <div class="project-card">
                     <div class="project-card-overlay"></div>
-                    <?php if ($image) : ?>
-                      <img src="<?php echo esc_url($image['url']); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
+                    <?php if ($featured_media) : ?>
+                      <img src="<?php echo esc_url($featured_media); ?>" alt="<?php echo esc_attr(get_field('project_title')); ?>">
                     <?php endif; ?>
                     <div class="project-card-copy">
-                      <h3><?php the_title(); ?></h3>
+                      <h3><?php echo esc_html(get_field('project_title')); ?></h3>
                       <p><?php 
-                        $description = wp_strip_all_tags($description);
+                        $description = wp_strip_all_tags($role_description);
                         echo strlen($description) > 150 ? substr($description, 0, 150) . '...' : $description;
                       ?></p>
                     </div>
@@ -162,28 +143,25 @@ get_header();
         <h3>How I Work</h3>
         <div class="sidebar-posts">
           <?php
-          // Test string to confirm sidebar code execution
-          echo "SIDEBAR TEST";
-
-          // Query for other posts
-          $sidebar_query = new WP_Query([
-            'post_type' => 'post',
-            'posts_per_page' => 5,
-            'post__not_in' => [get_the_ID()],
-            'ignore_sticky_posts' => 1
+          // Get all project categories
+          $categories = get_terms([
+            'taxonomy' => 'project_category',
+            'hide_empty' => true,
+            'orderby' => 'name',
+            'order' => 'ASC'
           ]);
-          if ($sidebar_query->have_posts()) :
-            while ($sidebar_query->have_posts()) : $sidebar_query->the_post(); ?>
-              <a href="<?php the_permalink(); ?>" class="sidebar-post-card">
+
+          if (!empty($categories) && !is_wp_error($categories)) :
+            foreach ($categories as $category) : ?>
+              <a href="<?php echo get_term_link($category); ?>" class="sidebar-post-card">
                 <div class="portfolio-item">
-                  <h4><?php the_title(); ?></h4>
+                  <h4><?php echo esc_html($category->name); ?></h4>
                   <div class="portfolio-arrow">
                     <i class="fas fa-arrow-right"></i>
                   </div>
                 </div>
               </a>
-            <?php endwhile;
-            wp_reset_postdata();
+            <?php endforeach;
           endif;
           ?>
         </div>

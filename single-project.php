@@ -14,31 +14,15 @@ get_header();
 </div>
 
 <!-- Navigation -->
-<nav class="site-nav">
-    <div class="container">
-      <div class="nav-content">
-        <h3 class="nav-title"><a href="<?php echo home_url(); ?>">Ethan Ede</a></h3>
-        <button class="hamburger" aria-label="Toggle mobile menu">
-          <span class="bar top"></span>
-          <span class="bar middle"></span>
-          <span class="bar bottom"></span>
-        </button>
-        <ul class="nav-links">
-          <li><a href="<?php echo home_url(); ?>#about">About</a></li>
-          <li><a href="<?php echo home_url(); ?>#skills">Skills & Experience</a></li>
-          <li><a href="<?php echo home_url(); ?>#contact">Contact</a></li>
-        </ul>
-      </div>
-    </div>
-</nav>
+<?php get_template_part('partials/site-navigation'); ?>
 
 <!-- Mobile Menu Overlay -->
 <div class="mobile-menu">
   <ul class="mobile-nav-links">
-    <li><a href="<?php echo home_url(); ?>">Home</a></li>
-    <li><a href="<?php echo home_url(); ?>#about">About</a></li>
-    <li><a href="<?php echo home_url(); ?>#skills">Skills & Experience</a></li>
-    <li><a href="<?php echo home_url(); ?>#contact" class="contact-trigger">Contact</a></li>
+    <li><a href="<?php echo home_url(); ?>" class="text-semibold">Home</a></li>
+    <li><a href="<?php echo home_url(); ?>#about" class="text-semibold">About</a></li>
+    <li><a href="<?php echo home_url(); ?>#skills" class="text-semibold">Skills & Experience</a></li>
+    <li><a href="<?php echo home_url(); ?>#contact" class="contact-trigger text-semibold">Contact</a></li>
   </ul>
 </div>
 
@@ -51,9 +35,13 @@ get_header();
         <section class="hero">
             <div class="container">
                 <div class="hero__content">
-                    <h1 class="hero__title"><?php echo esc_html(get_field('project_title')); ?></h1>
-                    <?php if ($company_name = get_field('company_name')) : ?>
-                        <h2 class="hero__subtitle"><?php echo esc_html($company_name); ?></h2>
+                    <h1 class="hero__title text-gray-900"><?php echo esc_html(get_field('project_title')); ?></h1>
+                    <?php 
+                    $company_terms = get_the_terms(get_the_ID(), 'company');
+                    if ($company_terms && !is_wp_error($company_terms)) : 
+                        $company = $company_terms[0]; // Get the first company term
+                    ?>
+                        <h2 class="hero__subtitle text-primary"><?php echo esc_html($company->name); ?></h2>
                     <?php endif; ?>
                 </div>
             </div>
@@ -64,35 +52,37 @@ get_header();
             <div class="container">
                 <article class="single-main">
                     <?php if ($featured_media = get_field('featured_media')) : ?>
-                        <div class="project-featured-media" style="margin-bottom: 2rem;">
+                        <div class="project-featured-media">
                             <?php
                             $file_type = wp_check_filetype($featured_media);
                             if (strpos($file_type['type'], 'video') !== false) : ?>
-                                <video class="project-featured-video" controls style="width: 100%; max-width: 800px; height: auto; display: block; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                                <video class="project-featured-video" controls>
                                     <source src="<?php echo esc_url($featured_media); ?>" type="<?php echo esc_attr($file_type['type']); ?>">
                                     Your browser does not support the video tag.
                                 </video>
                             <?php else : ?>
                                 <img src="<?php echo esc_url($featured_media); ?>" 
                                      alt="<?php echo esc_attr(get_field('project_title')); ?>" 
-                                     class="project-featured-image"
-                                     style="width: 100%; max-width: 800px; height: auto; display: block; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                                     class="project-featured-image">
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
 
                     <div class="project-header">
-                        <?php if ($company_logo = get_field('company_logo')) : ?>
-                            <div class="company-logo">
-                                <img src="<?php echo esc_url($company_logo['url']); ?>" 
-                                     alt="<?php echo esc_attr($company_logo['alt']); ?>" 
-                                     class="company-logo__image">
-                            </div>
-                        <?php endif; ?>
+                        <?php 
+                        if ($company_terms && !is_wp_error($company_terms)) :
+                            $company = $company_terms[0];
+                            $company_logo = get_field('company_logo', 'company_' . $company->term_id);
+                            if ($company_logo) : ?>
+                                <div class="company-logo">
+                                    <img src="<?php echo esc_url($company_logo['url']); ?>" 
+                                         alt="<?php echo esc_attr($company_logo['alt']); ?>" 
+                                         class="company-logo__image">
+                                </div>
+                            <?php endif; ?>
 
-                        <?php if ($company_description = get_field('company_description')) : ?>
                             <div class="company-description">
-                                <?php echo wp_kses_post($company_description); ?>
+                                <?php echo wp_kses_post($company->description); ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -138,7 +128,7 @@ get_header();
                                         case 'PDF' :
                                             if ($pdf = $deliverable['deliverable_pdf']) : ?>
                                                 <div class="deliverable-item">
-                                                    <a href="<?php echo esc_url($pdf['url']); ?>" target="_blank" rel="noopener noreferrer">
+                                                    <a href="<?php echo esc_url($pdf['url']); ?>" target="_blank" rel="noopener noreferrer" class="text-primary">
                                                         <i class="fas fa-file-pdf"></i>
                                                         <?php echo esc_html($pdf['title']); ?>
                                                     </a>
@@ -148,7 +138,7 @@ get_header();
                                         case 'Link' :
                                             if ($url = $deliverable['deliverable_url']) : ?>
                                                 <div class="deliverable-item">
-                                                    <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener noreferrer">
+                                                    <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener noreferrer" class="text-primary">
                                                         <i class="fas fa-external-link-alt"></i>
                                                         <?php echo esc_url($url); ?>
                                                     </a>
@@ -170,7 +160,7 @@ get_header();
                                 <h3 class="project-meta__title">Categories</h3>
                                 <div class="project-meta__terms">
                                     <?php foreach ($categories as $category) : ?>
-                                        <span class="project-meta__term"><?php echo esc_html($category->name); ?></span>
+                                        <span class="project-meta__term text-primary"><?php echo esc_html($category->name); ?></span>
                                     <?php endforeach; ?>
                                 </div>
                             </div>
@@ -184,7 +174,7 @@ get_header();
                                 <h3 class="project-meta__title">Tags</h3>
                                 <div class="project-meta__terms">
                                     <?php foreach ($tags as $tag) : ?>
-                                        <span class="project-meta__term"><?php echo esc_html($tag->name); ?></span>
+                                        <span class="project-meta__term text-primary"><?php echo esc_html($tag->name); ?></span>
                                     <?php endforeach; ?>
                                 </div>
                             </div>
@@ -196,7 +186,7 @@ get_header();
     <?php endwhile; else : ?>
         <section class="no-content">
             <div class="container">
-                <p class="no-content__text">No project found.</p>
+                <p class="no-content__text text-gray-700">No project found.</p>
             </div>
         </section>
     <?php endif; ?>

@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
   // Handle main portfolio items (35px movement)
-  const portfolioItems = document.querySelectorAll('.portfolio-item:not(.single-sidebar .portfolio-item)');
+  const portfolioItems = document.querySelectorAll('.portfolio-item:not(.single-sidebar .portfolio-item), .project-card');
   portfolioItems.forEach(function(item) {
-    const arrow = item.querySelector('.portfolio-arrow i');
+    const arrow = item.querySelector('.portfolio-arrow i, .project-card-arrow i');
 
     item.addEventListener('mouseenter', function() {
       gsap.to(arrow, {

@@ -11,7 +11,8 @@
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    max-width: 80%;
+    max-width: 100%;
+    padding: 0 1rem;
   }
 }
 
@@ -76,9 +77,8 @@
     p {
       font-size: vars.$font-sm;
       color: var(--text-secondary);
-      margin-bottom: 0;
-      flex-grow: 1;
       margin-bottom: 1rem;
+      flex-grow: 1;
     }
 
     .learn-more {
@@ -142,13 +142,10 @@
   }
 
   .project-card-tags {
-    position: absolute;
-    top: 10px;
-    left: 10px;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    z-index: 20;
+    margin-bottom: 1rem;
 
     .tag {
       background: rgba(var(--highlight-color-rgb), 0.5);
@@ -277,35 +274,47 @@ section.portfolio {
 .pagination {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
   margin-top: 2rem;
 
-  .page-numbers {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 0.5rem;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: all 0.3s ease;
+  .pagination-list {
+    display: flex;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 
-    &:hover {
-      background: var(--accent-color);
-      color: #fff;
+    li {
+      margin: 0;
     }
 
-    &.current {
-      background: var(--accent-color);
-      color: #fff;
+    a, span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.5rem;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: var(--accent-color);
+        color: #fff;
+      }
+
+      &.current {
+        background: var(--accent-color);
+        color: #fff;
+      }
     }
 
-    &.prev,
-    &.next {
-      width: auto;
-      padding: 0 1rem;
+    .prev, .next {
+      a {
+        width: auto;
+        padding: 0 1rem;
+      }
     }
   }
 } 

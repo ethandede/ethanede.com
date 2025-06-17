@@ -1,38 +1,103 @@
 .site-footer {
-  background: #1f1c2c;
+  background: rgba(13, 12, 18, 0.95);
+  backdrop-filter: blur(10px);
   color: #fff;
   padding: 35px 0;
   text-align: left;
   font-size: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
   
   .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 35px;
   }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+  }
   
   p {
     margin: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.5px;
   }
   
   .footer-nav {
-    margin-top: 10px;
+    margin: 0;
     
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
-      display: inline-flex;
-      gap: 15px;
+      display: flex;
+      gap: 1.5rem;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+      }
       
       li {
         a {
           color: #fff;
           text-decoration: none;
           transition: color 0.3s ease;
+          font-family: "Roboto", sans-serif;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+          font-size: 1rem;
+          background: none;
+          border: none;
+          padding: 0;
           
           &:hover {
-            color: #928dab;
+            color: #45748C;
+            background: none;
+            border: none;
+          }
+
+          &.contact-trigger {
+            background: none;
+            border: none;
+            padding: 0;
+            font-family: "Roboto", sans-serif;
+            font-size: 1rem;
+            color: #fff;
+            display: inline;
+            
+            i {
+              margin-left: 0.5rem;
+              transition: transform 0.3s ease;
+            }
+            
+            &:hover {
+              background: none;
+              border: none;
+              color: #45748C;
+              
+              i {
+                transform: translateX(5px);
+              }
+            }
           }
         }
       }

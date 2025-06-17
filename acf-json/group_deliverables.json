@@ -1,0 +1,128 @@
+{
+    "key": "group_deliverables",
+    "title": "Deliverable Details",
+    "fields": [
+        {
+            "key": "field_deliverable_project",
+            "label": "Related Project",
+            "name": "related_project",
+            "type": "relationship",
+            "instructions": "Select the project this deliverable belongs to",
+            "required": 1,
+            "post_type": ["project"],
+            "filters": ["search"],
+            "return_format": "id",
+            "multiple": 0
+        },
+        {
+            "key": "field_deliverable_company",
+            "label": "Company",
+            "name": "deliverable_company",
+            "type": "taxonomy",
+            "instructions": "Select the company this deliverable is for",
+            "required": 1,
+            "taxonomy": "company",
+            "field_type": "select",
+            "allow_null": 0,
+            "return_format": "id",
+            "multiple": 0
+        },
+        {
+            "key": "field_deliverable_type",
+            "label": "Deliverable Type",
+            "name": "deliverable_type",
+            "type": "taxonomy",
+            "instructions": "Select the type of deliverable",
+            "required": 1,
+            "taxonomy": "deliverable_type",
+            "field_type": "select",
+            "allow_null": 0,
+            "return_format": "id",
+            "multiple": 0
+        },
+        {
+            "key": "field_deliverable_tags",
+            "label": "Tags",
+            "name": "deliverable_tags",
+            "type": "taxonomy",
+            "instructions": "Select or add tags for this deliverable",
+            "required": 0,
+            "taxonomy": "project_tag",
+            "field_type": "multi_select",
+            "allow_null": 0,
+            "return_format": "id",
+            "multiple": 1
+        },
+        {
+            "key": "field_deliverable_technologies",
+            "label": "Technologies Used",
+            "name": "deliverable_technologies",
+            "type": "taxonomy",
+            "instructions": "Select the technologies used in this deliverable",
+            "required": 1,
+            "taxonomy": "technology",
+            "field_type": "checkbox",
+            "allow_null": 0,
+            "return_format": "id",
+            "multiple": 1
+        },
+        {
+            "key": "field_deliverable_skills",
+            "label": "Skills Applied",
+            "name": "deliverable_skills",
+            "type": "taxonomy",
+            "instructions": "Select the skills applied in this deliverable",
+            "required": 1,
+            "taxonomy": "skill",
+            "field_type": "checkbox",
+            "allow_null": 0,
+            "return_format": "id",
+            "multiple": 1
+        },
+        {
+            "key": "field_deliverable_media",
+            "label": "Deliverable Media",
+            "name": "deliverable_media",
+            "type": "gallery",
+            "instructions": "Add images or videos showcasing this deliverable",
+            "required": 0,
+            "return_format": "array",
+            "preview_size": "medium",
+            "insert": "append",
+            "library": "all",
+            "min": "",
+            "max": "",
+            "mime_types": "jpg, png, webp, mp4, webm"
+        },
+        {
+            "key": "field_deliverable_description",
+            "label": "Detailed Description",
+            "name": "deliverable_description",
+            "type": "wysiwyg",
+            "instructions": "Provide a detailed description of this deliverable",
+            "required": 1,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "deliverable"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0
+} 

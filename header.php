@@ -6,7 +6,8 @@
   <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
-  
+<?php wp_body_open(); ?>
+
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-89QXYH3QB8"></script>
 <script>
@@ -21,10 +22,7 @@
      crossorigin="anonymous"></script>
 
 <header class="site-header">
-  <!-- <div class="container">
-    <div class="header-content">
-      <p class="header-tagline">Where creative strategy meets technical mastery.</p>
-      <a href="#contact" class="cta-button">Let's Work Together</a>
-    </div>
-  </div> -->
+  <?php get_template_part('partials/site-navigation'); ?>
 </header>
+
+<main id="main" class="site-main">

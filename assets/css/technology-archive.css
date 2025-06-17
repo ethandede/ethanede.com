@@ -1,0 +1,213 @@
+/* Technology Archive Styles */
+#technology-archive.technology-archive {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 0;
+    min-height: 100vh;
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Archive Header */
+.technology-archive .archive-header {
+    text-align: center;
+    padding: 4rem 0;
+    background: var(--background-color);
+    position: relative;
+    z-index: 2;
+}
+
+.technology-archive .archive-header h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.technology-archive .archive-header .supporting-text {
+    font-size: 1.25rem;
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+/* Archive Stats */
+.technology-archive .archive-stats {
+    padding: 2rem 0;
+    background: var(--background-color);
+    position: relative;
+    z-index: 2;
+}
+
+.technology-archive .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.technology-archive .stat-item {
+    text-align: center;
+    padding: 2rem;
+    background: var(--card-background);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.technology-archive .stat-item:hover {
+    transform: translateY(-5px);
+}
+
+.technology-archive .stat-value {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+.technology-archive .stat-label {
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+/* Deliverables Grid */
+.technology-archive .deliverables-grid {
+    padding: 4rem 0;
+    background: var(--background-color);
+    position: relative;
+    z-index: 2;
+}
+
+.technology-archive .deliverables-grid h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: var(--text-color);
+}
+
+.technology-archive .filter-controls {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.technology-archive .filter-group {
+    display: inline-block;
+    margin: 0 1rem;
+}
+
+.technology-archive .filter-group label {
+    margin-right: 0.5rem;
+    color: var(--text-color);
+}
+
+.technology-archive .filter-group select {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--card-background);
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.technology-archive .deliverables-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+.technology-archive .deliverable-card {
+    background: var(--card-background);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.technology-archive .deliverable-card:hover {
+    transform: translateY(-5px);
+}
+
+.technology-archive .deliverable-card__image {
+    position: relative;
+    padding-top: 56.25%; /* 16:9 aspect ratio */
+    overflow: hidden;
+}
+
+.technology-archive .deliverable-card__image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.technology-archive .deliverable-card:hover .deliverable-card__image img {
+    transform: scale(1.05);
+}
+
+.technology-archive .deliverable-card__content {
+    padding: 1.5rem;
+}
+
+.technology-archive .deliverable-card__content h3 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+}
+
+.technology-archive .deliverable-card__content h3 a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.technology-archive .deliverable-card__content h3 a:hover {
+    color: var(--accent-color);
+}
+
+.technology-archive .deliverable-card__type {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.technology-archive .deliverable-card__type .type {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 20px;
+}
+
+.technology-archive .no-deliverables {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .technology-archive .archive-header h1 {
+        font-size: 2rem;
+    }
+
+    .technology-archive .archive-header .supporting-text {
+        font-size: 1rem;
+    }
+
+    .technology-archive .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .technology-archive .deliverables-list {
+        grid-template-columns: 1fr;
+    }
+} 

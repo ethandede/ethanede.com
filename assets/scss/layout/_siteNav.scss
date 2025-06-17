@@ -37,6 +37,7 @@
     margin: 0;
     padding: 0;
     white-space: nowrap; // Prevent title from wrapping
+    display: flex;
 
     a {
       color: vars.$primary-color;
@@ -93,6 +94,33 @@
 
       &:hover {
         color: vars.$accent-color;
+      }
+
+      &.contact-trigger {
+        background: none;
+        border: none;
+        padding: 10px;
+        font-family: vars.$body-font;
+        font-size: vars.$font-sm;
+        color: vars.$primary-color;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        i {
+          margin-left: 0.5rem;
+          transition: transform 0.3s ease;
+        }
+
+        &:hover {
+          background: none;
+          border: none;
+          color: vars.$accent-color;
+
+          i {
+            transform: translateX(5px);
+          }
+        }
       }
     }
   }

@@ -12,58 +12,31 @@ get_header();
   <svg class="animated-squares" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice"></svg>
 </div>
 
-<main id="home">
-
-<!-- Navigation -->
-<nav class="site-nav">
+<main id="main" class="site-main">
+    
     <div class="container">
-      <div class="nav-content">
-        <h3 class="nav-title"><a href="#home">Ethan Ede</a></h3>
-        <button class="hamburger" aria-label="Toggle mobile menu">
-          <span class="bar top"></span>
-          <span class="bar middle"></span>
-          <span class="bar bottom"></span>
-        </button>
-        <ul class="nav-links">
-          <li><a href="#about">About</a></li>
-          <li><a href="#skills">Skills & Experience</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
 
   <!-- Persistent CTA -->
   <div class="persistent-cta">
     <div class="container">
-      <a href="#contact" class="cta-button contact-trigger">Let's work together <i class="fa fa-arrow-right"></i></a>
+      <a href="#contact" class="cta-button contact-trigger text-semibold">Let's work together <i class="fa fa-arrow-right"></i></a>
     </div>
-  </div>
-
-  <!-- Mobile Menu Overlay -->
-  <div class="mobile-menu">
-    <ul class="mobile-nav-links">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills & Experience</a></li>
-      <li><a href="#contact" class="contact-trigger">Contact</a></li>
-    </ul>
   </div>
 
   <!-- Color controls UI -->
   <?php get_template_part('partials/color-controls'); ?>
 
-  <!-- Hero Section without the SVG -->
+  <!-- Hero Section -->
   <section class="hero">
     <div class="container">
       <h4>Welcome.</h4>
       <h1>
         Let's build a website <br>that
-        <span class=rotating-word-break><br></span>
+        <span class="rotating-word-break"><br></span>
         <span class="rotating-word"></span>
       </h1>
       <p class="supporting-text">I'm a digital strategist with over 20 years of experience blending technology, creativity, and marketing to build web experiences that deliver results.</p>
-      <a href="#contact" class="hero-button cta-button">Let's work together <i class="fa fa-arrow-right"></i></a>
+      <a href="#contact" class="hero-button cta-button text-semibold">Let's work together <i class="fa fa-arrow-right"></i></a>
     </div>
   </section>
 
@@ -74,20 +47,20 @@ get_header();
       <p class="supporting-text">My passion is collaborating with teams to craft digital experiences that engage users and drive growth, powered by modern tools and AI innovation. I help deliver experiences that resonate with audiences and achieve measurable outcomes.</p>
       <div class="grid">
         <div class="item">
-          <h4>Strategy + Vision</h4>
-          <p>Working closely with stakeholders, I help transform complex challenges into clear, actionable plans that align business objectives with emerging opportunities.</p>
+          <h4 class="text-primary">Strategy + Vision</h4>
+          <p>Working closely with clients and stakeholders to help transform complex challenges into clear, actionable plans that align business objectives with emerging opportunities.</p>
         </div>
         <div class="item">
-          <h4>Design + Experience</h4>
-          <p>Collaborating with designers and developers, I craft intuitive, user-focused digital experiences that balance aesthetics with seamless functionality.</p>
+          <h4 class="text-primary">Design + Experience</h4>
+          <p>Collaborating with designers and developers to craft intuitive, user-focused digital experiences that balance aesthetics with seamless functionality.</p>
         </div>
         <div class="item">
-          <h4>Development + Engineering</h4>
-          <p>I work alongside engineering teams to build robust, scalable solutions using modern technologies, ensuring innovative ideas come to life reliably.</p>
+          <h4 class="text-primary">Development + Engineering</h4>
+          <p>Working solo, with contractors, and/or internal teams to build robust, scalable solutions using modern technologies, ensuring innovative ideas come to life reliably.</p>
         </div>
         <div class="item">
-          <h4>Marketing + Analytics</h4>
-          <p>Partnering with marketing teams, I develop data-driven campaigns that connect brands with their audiences and deliver actionable insights for growth.</p>
+          <h4 class="text-primary">Marketing + Analytics</h4>
+          <p>Partnering with clients and marketing teams to develop data-driven campaigns that connect brands with their audiences and deliver actionable insights for growth.</p>
         </div>
       </div>
     </div>
@@ -153,7 +126,6 @@ get_header();
     </div>
   </section>
 
-
   <!-- Portfolio Section -->
   <section class="portfolio" id="skills">
     <div class="container">
@@ -161,111 +133,79 @@ get_header();
       <p class="supporting-text">My approach is rooted in collaboration, communication, and a commitment to shared success. I thrive in team environments, bringing clarity, creativity, and technical expertise to every project. Below are examples of how I've worked with teams to solve real-world challenges and deliver results.</p>
       <div class="portfolio-grid">
         <?php
-        // Sample Portfolio Items with Picsum Placeholder Images
-        $portfolio_items = [
-          [
-            "image" => get_template_directory_uri() . "/assets/img/image_websiteManagement.png",
-            "title" => "Website Management",
-            "description" => "Partnering with teams to ensure websites are fast, reliable, and user-friendly, creating digital journeys that are elegant and a joy to experience.",
-            "tags" => ["Development", "UX Design", "Strategy"],
-            "link" => "website-management"
-          ],
-          [
-            "image" => get_template_directory_uri() . "/assets/img/image_websiteDevelopment.png",
-            "title" => "Website Development",
-            "description" => "Collaborating with developers and designers to build websites that are intuitive, accessible, and high-performing, delivering seamless and engaging digital experiences for all users.",
-            "tags" => ["UX Design", "Analytics", "Reporting"],
-            "link" => "website-development"
-          ],
-          [
-            "image" => get_template_directory_uri() . "/assets/img/image_seoCRO.png",
-            "title" => "SEO and CRO",
-            "description" => "Working closely with marketing teams to optimize digital presence and boost conversions, using data-driven strategies that connect with users and achieve goals.",
-            "tags" => ["Analytics", "Strategy", "Development"],
-            "link" => "seo-and-cro"
-          ],
-          [
-            "image" => get_template_directory_uri() . "/assets/img/image_analyticsReporting.png",
-            "title" => "Analytics and Reporting",
-            "description" => "Partnering with data experts to transform complex datasets into clear, actionable insights, empowering businesses to make smart decisions with confidence and clarity.",
-            "tags" => ["Development", "Strategy", "E-Commerce"],
-            "link" => "analytics-and-reporting"
-          ],
-          [
-            "image" => get_template_directory_uri() . "/assets/img/image_uxUiDesign.png",
-            "title" => "UX/UI Design",
-            "description" => "Collaborating with creative teams to craft interfaces that are visually stunning and easy to use, designing experiences that prioritize users at every step.",
-            "tags" => ["Marketing", "Analytics", "A/B Testing"],
-            "link" => "ux-ui-design"
-          ],
-          [
-            "image" => get_template_directory_uri() . "/assets/img/image_strategyVision.png",
-            "title" => "Strategy and Vision",
-            "description" => "Working hand-in-hand with stakeholders to shape innovative digital strategies that align with business objectives, paving the way for long-term growth and success.",
-            "tags" => ["Reporting", "Data Analysis", "Strategy"],
-            "link" => "strategy-and-vision"
-          ],
-        ];
+        // Get all project categories
+        $categories = get_terms([
+          'taxonomy' => 'project_category',
+          'hide_empty' => false,
+          'orderby' => 'name',
+          'order' => 'ASC',
+          'fields' => 'all'
+        ]);
 
-        // Loop through and display portfolio items
-        foreach ($portfolio_items as $item): ?>
-          <!-- Wrap the entire card in an anchor to make it clickable -->
-          <a class="portfolio-link" href="<?php echo $item['link']; ?>">
-            <div class="portfolio-item">
-              <!-- NEW: Overlay with a search icon -->
-              <div class="portfolio-overlay">
-              </div>
+        if (!empty($categories) && !is_wp_error($categories)) :
+          foreach ($categories as $category) :
+            // Get the category image from ACF
+            $category_image = get_field('category_image', 'project_category_' . $category->term_id);
+            
+            // Fallback to first project image if no category image is set
+            if (!$category_image) {
+              $projects = get_posts([
+                'post_type' => 'project',
+                'posts_per_page' => 1,
+                'tax_query' => [
+                  [
+                    'taxonomy' => 'project_category',
+                    'field' => 'term_id',
+                    'terms' => $category->term_id,
+                  ],
+                ],
+              ]);
 
-              <div class="portfolio-tags">
-                <?php foreach ($item['tags'] as $tag): ?>
-                  <span class="tag"><?php echo $tag; ?></span>
-                <?php endforeach; ?>
+              if (!empty($projects)) {
+                $featured_media = get_field('featured_media', $projects[0]->ID);
+                if ($featured_media) {
+                  $category_image = $featured_media;
+                }
+              }
+            }
+
+            // Find the corresponding post for this category
+            $category_post = get_posts([
+              'post_type' => 'post',
+              'posts_per_page' => 1,
+              'title' => $category->name,
+              'post_status' => 'publish'
+            ]);
+
+            // Get the link - either to the post or the category archive as fallback
+            $link = !empty($category_post) ? get_permalink($category_post[0]->ID) : get_term_link($category);
+            ?>
+            <a class="portfolio-link" href="<?php echo esc_url($link); ?>">
+              <div class="portfolio-item">
+                <div class="portfolio-overlay"></div>
+                <div class="portfolio-tags">
+                  <span class="tag"><?php echo esc_html($category->name); ?></span>
+                </div>
+                <?php if ($category_image) : ?>
+                  <img src="<?php echo esc_url($category_image); ?>" alt="<?php echo esc_attr($category->name); ?>">
+                <?php endif; ?>
+                <div class="portfolio-copy">
+                  <h3><?php echo esc_html($category->name); ?></h3>
+                  <p><?php echo esc_html($category->description); ?></p>
+                </div>
+                <div class="portfolio-arrow">
+                  <i class="fas fa-arrow-right"></i>
+                </div>
               </div>
-              <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['title']; ?>">
-              <div class="portfolio-copy">
-                <h3><?php echo $item['title']; ?></h3>
-                <p><?php echo $item['description']; ?></p>
-              </div>
-              <div class="portfolio-arrow">
-                <i class="fas fa-arrow-right"></i>
-              </div>
-            </div>
-          </a>
-        <?php endforeach; ?>
+            </a>
+          <?php endforeach;
+        endif; ?>
       </div>
     </div>
   </section>
 
-  <!-- AI Tools Section -->
-  <section class="ai-tools">
-    <div class="container">
-      <h2>AI tools and technologies</h2>
-      <p class="supporting-text">I leverage cutting-edge AI to amplify creativity, efficiency, and impact in digital
-        solutions.</p>
-      <div class="grid">
-        <div class="item">
-          <h4>ChatGPT</h4>
-          <p>Automating content creation and ideation—generated SEO-optimized posts for [Company Z], cutting time by
-            30%.</p>
-        </div>
-        <div class="item">
-          <h4>Grok</h4>
-          <p>Analyzing data and user feedback—prioritized features for [Company V] with actionable insights.</p>
-        </div>
-        <div class="item">
-          <h4>Stable Diffusion</h4>
-          <p>Prototyping visuals—designed unique assets for [Project W], streamlining workflows.</p>
-        </div>
-        <div class="item">
-          <h4>Midjourney</h4>
-          <p>Enhancing creative output—crafted concept art for [Project X], reducing design time by 50%.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-<!-- Contact Section (Overlay) -->
-<section class="contact-section" id="contact">
+  <!-- Contact Section (Overlay) -->
+  <section class="contact-section" id="contact">
     <div class="contact-overlay">
       <div class="container">
         <div class="contact-form-container">
@@ -280,6 +220,7 @@ get_header();
     </div>
   </section>
 
+</div>
 </main>
 
 <?php get_footer(); ?>

@@ -5,66 +5,67 @@
   display:none;
 }
 
-#home {
-  margin: 0 auto;
-  position: relative;
-
-  @media screen and (max-width: 1370px) {
-    max-width: 90vw;
-  }
-  
-  .hero {
+.page-template-page-home {
+  .site-main {
+    margin: 0 auto;
     position: relative;
-    overflow: hidden;
-    color: #fff;
-    text-align: left;
-    padding: 140px 0;
-    
-    @media screen and (max-width: 768px) {
-      padding:3.5rem 0;
+
+    @media screen and (max-width: 1370px) {
+      max-width: 90vw;
     }
     
-    .container {
-      max-width: 1300px;
-      margin: 0 auto;
+    .hero {
       position: relative;
-      z-index: 1;
-    }
-    
-    h1 {
-      // font-size: 3rem;
-      margin-bottom: 1rem;
-      font-family: vars.$header-font;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
+      overflow: hidden;
+      color: #fff;
+      text-align: left;
+      padding: 140px 0;
+      
+      @media screen and (max-width: 768px) {
+        padding:3.5rem 0;
+      }
+      
+      .container {
+        max-width: 1300px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+      
+      h1 {
+        margin-bottom: 1rem;
+        font-family: vars.$header-font;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
 
-    h4, h5 {
-      font-family: vars.$header-font;
-      font-weight:700;
-    }
+      .rotating-word {
+        color: vars.$highlight-color !important;
+        display: inline-block;
+        transition: opacity 0.5s ease-in-out;
+        opacity: 1;
+        font-weight: 700;
+      }
+      
+      .rotating-word.fade-out {
+        opacity: 0;
+      }
 
-    .rotating-word-break {
-      @media screen and (min-width: 1024px) {
-        display:none;
-        
+      h4, h5 {
+        font-family: vars.$header-font;
+        font-weight:700;
+      }
+
+      .rotating-word-break {
+        @media screen and (min-width: 1024px) {
+          display:none;
+        }
       }
     }
     
-    .rotating-word {
-      color: var(--highlight-color);
-      display: inline-block;
-      transition: opacity 0.5s ease-in-out;
-      opacity: 1;
+    .content-wrapper {
+      position: absolute;
+      top: 400px;
+      width: 100%;
     }
-    
-    .rotating-word.fade-out {
-      opacity: 0;
-    }
-  }
-  
-  .content-wrapper {
-    position: absolute;
-    top: 400px;
-    width: 100%;
   }
 }

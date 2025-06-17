@@ -35,12 +35,16 @@ h4 {
   margin-bottom: 0.3rem;
 }
 h5 {
-  font-size: vars.$font-md;
+  font-size: 1.25rem;
   margin-bottom: 0.25rem;
+  font-family: 'Roboto', serif;
+  font-weight: 500;
 }
 h6 {
-  font-size: vars.$font-xs;
+  font-size: 1.1rem;
   margin-bottom: 0.15rem;
+  font-family: 'Roboto', serif;
+  font-weight: 500;
 }
 
 p {

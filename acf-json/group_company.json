@@ -1,0 +1,158 @@
+{
+    "key": "group_company",
+    "title": "Company",
+    "fields": [
+        {
+            "key": "field_684e109102831",
+            "label": "Company Name",
+            "name": "company_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_company_logo",
+            "label": "Company Logo",
+            "name": "company_logo",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Upload the company's logo",
+            "required": 1,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "preview_size": "medium",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "jpg, png, svg"
+        },
+        {
+            "key": "field_company_website",
+            "label": "Website",
+            "name": "company_website",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Enter the company's website URL",
+            "required": 1,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https:\/\/"
+        },
+        {
+            "key": "field_company_industry",
+            "label": "Industry",
+            "name": "company_industry",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Enter the company's primary industry",
+            "required": 1,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "e.g., Technology, Healthcare, Finance",
+            "maxlength": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_company_description",
+            "label": "Description",
+            "name": "company_description",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Enter a brief description of the company",
+            "required": 1,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Brief company description...",
+            "maxlength": "",
+            "rows": 4,
+            "new_lines": "br"
+        },
+        {
+            "key": "field_company_relationship",
+            "label": "Relationship Type",
+            "name": "company_relationship",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "Select the type of relationship with this company",
+            "required": 1,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "client": "Client",
+                "partner": "Partner",
+                "employer": "Employer",
+                "other": "Other"
+            },
+            "default_value": "client",
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 1,
+            "ajax": 0,
+            "placeholder": "",
+            "create_options": 0,
+            "save_options": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "company"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1749946572
+}
