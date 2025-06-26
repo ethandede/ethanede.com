@@ -21,14 +21,9 @@
     margin: 0;
     
     h1 {
-      font-size: 3.5rem;
-      line-height: 1.2;
       color: var(--heading-color);
       word-wrap: break-word;
       overflow-wrap: break-word;
-      @media (max-width: 768px) {
-        font-size: 2.5rem;
-      }
     }
   }
 }
@@ -65,33 +60,22 @@
         color: var(--text-color);
         word-wrap: break-word;
         overflow-wrap: break-word;
+
+        // Add extra spacing after the last paragraph in entry-content
+        &:last-child {
+          margin-bottom: 3rem;
+        }
       }
       
       h2, h3, h4 {
-        margin: 1.5em 0 0.75em;
+        margin-top: 2rem;
         color: var(--heading-color);
         word-wrap: break-word;
         overflow-wrap: break-word;
-      }
-      
-      h2 {
-        font-size: 2.5rem;
-        @media (max-width: 768px) {
-          font-size: 2rem;
-        }
-      }
-      
-      h3 {
-        font-size: 2rem;
-        @media (max-width: 768px) {
-          font-size: 1.75rem;
-        }
-      }
-      
-      h4 {
-        font-size: 1.5rem;
-        @media (max-width: 768px) {
-          font-size: 1.25rem;
+        
+        // First heading after content shouldn't have top margin
+        &:first-child {
+          margin-top: 0;
         }
       }
       
@@ -101,20 +85,7 @@
         margin: 2em 0;
       }
       
-      ul, ol {
-        margin: 1.5em 0;
-        padding-left: 2em;
-        overflow-x: hidden;
-        
-        li {
-          margin-bottom: 0.5em;
-          font-size: 1.1rem;
-          line-height: 1.6;
-          color: var(--text-color);
-          word-wrap: break-word;
-          overflow-wrap: break-word;
-        }
-      }
+
       
       blockquote {
         margin: 2em 0;
@@ -142,90 +113,37 @@
       width: 100%;
     }
     h3 {
-      margin-bottom: 1.5rem;
+      // margin-bottom: 1.5rem;
       font-size: 1.3rem;
       color: var(--heading-color);
       font-weight: 700;
       padding-bottom: 0.75rem;
-      border-bottom: 2px solid var(--accent-color);
+      // border-bottom: 2px solid var(--accent-color);
     }
     .sidebar-posts {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-    }
-    .sidebar-post-card {
-      text-decoration: none;
-      color: inherit;
-      .portfolio-item {
-        background: var(--card-bg);
-        border-radius: 12px;
-        padding: 1rem 1.2rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border: 1px solid rgba(255,255,255,0.25);
-        position: relative;
-        overflow: hidden;
-        
-        &::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: var(--accent-color);
-          opacity: 0;
-          transition: opacity 0.2s ease;
-          z-index: 0;
-        }
-        
-        .portfolio-arrow {
-          color: var(--accent-color);
-          font-size: 1.1rem;
-          transition: color 0.2s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 32px;
-          height: 24px;
-          position: relative;
-          z-index: 1;
-        }
-        
-        &:hover {
-          border-color: var(--accent-color);
-          
-          &::before {
-            opacity: 1;
-          }
-          
-          h4 {
-            color: #fff;
-            position: relative;
-            z-index: 1;
-          }
-          
-          .portfolio-arrow {
-            color: #fff;
-            position: relative;
-            z-index: 1;
-          }
-        }
-        
-        h4 {
-          font-size: 1rem;
-          margin: 0;
-          color: var(--heading-color);
-          font-weight: 600;
-          transition: color 0.2s ease;
-          flex: 1;
-          padding-right: 1rem;
-          position: relative;
-          z-index: 1;
-        }
+      
+      // Support for new master card system
+      .card--sidebar {
+        margin-bottom: 0; // Remove default card margin in sidebar
       }
+    }
+    // Legacy sidebar post card styles removed - now using master card system
+  }
+}
+
+// Related Projects Section
+.related-projects {
+  .deliverables-grid {
+    // Limit to 2 columns max for related projects in sidebar layout
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    max-width: calc(2 * 320px + 24px); // 2 cards + 1 gap
+    
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      max-width: 100%;
     }
   }
 }

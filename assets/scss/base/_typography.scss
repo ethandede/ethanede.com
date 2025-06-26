@@ -54,6 +54,54 @@ p {
   font-weight: 400;
 }
 
+// Universal list styling for WYSIWYG content (exclude navigation)
+ul:not(nav ul):not(.menu):not(.nav):not([class*="nav"]):not([class*="menu"]):not(.footer-nav ul) {
+  margin: 1.5rem 0;
+  padding-left: 0;
+  list-style: none;
+  list-style-type: none;
+
+  li:not(.menu-item) {
+    position: relative;
+    margin-bottom: 0.75rem;
+    padding-left: 2rem; // Reduced indent
+    line-height: 1.6;
+    font-size: 1rem; // Same as body text
+    font-weight: 400;
+    list-style-type: none;
+
+    // Font Awesome Pro approach for bullet points
+    &::before {
+      content: '\f105'; // fa-angle-right
+      font-family: 'Font Awesome 6 Pro';
+      font-weight: 300; // Light weight for Pro
+      position: absolute;
+      left: 0.83rem; // Fine-tuned positioning
+      top: 0.2em;
+      color: var(--accent-color);
+      font-size: 0.8em;
+    }
+  }
+}
+
+ol:not(nav ol):not(.menu ol):not(.nav ol):not([class*="nav"] ol):not([class*="menu"] ol) {
+  margin: 1.5rem 0;
+  padding-left: 2rem; // Reduced indent
+  list-style-type: decimal;
+
+  li:not(.menu-item) {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+    font-size: 1rem; // Same as body text
+    font-weight: 400;
+    
+    &::marker {
+      color: var(--accent-color);
+      font-weight: 600;
+    }
+  }
+}
+
 .supporting-text {
   font-size: 1rem;
   font-style: italic;

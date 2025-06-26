@@ -6,9 +6,16 @@
             "key": "field_category_image",
             "label": "Category Image",
             "name": "category_image",
+            "aria-label": "",
             "type": "image",
             "instructions": "Upload an image to represent this category",
             "required": 0,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
             "return_format": "url",
             "preview_size": "medium",
             "library": "all",
@@ -19,6 +26,29 @@
             "max_height": "",
             "max_size": "",
             "mime_types": "jpg, png, webp"
+        },
+        {
+            "key": "field_685473ff77b3c",
+            "label": "Field Display Order",
+            "name": "field_display_order",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 10,
+            "min": "",
+            "max": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "step": "",
+            "prepend": "",
+            "append": ""
         }
     ],
     "location": [
@@ -39,5 +69,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1749949259
-} 
+    "modified": 1750365222
+}

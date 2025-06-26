@@ -21,8 +21,16 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9345046210950956"
      crossorigin="anonymous"></script>
 
+<!-- Background Animation Container -->
+<div class="background-animation">
+  <svg class="animated-squares" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice"></svg>
+</div>
+
 <header class="site-header">
   <?php get_template_part('partials/site-navigation'); ?>
 </header>
+
+<!-- Color Controls UI -->
+<?php get_template_part('partials/color-controls'); ?>
 
 <main id="main" class="site-main">

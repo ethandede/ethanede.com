@@ -34,12 +34,13 @@ function ee_enqueue_assets() {
         'all'
     );
 
-    // Enqueue Font Awesome
-    wp_enqueue_style(
-        'font-awesome',
-        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css',
+    // Enqueue Font Awesome Pro
+    wp_enqueue_script(
+        'font-awesome-pro',
+        'https://kit.fontawesome.com/297056f51e.js',
         [],
-        '6.4.2'
+        null,
+        false
     );
 
     // Enqueue Google Fonts
@@ -76,8 +77,8 @@ function ee_add_homepage_menu_items($items, $args) {
             $items .= '<li class="menu-item"><a href="' . home_url() . '#contact" class="contact-trigger">Contact</a></li>';
         }
         
-        // Add Projects link
-        $items .= '<li class="menu-item"><a href="' . get_post_type_archive_link('project') . '">Projects</a></li>';
+        // Add Work link (unified projects and deliverables)
+        $items .= '<li class="menu-item"><a href="' . home_url('/work/') . '">Work</a></li>';
     }
     
     return $items;
@@ -96,24 +97,24 @@ function enqueue_custom_scripts() {
         wp_enqueue_script('gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.0/gsap.min.js', [], '3.11.0', true);
         wp_enqueue_script('scroll-trigger', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.0/ScrollTrigger.min.js', ['gsap'], '3.11.0', true);
         
-        wp_enqueue_script('hero-animation', get_template_directory_uri() . '/assets/js/heroAnimation.js', ['gsap', 'scroll-trigger'], '1.0', true);
-        wp_enqueue_script('portfolio-hover', get_template_directory_uri() . '/assets/js/portfolioHover.js', ['gsap', 'scroll-trigger'], '1.0', true);
+        wp_enqueue_script('hero-animation', get_template_directory_uri() . '/assets/js/hero-animation.js', ['gsap', 'scroll-trigger'], '1.0', true);
+        wp_enqueue_script('portfolio-hover', get_template_directory_uri() . '/assets/js/portfolio-hover.js', ['gsap', 'scroll-trigger'], '1.0', true);
         wp_enqueue_script('typed-js', 'https://cdn.jsdelivr.net/npm/typed.js@2.0.12', [], '2.0.12', true);
-        wp_enqueue_script('typed-init', get_template_directory_uri() . '/assets/js/typedInit.js', ['typed-js'], '1.0', true);
-        wp_enqueue_script('persistent-cta', get_template_directory_uri() . '/assets/js/persistentCTA.js', ['gsap', 'scroll-trigger'], '1.0', true);
-        wp_enqueue_script('change-theme', get_template_directory_uri() . '/assets/js/changeTheme.js', [], '1.0', true);
+        wp_enqueue_script('typed-init', get_template_directory_uri() . '/assets/js/typed-init.js', ['typed-js'], '1.0', true);
+        wp_enqueue_script('persistent-cta', get_template_directory_uri() . '/assets/js/persistent-cta.js', ['gsap', 'scroll-trigger'], '1.0', true);
+        wp_enqueue_script('change-theme', get_template_directory_uri() . '/assets/js/change-theme.js', [], '1.0', true);
         wp_enqueue_script('helpers', get_template_directory_uri() . '/assets/js/helpers.js', [], '1.0', true);
-        wp_enqueue_script('mobile-menu', get_template_directory_uri() . '/assets/js/mobileMenu.js', ['gsap'], '1.0', true);
+        wp_enqueue_script('mobile-menu', get_template_directory_uri() . '/assets/js/mobile-menu.js', ['gsap'], '1.0', true);
         wp_enqueue_script('contact', get_template_directory_uri() . '/assets/js/contact.js', ['gsap'], '1.3', true);
         
         // Load background squares on homepage and single posts
         if (is_front_page() || is_home() || is_single()) {
-            wp_enqueue_script('background-squares', get_template_directory_uri() . '/assets/js/backgroundSquares.js', ['gsap', 'scroll-trigger'], '1.0', true);
+            wp_enqueue_script('background-squares', get_template_directory_uri() . '/assets/js/background-squares.js', ['gsap', 'scroll-trigger'], '1.0', true);
         }
         
         // Load homepage-specific scripts
         if (is_front_page() || is_home()) {
-            wp_enqueue_script('logo-scroll', get_template_directory_uri() . '/assets/js/logoScroll.js', [], '1.0', true);
+            wp_enqueue_script('logo-scroll', get_template_directory_uri() . '/assets/js/logo-scroll.js', [], '1.0', true);
         }
     }
 }
@@ -200,6 +201,106 @@ add_filter('acf/settings/load_json', function ($paths) {
     return $paths;
 });
 
+// =============================================================================
+// MASTER CARD SYSTEM HELPER FUNCTIONS
+// =============================================================================
+
+/**
+ * Render a card using the master card template partial
+ * 
+ * @param array $args Card configuration array (see partials/card.php for full documentation)
+ * @return void Outputs HTML directly
+ */
+function ee_render_card($args) {
+    if (empty($args) || !is_array($args)) {
+        return;
+    }
+    
+    // Include the card partial
+    get_template_part('partials/card', null, $args);
+}
+
+/**
+ * Generate card arguments for a project
+ * 
+ * @param int $post_id Project post ID
+ * @param string $context Card context ('archive', 'single', 'work', 'home')
+ * @param array $overrides Optional array of values to override defaults
+ * @return array Card arguments array
+ */
+function ee_get_project_card_args($post_id, $context = 'archive', $overrides = []) {
+    $defaults = [
+        'type' => 'project',
+        'context' => $context,
+        'post_id' => $post_id,
+        'show_media_types' => false,
+    ];
+    
+    // Context-specific defaults
+    if ($context === 'work') {
+        $defaults['show_media_types'] = true;
+    }
+    
+    return wp_parse_args($overrides, $defaults);
+}
+
+/**
+ * Generate card arguments for a deliverable
+ * 
+ * @param int $post_id Deliverable post ID
+ * @param string $context Card context ('archive', 'single', 'work', 'home')
+ * @param array $overrides Optional array of values to override defaults
+ * @return array Card arguments array
+ */
+function ee_get_deliverable_card_args($post_id, $context = 'archive', $overrides = []) {
+    $defaults = [
+        'type' => 'deliverable',
+        'context' => $context,
+        'post_id' => $post_id,
+        'show_media_types' => true,
+    ];
+    
+    return wp_parse_args($overrides, $defaults);
+}
+
+/**
+ * Render a project card
+ * 
+ * @param int $post_id Project post ID
+ * @param string $context Card context ('archive', 'single', 'work', 'home')
+ * @param array $overrides Optional array of values to override defaults
+ * @return void Outputs HTML directly
+ */
+function ee_render_project_card($post_id, $context = 'archive', $overrides = []) {
+    $args = ee_get_project_card_args($post_id, $context, $overrides);
+    ee_render_card($args);
+}
+
+/**
+ * Render a deliverable card
+ * 
+ * @param int $post_id Deliverable post ID
+ * @param string $context Card context ('archive', 'single', 'work', 'home')
+ * @param array $overrides Optional array of values to override defaults
+ * @return void Outputs HTML directly
+ */
+function ee_render_deliverable_card($post_id, $context = 'archive', $overrides = []) {
+    $args = ee_get_deliverable_card_args($post_id, $context, $overrides);
+    ee_render_card($args);
+}
+
+// Auto-populate Project Title field with WordPress title
+function ee_auto_populate_project_title($field) {
+    if (!$field['value'] && isset($_GET['post']) && get_post_type($_GET['post']) === 'project') {
+        $post_title = get_the_title($_GET['post']);
+        if ($post_title) {
+            $field['value'] = $post_title;
+        }
+    }
+    return $field;
+}
+add_filter('acf/load_field/name=project_title', 'ee_auto_populate_project_title');
+
 /**
  * Get How I Work projects
  * 
@@ -257,31 +358,31 @@ function register_deliverable_post_type() {
         'rewrite' => ['slug' => 'deliverable-type'],
     ]);
 
-    // Register Technology Taxonomy
-    register_taxonomy('technology', ['project', 'deliverable'], [
-        'labels' => [
-            'name' => 'Technologies',
-            'singular_name' => 'Technology',
-            'menu_name' => 'Technologies',
-            'all_items' => 'All Technologies',
-            'edit_item' => 'Edit Technology',
-            'view_item' => 'View Technology',
-            'update_item' => 'Update Technology',
-            'add_new_item' => 'Add New Technology',
-            'new_item_name' => 'New Technology Name',
-            'search_items' => 'Search Technologies',
-            'popular_items' => 'Popular Technologies',
-            'separate_items_with_commas' => 'Separate technologies with commas',
-            'add_or_remove_items' => 'Add or remove technologies',
-            'choose_from_most_used' => 'Choose from the most used technologies',
-            'not_found' => 'No technologies found',
-            'no_terms' => 'No technologies',
-            'filter_by_item' => 'Filter by technology',
-            'items_list_navigation' => 'Technologies list navigation',
-            'items_list' => 'Technologies list',
-            'back_to_items' => '← Go to technologies',
-            'item_link' => 'Technology Link',
-            'item_link_description' => 'A link to a technology'
+    // Register Tool Taxonomy
+register_taxonomy('technology', ['project', 'deliverable'], [
+    'labels' => [
+        'name' => 'Tools',
+        'singular_name' => 'Tool',
+        'menu_name' => 'Tools',
+        'all_items' => 'All Tools',
+        'edit_item' => 'Edit Tool',
+        'view_item' => 'View Tool',
+        'update_item' => 'Update Tool',
+        'add_new_item' => 'Add New Tool',
+        'new_item_name' => 'New Tool Name',
+                    'search_items' => 'Search Tools',
+        'popular_items' => 'Popular Tools',
+        'separate_items_with_commas' => 'Separate tools with commas',
+        'add_or_remove_items' => 'Add or remove tools',
+        'choose_from_most_used' => 'Choose from the most used tools',
+        'not_found' => 'No tools found',
+        'no_terms' => 'No tools',
+        'filter_by_item' => 'Filter by tool',
+                    'items_list_navigation' => 'Tools list navigation',
+        'items_list' => 'Tools list',
+        'back_to_items' => '← Go to tools',
+        'item_link' => 'Tool Link',
+        'item_link_description' => 'A link to a tool'
         ],
         'hierarchical' => true,
         'show_in_rest' => true,
@@ -348,14 +449,14 @@ function modify_deliverable_archive_query($query) {
             ];
         }
 
-        // Technology filter
-        if (isset($_GET['technology']) && !empty($_GET['technology'])) {
-            $tax_query[] = [
-                'taxonomy' => 'technology',
-                'field' => 'slug',
-                'terms' => $_GET['technology']
-            ];
-        }
+            // Tool filter
+    if (isset($_GET['technology']) && !empty($_GET['technology'])) {
+        $tax_query[] = [
+            'taxonomy' => 'technology',
+            'field' => 'slug',
+            'terms' => $_GET['technology']
+        ];
+    }
 
         // Skill filter
         if (isset($_GET['skill']) && !empty($_GET['skill'])) {
@@ -464,9 +565,93 @@ function register_project_category_taxonomy() {
         'show_in_rest'      => true,
     );
 
-    register_taxonomy('project_category', array('project'), $args);
+    register_taxonomy('project_category', array('project', 'post'), $args);
 }
 add_action('init', 'register_project_category_taxonomy');
+
+// Disable default categories and tags for posts and projects
+function disable_default_taxonomies() {
+    // Remove category support from posts
+    remove_post_type_support('post', 'category');
+    
+    // Remove tag support from both posts and projects
+    remove_post_type_support('post', 'post_tag');
+    remove_post_type_support('project', 'post_tag');
+    
+    // Remove category and tag metaboxes from edit screens
+    add_action('admin_menu', function() {
+        // Remove from posts
+        remove_meta_box('categorydiv', 'post', 'side');
+        remove_meta_box('tagsdiv-post_tag', 'post', 'side');
+        
+        // Remove from projects
+        remove_meta_box('categorydiv', 'project', 'side');
+        remove_meta_box('tagsdiv-post_tag', 'project', 'side');
+        remove_meta_box('tagsdiv-project_tag', 'project', 'side');
+        remove_meta_box('companydiv', 'project', 'side');
+        remove_meta_box('tagsdiv-company', 'project', 'side');
+        remove_meta_box('postimagediv', 'project', 'side');
+        remove_meta_box('postimagediv', 'project', 'normal');
+        remove_meta_box('postimagediv', 'project', 'advanced');
+    });
+    
+    // Completely unregister the default taxonomies
+    add_action('init', function() {
+        unregister_taxonomy_for_object_type('category', 'post');
+        unregister_taxonomy_for_object_type('post_tag', 'post');
+        unregister_taxonomy_for_object_type('post_tag', 'project');
+    }, 99);
+}
+add_action('init', 'disable_default_taxonomies');
+
+// Additional featured image removal for projects
+function remove_project_featured_image_metabox() {
+    remove_meta_box('postimagediv', 'project', 'side');
+    remove_meta_box('postimagediv', 'project', 'normal');
+    remove_meta_box('postimagediv', 'project', 'advanced');
+}
+add_action('add_meta_boxes', 'remove_project_featured_image_metabox');
+
+// Remove default categories and tags from admin menu
+function remove_default_taxonomy_admin_menus() {
+    // Remove categories
+    remove_submenu_page('edit.php', 'edit-tags.php?taxonomy=category');
+    
+    // Remove tags
+    remove_submenu_page('edit.php', 'edit-tags.php?taxonomy=post_tag');
+    
+    // Also try removing with the parent slug
+    global $submenu;
+    if (isset($submenu['edit.php'])) {
+        foreach ($submenu['edit.php'] as $key => $menu_item) {
+            if (strpos($menu_item[2], 'edit-tags.php?taxonomy=category') !== false ||
+                strpos($menu_item[2], 'edit-tags.php?taxonomy=post_tag') !== false) {
+                unset($submenu['edit.php'][$key]);
+            }
+        }
+    }
+    
+    // Remove from Projects admin menu too
+    if (isset($submenu['edit.php?post_type=project'])) {
+        foreach ($submenu['edit.php?post_type=project'] as $key => $menu_item) {
+            if (strpos($menu_item[2], 'edit-tags.php?taxonomy=post_tag') !== false ||
+                strpos($menu_item[2], 'edit-tags.php?taxonomy=category') !== false) {
+                unset($submenu['edit.php?post_type=project'][$key]);
+            }
+        }
+    }
+}
+add_action('admin_menu', 'remove_default_taxonomy_admin_menus', 999);
+
+// Additional cleanup for taxonomy references
+function remove_taxonomy_admin_references() {
+    // Remove from admin bar
+    add_action('admin_bar_menu', function($wp_admin_bar) {
+        $wp_admin_bar->remove_node('new-category');
+        $wp_admin_bar->remove_node('new-post_tag');
+    }, 999);
+}
+add_action('init', 'remove_taxonomy_admin_references');
 
 /**
  * Register Project Tag Taxonomy
@@ -551,11 +736,56 @@ function modify_project_archive_query($query) {
 }
 add_action('pre_get_posts', 'modify_project_archive_query');
 
+// Create a page-based work archive instead of custom rewrite rules
+function create_work_page_on_activation() {
+    // Check if work page already exists
+    $work_page = get_page_by_path('work');
+    
+    if (!$work_page) {
+        // Create the work page
+        $page_data = array(
+            'post_title'    => 'My Work',
+            'post_content'  => '',
+            'post_status'   => 'publish',
+            'post_type'     => 'page',
+            'post_name'     => 'work',
+            'meta_input' => array(
+                '_wp_page_template' => 'page-work.php'
+            )
+        );
+        
+        $page_id = wp_insert_post($page_data);
+        
+        if ($page_id) {
+            error_log('Work page created with ID: ' . $page_id);
+        }
+    }
+}
+add_action('after_switch_theme', 'create_work_page_on_activation');
+
+// Manually create work page if it doesn't exist (run this once)
+function maybe_create_work_page() {
+    create_work_page_on_activation();
+}
+// Uncomment the line below to create the page, then comment it back out
+// add_action('init', 'maybe_create_work_page');
+
+// Redirect old archive pages to unified work page
+function redirect_to_unified_work_page() {
+    if (is_post_type_archive('project') || is_post_type_archive('deliverable')) {
+        wp_redirect(home_url('/work/'), 301);
+        exit;
+    }
+}
+add_action('template_redirect', 'redirect_to_unified_work_page');
+
 // Flush rewrite rules on theme activation
 function ethanede_theme_activation() {
     register_project_post_type();
     register_project_category_taxonomy();
     register_project_tag_taxonomy();
+    disable_default_taxonomies();
+    create_work_page_on_activation();
     flush_rewrite_rules();
 }
 add_action('after_switch_theme', 'ethanede_theme_activation');
@@ -567,6 +797,175 @@ function enqueue_gallery_assets() {
     }
 }
 add_action('wp_enqueue_scripts', 'enqueue_gallery_assets');
+
+// Enqueue ACF admin scripts and styles
+function enqueue_acf_admin_scripts() {
+    // Only load on ACF edit screens for deliverables
+    $screen = get_current_screen();
+    if ($screen && ($screen->post_type === 'deliverable' || $screen->id === 'deliverable')) {
+        wp_enqueue_script(
+            'acf-video-selector',
+            get_template_directory_uri() . '/assets/js/acf-video-selector.js',
+            ['jquery', 'acf-input'],
+            '1.0',
+            true
+        );
+        
+        wp_enqueue_style(
+            'acf-admin-styles',
+            get_template_directory_uri() . '/assets/css/acf-admin.css',
+            [],
+            '1.0'
+        );
+    }
+}
+add_action('admin_enqueue_scripts', 'enqueue_acf_admin_scripts');
+
+// AJAX handler to get attachment data for video selector
+function get_attachment_data_ajax() {
+    // Verify nonce for security
+    if (!wp_verify_nonce($_POST['nonce'], 'acf_nonce')) {
+        wp_die('Security check failed');
+    }
+    
+    $attachment_ids = isset($_POST['attachment_ids']) ? $_POST['attachment_ids'] : [];
+    if (!is_array($attachment_ids)) {
+        wp_send_json_error('Invalid attachment IDs');
+        return;
+    }
+    
+    $attachments_data = [];
+    
+    foreach ($attachment_ids as $attachment_id) {
+        $attachment_id = intval($attachment_id);
+        if ($attachment_id <= 0) continue;
+        
+        // Get attachment post
+        $attachment = get_post($attachment_id);
+        if (!$attachment || $attachment->post_type !== 'attachment') continue;
+        
+        // Get attachment metadata
+        $metadata = wp_get_attachment_metadata($attachment_id);
+        $mime_type = get_post_mime_type($attachment_id);
+        
+        // Build attachment data similar to ACF format
+        $attachment_data = [
+            'id' => $attachment_id,
+            'title' => $attachment->post_title,
+            'filename' => basename(get_attached_file($attachment_id)),
+            'url' => wp_get_attachment_url($attachment_id),
+            'alt' => get_post_meta($attachment_id, '_wp_attachment_image_alt', true),
+            'mime_type' => $mime_type,
+            'type' => strpos($mime_type, 'video/') === 0 ? 'video' : 'image'
+        ];
+        
+        $attachments_data[] = $attachment_data;
+    }
+    
+    wp_send_json_success($attachments_data);
+}
+add_action('wp_ajax_get_attachment_data', 'get_attachment_data_ajax');
+
+// Populate video selection choices dynamically
+function populate_video_selection_choices($field) {
+    // Only apply to our specific field
+    if ($field['name'] !== 'video_selection') {
+        return $field;
+    }
+    
+    // Get the current post ID
+    global $post;
+    if (!$post || $post->post_type !== 'deliverable') {
+        return $field;
+    }
+    
+    // Get the deliverable media
+    $media = get_field('deliverable_media', $post->ID);
+    if (!$media || !is_array($media)) {
+        return $field;
+    }
+    
+    $choices = [];
+    
+    foreach ($media as $item) {
+        // Handle both attachment ID format and full object format
+        if (is_numeric($item)) {
+            $attachment_id = intval($item);
+            $mime_type = get_post_mime_type($attachment_id);
+            
+            if (strpos($mime_type, 'video/') === 0) {
+                $attachment = get_post($attachment_id);
+                $filename = basename(get_attached_file($attachment_id));
+                $title = $attachment ? $attachment->post_title : $filename;
+                
+                $display_text = $title;
+                if ($title !== $filename) {
+                    $display_text .= ' (' . $filename . ')';
+                }
+                
+                $choices[$filename] = $display_text;
+            }
+        } elseif (is_array($item) && isset($item['type']) && $item['type'] === 'video') {
+            $filename = $item['filename'] ?? $item['name'] ?? 'video.mp4';
+            $title = $item['title'] ?? $item['alt'] ?? $filename;
+            
+            $display_text = $title;
+            if ($title !== $filename) {
+                $display_text .= ' (' . $filename . ')';
+            }
+            
+            $choices[$filename] = $display_text;
+        }
+    }
+    
+    $field['choices'] = $choices;
+    
+    return $field;
+}
+add_filter('acf/load_field/name=video_selection', 'populate_video_selection_choices');
+
+// Validate video selection field to ensure it's a valid choice
+function validate_video_selection($valid, $value, $field, $input) {
+    if (!$valid || empty($value)) {
+        return $valid;
+    }
+    
+    // Get the current post ID
+    global $post;
+    if (!$post || $post->post_type !== 'deliverable') {
+        return $valid;
+    }
+    
+    // Get the deliverable media to validate against
+    $media = get_field('deliverable_media', $post->ID);
+    if (!$media || !is_array($media)) {
+        return 'No videos found in media gallery';
+    }
+    
+    $valid_filenames = [];
+    
+    foreach ($media as $item) {
+        if (is_numeric($item)) {
+            $attachment_id = intval($item);
+            $mime_type = get_post_mime_type($attachment_id);
+            
+            if (strpos($mime_type, 'video/') === 0) {
+                $filename = basename(get_attached_file($attachment_id));
+                $valid_filenames[] = $filename;
+            }
+        } elseif (is_array($item) && isset($item['type']) && $item['type'] === 'video') {
+            $filename = $item['filename'] ?? $item['name'] ?? 'video.mp4';
+            $valid_filenames[] = $filename;
+        }
+    }
+    
+    if (!in_array($value, $valid_filenames)) {
+        return 'Selected video is not valid. Please refresh and select a video from the dropdown.';
+    }
+    
+    return $valid;
+}
+add_filter('acf/validate_value/name=video_selection', 'validate_video_selection', 10, 4);
 
 // Allow GIF uploads in Media Library
 function allow_gif_uploads($mimes) {
@@ -593,3 +992,289 @@ function ensure_gif_upload($file) {
     return $file;
 }
 add_filter('wp_handle_upload_prefilter', 'ensure_gif_upload');
+
+// Add custom columns to project_category taxonomy
+add_filter('manage_edit-project_category_columns', 'add_project_category_taxonomy_columns');
+
+// Clean deliverable content from unwanted CSS classes
+function clean_deliverable_content($content) {
+    if (!$content) return '';
+    
+    // Remove auto-generated CSS classes (CSS-in-JS, React Native Web, etc.)
+    $patterns = [
+        // Remove CSS-in-JS classes like css-175oi2r, css-146c3p1
+        '/\s*class="[^"]*css-[^"]*"/',
+        // Remove React Native Web classes like r-bcqeeo, r-1ttztb7
+        '/\s*class="[^"]*r-[^"]*"/',
+        // Remove any class attribute that contains only auto-generated classes
+        '/\s*class="[^"]*(?:css-[a-z0-9]+\s*|r-[a-z0-9]+\s*)+"/i',
+        // Remove empty class attributes
+        '/\s*class=""\s*/',
+        // Remove dir attributes that are typically auto-added
+        '/\s*dir="[^"]*"/',
+    ];
+    
+    $clean_content = $content;
+    foreach ($patterns as $pattern) {
+        $clean_content = preg_replace($pattern, '', $clean_content);
+    }
+    
+    // Clean up any double spaces or empty attributes
+    $clean_content = preg_replace('/\s+/', ' ', $clean_content);
+    $clean_content = preg_replace('/<(\w+)\s+>/', '<$1>', $clean_content);
+    
+    // Convert divs to paragraphs where appropriate
+    $clean_content = str_replace(['<div>', '</div>'], ['<p>', '</p>'], $clean_content);
+    
+    // Remove empty paragraphs and divs
+    $clean_content = preg_replace('/<p[^>]*>\s*<\/p>/', '', $clean_content);
+    $clean_content = preg_replace('/<div[^>]*>\s*<\/div>/', '', $clean_content);
+    
+    // Remove nested spans that are redundant
+    $clean_content = preg_replace('/<span[^>]*><span[^>]*>(.*?)<\/span><\/span>/', '$1', $clean_content);
+    $clean_content = preg_replace('/<span[^>]*>(.*?)<\/span>/', '$1', $clean_content);
+    
+    return $clean_content;
+}
+function add_project_category_taxonomy_columns($columns) {
+    unset($columns['posts']);
+    $columns['image'] = __('Image', 'ethanede');
+    $columns['display_order'] = __('Display Order', 'ethanede');
+    $columns['posts'] = __('Projects', 'ethanede');
+    return $columns;
+}
+
+add_action('manage_project_category_custom_column', 'manage_project_category_taxonomy_columns', 10, 3);
+function manage_project_category_taxonomy_columns($content, $column_name, $term_id) {
+    switch ($column_name) {
+        case 'image':
+            $image = get_field('category_image', 'project_category_' . $term_id);
+            if ($image) {
+                $content = '<img src="' . esc_url($image) . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" />';
+            } else {
+                $content = '—';
+            }
+            break;
+        case 'display_order':
+            $order = get_field('field_display_order', 'project_category_' . $term_id);
+            $content = $order ? $order : '—';
+            break;
+    }
+    return $content;
+}
+
+// Make order column sortable
+add_filter('manage_edit-project_category_sortable_columns', 'make_project_category_columns_sortable');
+function make_project_category_columns_sortable($columns) {
+    $columns['order'] = 'order';
+    return $columns;
+}
+
+// Add order field to Quick Edit
+add_action('quick_edit_custom_box', 'project_category_quick_edit_fields', 10, 3);
+function project_category_quick_edit_fields($column_name, $screen, $taxonomy) {
+    if ($taxonomy !== 'project_category' || $column_name !== 'order') {
+        return;
+    }
+    ?>
+    <fieldset>
+        <div class="inline-edit-col">
+            <label>
+                <span class="title">Display Order</span>
+                <span class="input-text-wrap">
+                    <input type="number" name="display_order" class="ptitle" value="" min="0" step="1">
+                </span>
+            </label>
+        </div>
+    </fieldset>
+    <?php
+}
+
+// Save Quick Edit data
+add_action('edited_project_category', 'save_project_category_quick_edit');
+function save_project_category_quick_edit($term_id) {
+    if (isset($_POST['display_order'])) {
+        update_field('field_display_order', $_POST['display_order'], 'project_category_' . $term_id);
+    }
+}
+
+// Add JavaScript to populate Quick Edit field with current value
+add_action('admin_footer', 'project_category_quick_edit_javascript');
+function project_category_quick_edit_javascript() {
+    global $current_screen;
+    if ($current_screen->id !== 'edit-project_category') {
+        return;
+    }
+    ?>
+    <script type="text/javascript">
+    jQuery(document).ready(function($) {
+        // Populate quick edit field with current order value
+        $('.editinline').on('click', function() {
+            var $row = $(this).closest('tr');
+            var order = $row.find('.column-order').text().trim();
+            
+            // Handle empty/dash values
+            if (order === '—' || order === '') {
+                order = '';
+            }
+            
+            setTimeout(function() {
+                $('input[name="display_order"]').val(order);
+            }, 100);
+        });
+    });
+    </script>
+    <?php
+}
+
+/**
+ * Email Configuration and Contact Form 7 Customizations
+ */
+
+// Ensure WordPress can send emails
+function ee_configure_wp_mail() {
+    // You can add SMTP configuration here if needed
+    // For now, we'll just ensure the from email is properly set
+    add_filter('wp_mail_from', 'ee_custom_wp_mail_from');
+    add_filter('wp_mail_from_name', 'ee_custom_wp_mail_from_name');
+}
+add_action('init', 'ee_configure_wp_mail');
+
+function ee_custom_wp_mail_from($original_email_address) {
+    // For local development, use your Gmail address
+    if (strpos(home_url(), '.local') !== false) {
+        return 'ethanede@gmail.com';
+    }
+    
+    // Get the site domain for production
+    $sitename = wp_parse_url(network_home_url(), PHP_URL_HOST);
+    if (substr($sitename, 0, 4) === 'www.') {
+        $sitename = substr($sitename, 4);
+    }
+    return 'noreply@' . $sitename;
+}
+
+function ee_custom_wp_mail_from_name($original_email_from) {
+    return 'Ethan Ede Website';
+}
+
+// Add custom validation and processing for Contact Form 7
+// Temporarily disabled to troubleshoot CF7 error
+/*
+add_action('wpcf7_before_send_mail', 'ee_customize_cf7_mail');
+function ee_customize_cf7_mail($contact_form) {
+    // Get form ID to ensure we're only affecting our contact form
+    if ($contact_form->id() == 'eb95201') {
+        // Add any custom processing here
+        // For example, you could save submissions to database, 
+        // integrate with CRM, add additional notifications, etc.
+        
+        // Log the submission for debugging
+        if (WP_DEBUG) {
+            error_log('Contact form submission received from form ID: ' . $contact_form->id());
+        }
+    }
+}
+*/
+
+// Customize Contact Form 7 validation messages
+// Temporarily disabled to troubleshoot CF7 error
+/*
+add_filter('wpcf7_messages', 'ee_customize_cf7_messages');
+function ee_customize_cf7_messages($messages) {
+    $messages['mail_sent_ok'] = "Thank you for your message. I'll get back to you soon!";
+    $messages['mail_sent_ng'] = "There was an error sending your message. Please try again.";
+    $messages['validation_error'] = "Please check the highlighted fields below.";
+    $messages['spam'] = "Your message was flagged as spam. Please try again.";
+    $messages['accept_terms'] = "You must accept the terms and conditions.";
+    $messages['invalid_required'] = "This field is required.";
+    $messages['invalid_too_long'] = "This field is too long.";
+    $messages['invalid_too_short'] = "This field is too short.";
+    
+    return $messages;
+}
+
+// Remove Contact Form 7 auto-paragraph formatting for better control
+add_filter('wpcf7_autop_or_not', '__return_false');
+*/
+
+// Add reCAPTCHA support if you want to prevent spam
+// Uncomment these lines if you want to add reCAPTCHA to your form
+/*
+add_action('wp_enqueue_scripts', 'ee_enqueue_recaptcha');
+function ee_enqueue_recaptcha() {
+    if (function_exists('wpcf7_recaptcha_enqueue_scripts')) {
+        wpcf7_recaptcha_enqueue_scripts();
+    }
+}
+*/
+
+// Custom Contact Form 7 styling and scripting
+add_action('wpcf7_enqueue_scripts', 'ee_cf7_custom_scripts');
+function ee_cf7_custom_scripts() {
+    // Minimal styling that works with existing design
+    // Only add background colors for better UX, preserving existing layout
+    wp_add_inline_style('contact-form-7', '
+        .wpcf7-response-output.wpcf7-mail-sent-ok {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 3px solid #4CAF50;
+        }
+        
+        .wpcf7-response-output.wpcf7-validation-errors,
+        .wpcf7-response-output.wpcf7-mail-sent-ng {
+            background: rgba(244, 67, 54, 0.1);
+            border-left: 3px solid #f44336;
+        }
+        
+        .wpcf7-response-output.wpcf7-spam {
+            background: rgba(255, 152, 0, 0.1);
+            border-left: 3px solid #ff9800;
+        }
+    ');
+}
+
+// Test email functionality (remove this after testing)
+// You can call this function to test if emails are working
+function ee_test_email() {
+    $to = 'ethanede@gmail.com'; // Your Gmail address
+    $subject = 'WordPress Email Test - Local Site';
+    $message = 'If you receive this email, WordPress email functionality is working correctly on your local site.';
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+    
+    $sent = wp_mail($to, $subject, $message, $headers);
+    
+    if ($sent) {
+        error_log('Test email sent successfully');
+        return true;
+    } else {
+        error_log('Test email failed to send');
+        return false;
+    }
+}
+
+// Uncomment the line below to test email on page load (remove after testing)
+// add_action('wp_loaded', 'ee_test_email');
+
+// Noindex unused taxonomy archives
+function noindex_unused_taxonomy_archives() {
+    if (is_tax(['technology', 'skill', 'company'])) {
+        echo '<meta name="robots" content="noindex, nofollow">' . "\n";
+    }
+}
+add_action('wp_head', 'noindex_unused_taxonomy_archives');
+
+/**
+ * Helper function to convert plural term names to singular for display
+ * 
+ * @param string $term_name The original term name
+ * @return string The display-friendly term name
+ */
+function get_singular_term_display_name($term_name) {
+    $conversions = [
+        'Microsites' => 'Microsite',
+        'Animations' => 'Animation',
+        // Add more conversions here as needed
+    ];
+    
+    return isset($conversions[$term_name]) ? $conversions[$term_name] : $term_name;
+}

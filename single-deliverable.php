@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Debug information
 error_log('Single Deliverable Template Loaded');
 error_log('Post ID: ' . get_the_ID());
@@ -8,10 +8,80 @@ error_log('Post Status: ' . get_post_status());
 get_header(); ?>
 
 <main id="deliverable">
-    <?php while (have_posts()) : the_post(); ?>
+    <?php while (have_posts()):
+        the_post(); ?>
         <section class="deliverable-header">
             <div class="container">
+                <?php
+                // Show deliverable type above h1 on mobile with tag treatment
+                $type_terms = get_the_terms(get_the_ID(), 'deliverable_type');
+                if ($type_terms && !is_wp_error($type_terms)) :
+                    $type_term = $type_terms[0];
+                    ?>
+                    <div class="deliverable-type-tag">
+                        <span class="type-tag"><?php 
+                            echo esc_html(get_singular_term_display_name($type_term->name)); 
+                        ?></span>
+                    </div>
+                <?php endif; ?>
+                
                 <h1><?php the_title(); ?></h1>
+                
+                <?php
+                // Show related project and company info below h1 on mobile
+                ?>
+                <div class="deliverable-meta-mobile">
+                    <?php
+                    // Related Project
+                    $related_project = get_field('related_project');
+                    if ($related_project && is_array($related_project) && !empty($related_project)) :
+                        $project_id = $related_project[0];
+                        $project = get_post($project_id);
+                        if ($project && !is_wp_error($project)) :
+                        ?>
+                        <div class="meta-item-mobile">
+                            <span class="meta-label">Related Project:</span>
+                            <a href="<?php echo get_permalink($project_id); ?>" class="meta-value">
+                                <?php echo esc_html($project->post_title); ?>
+                            </a>
+                        </div>
+                    <?php 
+                        endif;
+                    endif; ?>
+
+                    <?php
+                    // Company info (While At)
+                    $company = null;
+                    $deliverable_companies = get_the_terms(get_the_ID(), 'company');
+                    
+                    if ($deliverable_companies && !is_wp_error($deliverable_companies)) {
+                        $company = $deliverable_companies[0];
+                    } else {
+                        // Fallback: Get company from related project
+                        if ($related_project && is_array($related_project) && !empty($related_project)) {
+                            $project_id = $related_project[0];
+                            $project_companies = get_the_terms($project_id, 'company');
+                            if ($project_companies && !is_wp_error($project_companies)) {
+                                $company = $project_companies[0];
+                            }
+                        }
+                    }
+                    
+                    if ($company) :
+                        $logo = get_field('company_logo', 'company_' . $company->term_id);
+                        ?>
+                                                 <div class="meta-item-mobile">
+                             <span class="meta-label">While At:</span>
+                             <a href="<?php echo esc_url(get_term_link($company)); ?>" class="meta-value company-link">
+                                 <?php if ($logo && is_array($logo) && !empty($logo['url'])) : ?>
+                                     <img src="<?php echo esc_url($logo['url']); ?>" alt="<?php echo esc_attr($company->name); ?> logo" class="company-logo-small">
+                                 <?php else : ?>
+                                     <?php echo esc_html($company->name); ?>
+                                 <?php endif; ?>
+                             </a>
+                         </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </section>
 
@@ -19,46 +89,77 @@ get_header(); ?>
             <div class="container">
                 <div class="deliverable-main">
                     <div class="deliverable-description">
-                        <?php the_field('deliverable_description'); ?>
+                        <?php
+                        // Clean and display the deliverable description
+                        $description = get_field('deliverable_description');
+                        if ($description) {
+                            // Strip unwanted CSS classes and clean HTML
+                            $clean_description = clean_deliverable_content($description);
+                            echo $clean_description;
+                        }
+                        ?>
                     </div>
 
                     <?php
-                    // Display deliverable media gallery
+                    // Display deliverable media gallery (images and videos only)
                     $media = get_field('deliverable_media');
-                    if ($media) : ?>
+                    if ($media): ?>
+                        <?php
+                        // Get deliverable featured image to use as video poster if needed
+                        $deliverable_featured = get_field('deliverable_featured_image');
+                        ?>
                         <div class="deliverable-gallery">
-                            <?php foreach ($media as $index => $item) : ?>
-                                <div class="gallery-item" data-index="<?php echo $index; ?>">
-                                    <?php if ($item['type'] === 'image') : ?>
-                                        <img src="<?php echo esc_url($item['url']); ?>" 
-                                             alt="<?php echo esc_attr($item['alt']); ?>"
-                                             class="gallery-image">
-                                    <?php elseif ($item['type'] === 'video') : ?>
-                                        <video controls class="gallery-video">
-                                            <source src="<?php echo esc_url($item['url']); ?>" 
-                                                    type="<?php echo esc_attr($item['mime_type']); ?>">
-                                        </video>
+                            <?php foreach ($media as $index => $item): ?>
+                                <div class="gallery-item" data-index="<?php echo $index; ?>"
+                                    data-type="<?php echo esc_attr($item['type']); ?>">
+                                    <?php if ($item['type'] === 'image'): ?>
+                                        <img src="<?php echo esc_url($item['url']); ?>" alt="<?php echo esc_attr($item['alt']); ?>"
+                                            class="gallery-image">
+                                    <?php elseif ($item['type'] === 'video'): ?>
+                                        <?php if ($deliverable_featured): ?>
+                                            <div class="video-poster-container">
+                                                <img src="<?php echo esc_url($deliverable_featured); ?>" 
+                                                     alt="Video thumbnail"
+                                                     class="video-poster">
+                                                <div class="video-play-overlay">
+                                                    <div class="play-button">
+                                                        <i class="fas fa-play"></i>
+                                                    </div>
+                                                </div>
+                                                <video class="gallery-video" style="display: none;" 
+                                                       data-src="<?php echo esc_url($item['url']); ?>"
+                                                       data-type="<?php echo esc_attr($item['mime_type']); ?>">
+                                                    <source src="<?php echo esc_url($item['url']); ?>"
+                                                            type="<?php echo esc_attr($item['mime_type']); ?>">
+                                                </video>
+                                            </div>
+                                        <?php else: ?>
+                                            <video controls class="gallery-video">
+                                                <source src="<?php echo esc_url($item['url']); ?>"
+                                                        type="<?php echo esc_attr($item['mime_type']); ?>">
+                                            </video>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                 </div>
                             <?php endforeach; ?>
                         </div>
 
-                        <!-- Gallery Overlay -->
+                        <!-- Gallery Overlay for Images and Videos -->
                         <div id="gallery-overlay" class="gallery-overlay">
                             <div class="gallery-overlay-content">
                                 <button class="gallery-close">&times;</button>
-                                <button class="gallery-prev">&lt;</button>
-                                <button class="gallery-next">&gt;</button>
+                                <button class="gallery-prev"><i class="fal fa-chevron-left"></i></button>
+                                <button class="gallery-next"><i class="fal fa-chevron-right"></i></button>
                                 <div class="gallery-carousel">
-                                    <?php foreach ($media as $item) : ?>
-                                        <div class="carousel-item">
-                                            <?php if ($item['type'] === 'image') : ?>
-                                                <img src="<?php echo esc_url($item['url']); ?>" 
-                                                     alt="<?php echo esc_attr($item['alt']); ?>">
-                                            <?php elseif ($item['type'] === 'video') : ?>
-                                                <video controls>
-                                                    <source src="<?php echo esc_url($item['url']); ?>" 
-                                                            type="<?php echo esc_attr($item['mime_type']); ?>">
+                                    <?php foreach ($media as $item): ?>
+                                        <div class="carousel-item" data-type="<?php echo esc_attr($item['type']); ?>">
+                                            <?php if ($item['type'] === 'image'): ?>
+                                                <img src="<?php echo esc_url($item['url']); ?>"
+                                                    alt="<?php echo esc_attr($item['alt']); ?>">
+                                            <?php elseif ($item['type'] === 'video'): ?>
+                                                <video controls <?php echo $deliverable_featured ? 'poster="' . esc_url($deliverable_featured) . '"' : ''; ?>>
+                                                    <source src="<?php echo esc_url($item['url']); ?>"
+                                                        type="<?php echo esc_attr($item['mime_type']); ?>">
                                                 </video>
                                             <?php endif; ?>
                                         </div>
@@ -67,182 +168,89 @@ get_header(); ?>
                             </div>
                         </div>
                     <?php endif; ?>
-                </div>
-
-                <aside class="deliverable-sidebar">
-                    <div class="deliverable-meta-sidebar">
-                        <?php
-                        // Get related project
-                        $related_project = get_field('related_project');
-                        if ($related_project && is_array($related_project) && !empty($related_project)) :
-                            $project_id = $related_project[0];
-                            $project = get_post($project_id);
-                            if ($project && !is_wp_error($project)) :
-                            ?>
-                            <div class="meta-item">
-                                <h6>Related Project</h6>
-                                <div class="meta-content">
-                                    <span><?php echo esc_html($project->post_title); ?></span>
-                                </div>
-                            </div>
-                        <?php 
-                            endif;
-                        endif; ?>
-
-                        <?php
-                        // Get deliverable type
-                        $type = get_field('deliverable_type');
-                        if ($type) :
-                            $type_term = get_term($type, 'deliverable_type');
-                            ?>
-                            <div class="meta-item">
-                                <h6>Type</h6>
-                                <div class="meta-content">
-                                    <span><?php echo esc_html($type_term->name); ?></span>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-
-                        <div class="meta-item">
-                            <h6>Company</h6>
-                            <div class="meta-content">
-                                <?php 
-                                $company_id = get_field('deliverable_company');
-                                if ($company_id) {
-                                    $company = get_term($company_id, 'company');
-                                    if ($company && !is_wp_error($company)) {
-                                        echo '<span>' . esc_html($company->name) . '</span>';
-                                    }
-                                }
-                                ?>
-                            </div>
-                        </div>
-
-                        <?php
-                        // Get deliverable status
-                        $status = get_field('deliverable_status');
-                        if ($status) :
-                            $status_term = get_term($status, 'deliverable_status');
-                            ?>
-                            <div class="meta-item">
-                                <h6>Status</h6>
-                                <div class="meta-content">
-                                    <span><?php echo esc_html($status_term->name); ?></span>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                    </div>
 
                     <?php
-                    // Display tags from taxonomies
-                    $technologies = get_field('deliverable_technologies');
-                    $skills = get_field('deliverable_skills');
-                    $type = get_field('deliverable_type');
-                    $all_tags = [];
+                    // Display PDF document section
+                    $pdf_file = get_field('deliverable_pdf');
+                    $pdf_cover = get_field('pdf_custom_cover');
+                    $pdf_title = get_field('pdf_title');
 
-                    // Add technologies
-                    if ($technologies) {
-                        foreach ($technologies as $tech_id) {
-                            $tech = get_term($tech_id, 'technology');
-                            if ($tech && !is_wp_error($tech)) {
-                                $all_tags[] = [
-                                    'name' => $tech->name,
-                                    'link' => get_term_link($tech),
-                                    'type' => 'technology'
-                                ];
-                            }
-                        }
-                    }
-
-                    // Add skills
-                    if ($skills) {
-                        foreach ($skills as $skill_id) {
-                            $skill = get_term($skill_id, 'skill');
-                            if ($skill && !is_wp_error($skill)) {
-                                $all_tags[] = [
-                                    'name' => $skill->name,
-                                    'link' => get_term_link($skill),
-                                    'type' => 'skill'
-                                ];
-                            }
-                        }
-                    }
-
-                    // Add type
-                    if ($type) {
-                        $type_term = get_term($type, 'deliverable_type');
-                        if ($type_term && !is_wp_error($type_term)) {
-                            $all_tags[] = [
-                                'name' => $type_term->name,
-                                'link' => get_term_link($type_term),
-                                'type' => 'type'
-                            ];
-                        }
-                    }
-
-                    if (!empty($all_tags)) : ?>
-                        <div class="deliverable-tags-sidebar">
-                            <h6>Tags</h6>
-                            <div class="tags-cloud">
-                                <?php foreach ($all_tags as $tag) : ?>
-                                    <a href="<?php echo esc_url($tag['link']); ?>" 
-                                       class="tag tag-<?php echo esc_attr($tag['type']); ?>">
-                                        <?php echo esc_html($tag['name']); ?>
+                    if ($pdf_file): ?>
+                        <div class="deliverable-pdf-section">
+                            <div class="pdf-display">
+                                <div class="pdf-icon-and-title">
+                                                                            <div class="pdf-icon-and-meta">
+                                        <div class="pdf-cover">
+                                            <?php if ($pdf_cover): ?>
+                                                <img src="<?php echo esc_url($pdf_cover['url']); ?>"
+                                                    alt="<?php echo esc_attr($pdf_cover['alt'] ?: 'PDF Cover'); ?>"
+                                                    class="pdf-custom-cover">
+                                            <?php else: ?>
+                                                <div class="pdf-default-cover">
+                                                    <svg viewBox="20 30 140 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <!-- Document background -->
+                                                        <rect x="20" y="30" width="140" height="180" rx="8" fill="#f8f9fa"
+                                                            stroke="#343a40" stroke-width="2" />
+                                                        <!-- Folded corner -->
+                                                        <path d="M130 30 L160 60 L130 60 Z" fill="#dee2e6" stroke="#343a40"
+                                                            stroke-width="2" />
+                                                        <!-- PDF text -->
+                                                        <text x="90" y="130" font-family="Arial, sans-serif" font-size="20"
+                                                            font-weight="bold" text-anchor="middle" fill="#495057">PDF</text>
+                                                        <!-- Document lines -->
+                                                        <line x1="35" y1="150" x2="145" y2="150" stroke="#6c757d"
+                                                            stroke-width="2" />
+                                                        <line x1="35" y1="165" x2="125" y2="165" stroke="#6c757d"
+                                                            stroke-width="2" />
+                                                        <line x1="35" y1="180" x2="135" y2="180" stroke="#6c757d"
+                                                            stroke-width="2" />
+                                                    </svg>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        <p class="pdf-meta">
+                                            <span class="pdf-filesize"><?php echo size_format($pdf_file['filesize']); ?></span>
+                                            <span class="pdf-separator">•</span>
+                                            <span class="pdf-type">PDF</span>
+                                        </p>
+                                    </div>
+                                    <?php if ($pdf_title): ?>
+                                        <div class="pdf-title">
+                                            <h4><?php echo esc_html($pdf_title); ?></h4>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="pdf-actions">
+                                    <a href="<?php echo esc_url($pdf_file['url']); ?>" target="_blank" class="pdf-view-btn" rel="noopener noreferrer">
+                                        View PDF
+                                        <i class="fa-light fa-arrow-up-right-from-square"></i>
                                     </a>
-                                <?php endforeach; ?>
+                                    <a href="<?php echo esc_url($pdf_file['url']); ?>" download class="pdf-download-btn">
+                                        Download
+                                        <i class="fa-light fa-down-to-line"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     <?php endif; ?>
+                </div>
 
-                    <div class="related-deliverables">
-                        <h3>Related Deliverables</h3>
-                        <?php
-                        // Get related deliverables based on taxonomies
-                        $related_args = [
-                            'post_type' => 'deliverable',
-                            'posts_per_page' => 3,
-                            'post__not_in' => [get_the_ID()],
-                            'tax_query' => [
-                                'relation' => 'OR',
-                                [
-                                    'taxonomy' => 'technology',
-                                    'field' => 'term_id',
-                                    'terms' => $technologies,
-                                ],
-                                [
-                                    'taxonomy' => 'skill',
-                                    'field' => 'term_id',
-                                    'terms' => $skills,
-                                ],
-                                [
-                                    'taxonomy' => 'deliverable_type',
-                                    'field' => 'term_id',
-                                    'terms' => [$type],
-                                ],
-                            ],
-                        ];
-                        $related_query = new WP_Query($related_args);
-
-                        if ($related_query->have_posts()) :
-                            while ($related_query->have_posts()) : $related_query->the_post(); ?>
-                                <a href="<?php the_permalink(); ?>" class="related-deliverable">
-                                    <h4><?php the_title(); ?></h4>
-                                    <?php
-                                    $type = get_field('deliverable_type');
-                                    if ($type) :
-                                        $type_term = get_term($type, 'deliverable_type');
-                                        echo '<span class="type">' . esc_html($type_term->name) . '</span>';
-                                    endif;
-                                    ?>
-                                </a>
-                            <?php endwhile;
-                            wp_reset_postdata();
-                        endif; ?>
-                    </div>
-                </aside>
+                <?php
+                // Include the flexible sidebar
+                get_template_part('partials/project-sidebar', null, [
+                    'context' => 'deliverable',
+                    'config' => [
+                        'show_meta' => true,
+                        'show_tags' => true,
+                        'show_related' => true,
+                        'related_count' => 3,
+                        'sidebar_class' => 'deliverable-layout-sidebar'
+                    ]
+                ]);
+                ?>
             </div>
         </section>
     <?php endwhile; ?>
 </main>
 
-<?php get_footer(); ?> 
+<?php get_footer(); ?>

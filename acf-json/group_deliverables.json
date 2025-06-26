@@ -15,70 +15,60 @@
             "multiple": 0
         },
         {
-            "key": "field_deliverable_company",
-            "label": "Company",
-            "name": "deliverable_company",
-            "type": "taxonomy",
-            "instructions": "Select the company this deliverable is for",
-            "required": 1,
-            "taxonomy": "company",
-            "field_type": "select",
-            "allow_null": 0,
-            "return_format": "id",
-            "multiple": 0
-        },
-        {
-            "key": "field_deliverable_type",
-            "label": "Deliverable Type",
-            "name": "deliverable_type",
-            "type": "taxonomy",
-            "instructions": "Select the type of deliverable",
-            "required": 1,
-            "taxonomy": "deliverable_type",
-            "field_type": "select",
-            "allow_null": 0,
-            "return_format": "id",
-            "multiple": 0
-        },
-        {
-            "key": "field_deliverable_tags",
-            "label": "Tags",
-            "name": "deliverable_tags",
-            "type": "taxonomy",
-            "instructions": "Select or add tags for this deliverable",
+            "key": "field_deliverable_featured_image",
+            "label": "Deliverable Featured Image",
+            "name": "deliverable_featured_image",
+            "aria-label": "",
+            "type": "file",
+            "instructions": "Upload a featured image to represent this deliverable (e.g., a screenshot or preview).",
             "required": 0,
-            "taxonomy": "project_tag",
-            "field_type": "multi_select",
-            "allow_null": 0,
-            "return_format": "id",
-            "multiple": 1
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "url",
+            "library": "all",
+            "min_size": "",
+            "max_size": "",
+            "mime_types": "jpg, png, webp",
+            "allow_in_bindings": 0
+        },
+
+        {
+            "key": "field_deliverable_description",
+            "label": "Deliverable Description",
+            "name": "deliverable_description",
+            "type": "wysiwyg",
+            "instructions": "Provide a detailed description of this deliverable",
+            "required": 1,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0
         },
         {
-            "key": "field_deliverable_technologies",
-            "label": "Technologies Used",
-            "name": "deliverable_technologies",
-            "type": "taxonomy",
-            "instructions": "Select the technologies used in this deliverable",
+            "key": "field_deliverable_excerpt",
+            "label": "Deliverable Excerpt",
+            "name": "deliverable_excerpt",
+            "type": "textarea",
+            "instructions": "Brief description for card preview (1-2 sentences)",
             "required": 1,
-            "taxonomy": "technology",
-            "field_type": "checkbox",
-            "allow_null": 0,
-            "return_format": "id",
-            "multiple": 1
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "rows": 3,
+            "new_lines": "br"
         },
-        {
-            "key": "field_deliverable_skills",
-            "label": "Skills Applied",
-            "name": "deliverable_skills",
-            "type": "taxonomy",
-            "instructions": "Select the skills applied in this deliverable",
-            "required": 1,
-            "taxonomy": "skill",
-            "field_type": "checkbox",
-            "allow_null": 0,
-            "return_format": "id",
-            "multiple": 1
-        },
+
         {
             "key": "field_deliverable_media",
             "label": "Deliverable Media",
@@ -94,17 +84,69 @@
             "max": "",
             "mime_types": "jpg, png, webp, mp4, webm"
         },
+
         {
-            "key": "field_deliverable_description",
-            "label": "Detailed Description",
-            "name": "deliverable_description",
-            "type": "wysiwyg",
-            "instructions": "Provide a detailed description of this deliverable",
-            "required": 1,
-            "tabs": "all",
-            "toolbar": "full",
-            "media_upload": 1,
-            "delay": 0
+            "key": "field_deliverable_pdf",
+            "label": "PDF Document",
+            "name": "deliverable_pdf",
+            "type": "file",
+            "instructions": "Upload a PDF document for this deliverable (optional)",
+            "required": 0,
+            "return_format": "array",
+            "library": "all",
+            "mime_types": "pdf",
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+
+        {
+            "key": "field_pdf_title",
+            "label": "PDF Title",
+            "name": "pdf_title",
+            "type": "text",
+            "instructions": "Optional: Custom title for the PDF document (if not provided, the filename will be used)",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_deliverable_pdf",
+                        "operator": "!=empty"
+                    }
+                ]
+            ]
+        },
+
+        {
+            "key": "field_pdf_custom_cover",
+            "label": "PDF Custom Cover Image",
+            "name": "pdf_custom_cover",
+            "type": "image",
+            "instructions": "Optional: Upload a custom cover image for the PDF. If not provided, a default PDF icon will be used.",
+            "required": 0,
+            "return_format": "array",
+            "preview_size": "medium",
+            "library": "all",
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_deliverable_pdf",
+                        "operator": "!=empty"
+                    }
+                ]
+            ]
         }
     ],
     "location": [
@@ -121,8 +163,14 @@
     "style": "default",
     "label_placement": "top",
     "instruction_placement": "label",
-    "hide_on_screen": "",
+    "hide_on_screen": [
+        "the_content",
+        "categories",
+        "tags",
+        "featured_image"
+    ],
     "active": true,
     "description": "",
-    "show_in_rest": 0
+    "show_in_rest": 0,
+    "modified": 1750724700
 } 

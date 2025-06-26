@@ -16,7 +16,12 @@ html, body {
 }
 
 html {
-  font-size: vars.$base-font-size;
+  // Responsive base font-size: 16px on mobile, 18px on desktop
+  font-size: vars.$base-font-size-mobile;
+  
+  @media (min-width: 768px) {
+    font-size: vars.$base-font-size-desktop;
+  }
 }
 
 body {

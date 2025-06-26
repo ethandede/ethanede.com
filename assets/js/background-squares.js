@@ -75,6 +75,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Select the SVG element that contains the animated squares
   const svg = document.querySelector('.animated-squares');
+  
+  // Only proceed if SVG element exists
+  if (!svg) {
+    console.log('Background animation SVG not found - skipping animation');
+    return;
+  }
+  
   const numSquares = 15;
   const svgWidth = 1920;
   const svgHeight = 1080;

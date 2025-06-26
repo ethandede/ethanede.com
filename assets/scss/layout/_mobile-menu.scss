@@ -52,7 +52,7 @@
     }
   }
 
-  .mobile-nav-links {
+  &__links {
     list-style: none;
     margin: 0;
     padding: 2rem;
@@ -131,7 +131,7 @@
   }
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 769px) {
   .mobile-menu {
     display: none;
   }

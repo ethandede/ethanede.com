@@ -8,18 +8,19 @@
 @use 'base/typography';
 
 // Components
+@use 'components/card';
 @use 'components/buttons';
-@use 'components/logoBanner';
+@use 'components/logo-banner';
 @use 'components/color-controls';
+@use 'components/sidebar';
 
 // Layout
 @use 'layout/header';
 @use 'layout/footer';
-@use 'layout/siteNav';
-@use 'layout/mobileMenu';
-@use 'layout/projectCards';
-@use 'layout/persistentCTA';
-@use 'layout/backgroundAnimation';
+@use 'layout/site-nav';
+@use 'layout/mobile-menu';
+@use 'layout/persistent-cta';
+@use 'layout/background-animation';
 
 // Pages
 @use 'pages/home';
@@ -32,8 +33,8 @@
 @use 'pages/single';
 @use 'pages/single-project';
 @use 'pages/single-deliverable';
-@use 'pages/sudoku';
-@use 'pages/technology-archive';
+
+@use 'pages/work-archive';
 
 // Tailwind
 @tailwind base;
@@ -44,3 +45,4 @@
 .container {
   @include mixins.container;
 }
+

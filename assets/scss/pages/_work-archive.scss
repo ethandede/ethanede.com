@@ -1,0 +1,216 @@
+@use '../abstracts/variables' as vars;
+@use '../abstracts/breakpoints';
+@use '../abstracts/mixins';
+
+// =============================================================================
+// WORK ARCHIVE PAGE STYLES
+// Layout, filters, and grid for page-work.php
+// Cards now use master card system in components/_card.scss
+// =============================================================================
+
+#work-archive {
+  min-height: 100vh;
+  background: var(--background-color);
+  color: var(--text-primary);
+}
+
+// =============================================================================
+// WORK HEADER SECTION
+// =============================================================================
+
+.work-header {
+  padding: 6rem 0 4rem;
+  background: linear-gradient(135deg, var(--background-color) 0%, var(--surface-color) 100%);
+  
+  @include breakpoints.md {
+    padding: 4rem 0 3rem;
+  }
+
+  .container {
+    @include mixins.container;
+    text-align: center;
+  }
+
+  h1 {
+    // Using base typography - no font-size override needed
+    color: var(--heading-color);
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  .supporting-text {
+    // Using base typography - inherits font-size, adds layout-specific styling
+    margin-bottom: 3rem;
+    max-width: 600px;
+    
+    @include breakpoints.md {
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+// =============================================================================
+// WORK FILTERS
+// =============================================================================
+
+.work-filters {
+  margin-top: 2rem;
+  
+  .filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: end;
+    max-width: 1000px;
+    margin: 0 auto;
+    
+    @include breakpoints.md {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 180px;
+    
+    @include breakpoints.md {
+      min-width: auto;
+      width: 100%;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: vars.$font-sm;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+
+      i {
+        font-size: vars.$font-xs;
+        color: var(--accent-color);
+      }
+    }
+
+    select {
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: var(--surface-color);
+      color: var(--text-primary);
+      font-size: vars.$font-sm;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.1);
+      }
+    }
+  }
+
+  .filter-reset {
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    font-size: vars.$font-sm;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: none;
+      }
+    }
+
+    i {
+      font-size: vars.$font-xs;
+      color: var(--accent-color);
+    }
+
+    @include breakpoints.md {
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+// =============================================================================
+// WORK GRID SECTION
+// =============================================================================
+
+.work-grid {
+  padding: 4rem 0;
+
+  @include breakpoints.md {
+    padding: 3rem 0;
+  }
+
+  .container {
+    @include mixins.container;
+  }
+}
+
+.work-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+
+  @include breakpoints.md {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+// =============================================================================
+// NO RESULTS MESSAGE
+// =============================================================================
+
+.no-work-found {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+  font-size: vars.$font-lg;
+  background: var(--surface-color);
+  border-radius: 12px;
+  margin: 2rem 0;
+  grid-column: 1 / -1;
+} 

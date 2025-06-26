@@ -16,6 +16,11 @@
       margin: 0 auto;
       grid-auto-rows: minmax(400px, auto); // Minimum height with ability to grow
       grid-auto-rows: 1fr; // Makes all rows equal height
+      
+      // Support for new master card system
+      .card {
+        height: 100%;
+      }
     }
 
     .portfolio-link {
@@ -31,7 +36,8 @@
       border-radius: 8px;
       text-align: left;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      // CSS transition removed - JavaScript handles all hover animations now
+      // transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
       display: flex;
       flex-direction: column;
       height: 100%; // Take up full height of grid cell
@@ -46,13 +52,13 @@
         height: 25%; // Adjust this height as needed
         background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
         z-index: 5; // Should be below the tags (which have a higher z-index)
-        pointer-events: none;
       }
 
-      &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-      }
+      // CSS hover removed - JavaScript handles all hover animations now
+      // &:hover {
+      //   transform: translateY(-5px);
+      //   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      // }
 
       img {
         width: 100%;
@@ -123,7 +129,6 @@
         justify-content: center;
         opacity: 0;
         transition: opacity 0.3s ease;
-        pointer-events: none;
 
         i {
           font-size: 2.5rem;
@@ -132,15 +137,16 @@
         }
       }
 
-      &:hover {
-        .portfolio-overlay {
-          opacity: 0.15;
-          filter: grayscale(100%);
-        }
-        img {
-          filter: grayscale(100%);
-        }
-      }
+      // CSS hover removed - JavaScript handles all hover animations now
+      // &:hover {
+      //   .portfolio-overlay {
+      //     opacity: 0.15;
+      //     filter: grayscale(100%);
+      //   }
+      //   img {
+      //     filter: grayscale(100%);
+      //   }
+      // }
 
       .portfolio-tags {
         position: absolute;
@@ -158,7 +164,7 @@
           color: #fff;
           padding: 4px 10px;
           font-size: vars.$font-xxs;
-          border-radius: 15px;
+          border-radius: 2rem;
           text-transform: uppercase;
           font-weight: bold;
           letter-spacing: 0.5px;

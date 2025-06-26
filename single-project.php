@@ -8,41 +8,13 @@
 get_header();
 ?>
 
-<!-- Background Animation Container -->
-<div class="background-animation">
-  <svg class="animated-squares" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice"></svg>
-</div>
-
-<!-- Navigation -->
-<?php get_template_part('partials/site-navigation'); ?>
-
-<!-- Mobile Menu Overlay -->
-<div class="mobile-menu">
-  <ul class="mobile-nav-links">
-    <li><a href="<?php echo home_url(); ?>" class="text-semibold">Home</a></li>
-    <li><a href="<?php echo home_url(); ?>#about" class="text-semibold">About</a></li>
-    <li><a href="<?php echo home_url(); ?>#skills" class="text-semibold">Skills & Experience</a></li>
-    <li><a href="<?php echo home_url(); ?>#contact" class="contact-trigger text-semibold">Contact</a></li>
-  </ul>
-</div>
-
-<!-- Color controls UI -->
-<?php get_template_part('partials/color-controls'); ?>
-
 <main class="main single-project">
     <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
         <!-- Hero Section -->
         <section class="hero">
             <div class="container">
                 <div class="hero__content">
-                    <h1 class="hero__title text-gray-900"><?php echo esc_html(get_field('project_title')); ?></h1>
-                    <?php 
-                    $company_terms = get_the_terms(get_the_ID(), 'company');
-                    if ($company_terms && !is_wp_error($company_terms)) : 
-                        $company = $company_terms[0]; // Get the first company term
-                    ?>
-                        <h2 class="hero__subtitle text-primary"><?php echo esc_html($company->name); ?></h2>
-                    <?php endif; ?>
+                    <h1 class="hero__title text-gray-900"><?php echo esc_html(get_the_title()); ?></h1>
                 </div>
             </div>
         </section>
@@ -50,137 +22,102 @@ get_header();
         <!-- Project Content -->
         <section class="single-layout">
             <div class="container">
-                <article class="single-main">
-                    <?php if ($featured_media = get_field('featured_media')) : ?>
-                        <div class="project-featured-media">
-                            <?php
-                            $file_type = wp_check_filetype($featured_media);
-                            if (strpos($file_type['type'], 'video') !== false) : ?>
-                                <video class="project-featured-video" controls>
-                                    <source src="<?php echo esc_url($featured_media); ?>" type="<?php echo esc_attr($file_type['type']); ?>">
-                                    Your browser does not support the video tag.
-                                </video>
-                            <?php else : ?>
-                                <img src="<?php echo esc_url($featured_media); ?>" 
-                                     alt="<?php echo esc_attr(get_field('project_title')); ?>" 
-                                     class="project-featured-image">
-                            <?php endif; ?>
+                <div class="single-content-wrapper">
+                    <article class="single-main">
+                        <div class="project-description">
+                            <h2>Overview</h2>
+                            <?php echo wp_kses_post(get_field('project_description')); ?>
                         </div>
-                    <?php endif; ?>
 
-                    <div class="project-header">
-                        <?php 
-                        if ($company_terms && !is_wp_error($company_terms)) :
-                            $company = $company_terms[0];
-                            $company_logo = get_field('company_logo', 'company_' . $company->term_id);
-                            if ($company_logo) : ?>
-                                <div class="company-logo">
-                                    <img src="<?php echo esc_url($company_logo['url']); ?>" 
-                                         alt="<?php echo esc_attr($company_logo['alt']); ?>" 
-                                         class="company-logo__image">
-                                </div>
-                            <?php endif; ?>
-
-                            <div class="company-description">
-                                <?php echo wp_kses_post($company->description); ?>
+                        <?php if ($featured_media = get_field('featured_media')) : ?>
+                            <div class="project-featured-media">
+                                <?php
+                                $file_type = wp_check_filetype($featured_media);
+                                if (strpos($file_type['type'], 'video') !== false) : ?>
+                                    <video class="project-featured-video" controls>
+                                        <source src="<?php echo esc_url($featured_media); ?>" type="<?php echo esc_attr($file_type['type']); ?>">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                <?php else : ?>
+                                    <img src="<?php echo esc_url($featured_media); ?>" 
+                                         alt="<?php echo esc_attr(get_field('project_title')); ?>" 
+                                         class="project-featured-image">
+                                <?php endif; ?>
                             </div>
                         <?php endif; ?>
-                    </div>
 
-                    <div class="project-description">
-                        <?php echo wp_kses_post(get_field('role_description')); ?>
-                    </div>
-
-                    <?php if ($key_responsibilities = get_field('key_responsibilities')) : ?>
-                        <div class="project-responsibilities">
-                            <h3>Key Responsibilities</h3>
-                            <ul>
-                                <?php foreach ($key_responsibilities as $responsibility) : ?>
-                                    <li><?php echo esc_html($responsibility['responsibility']); ?></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if ($deliverables = get_field('deliverables')) : ?>
-                        <div class="project-deliverables">
-                            <h3>Deliverables</h3>
-                            <div class="deliverables-grid">
-                                <?php foreach ($deliverables as $deliverable) : 
-                                    $type = $deliverable['deliverable_type'];
-                                    switch ($type) :
-                                        case 'Image' :
-                                        case 'Video' :
-                                            if ($file = $deliverable['deliverable_file']) : ?>
-                                                <div class="deliverable-item">
-                                                    <?php if ($type === 'Video') : ?>
-                                                        <video controls>
-                                                            <source src="<?php echo esc_url($file['url']); ?>" type="<?php echo esc_attr($file['mime_type']); ?>">
-                                                            Your browser does not support the video tag.
-                                                        </video>
-                                                    <?php else : ?>
-                                                        <img src="<?php echo esc_url($file['url']); ?>" 
-                                                             alt="<?php echo esc_attr($file['title']); ?>">
-                                                    <?php endif; ?>
-                                                </div>
-                                            <?php endif;
-                                            break;
-                                        case 'PDF' :
-                                            if ($pdf = $deliverable['deliverable_pdf']) : ?>
-                                                <div class="deliverable-item">
-                                                    <a href="<?php echo esc_url($pdf['url']); ?>" target="_blank" rel="noopener noreferrer" class="text-primary">
-                                                        <i class="fas fa-file-pdf"></i>
-                                                        <?php echo esc_html($pdf['title']); ?>
-                                                    </a>
-                                                </div>
-                                            <?php endif;
-                                            break;
-                                        case 'Link' :
-                                            if ($url = $deliverable['deliverable_url']) : ?>
-                                                <div class="deliverable-item">
-                                                    <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener noreferrer" class="text-primary">
-                                                        <i class="fas fa-external-link-alt"></i>
-                                                        <?php echo esc_url($url); ?>
-                                                    </a>
-                                                </div>
-                                            <?php endif;
-                                            break;
-                                    endswitch;
-                                endforeach; ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                    <div class="project-meta">
-                        <?php
-                        // Display Project Categories
-                        $categories = get_the_terms(get_the_ID(), 'project_category');
-                        if ($categories && !is_wp_error($categories)) : ?>
-                            <div class="project-meta__item project-categories">
-                                <h3 class="project-meta__title">Categories</h3>
-                                <div class="project-meta__terms">
-                                    <?php foreach ($categories as $category) : ?>
-                                        <span class="project-meta__term text-primary"><?php echo esc_html($category->name); ?></span>
+                        <?php if ($key_responsibilities = get_field('key_responsibilities')) : ?>
+                            <div class="project-responsibilities">
+                                <h3>Key Responsibilities</h3>
+                                <ul>
+                                    <?php foreach ($key_responsibilities as $responsibility) : ?>
+                                        <li><?php echo esc_html($responsibility['responsibility']); ?></li>
                                     <?php endforeach; ?>
-                                </div>
+                                </ul>
                             </div>
                         <?php endif; ?>
 
-                        <?php
-                        // Display Project Tags
-                        $tags = get_the_terms(get_the_ID(), 'project_tag');
-                        if ($tags && !is_wp_error($tags)) : ?>
-                            <div class="project-meta__item project-tags">
-                                <h3 class="project-meta__title">Tags</h3>
-                                <div class="project-meta__terms">
-                                    <?php foreach ($tags as $tag) : ?>
-                                        <span class="project-meta__term text-primary"><?php echo esc_html($tag->name); ?></span>
-                                    <?php endforeach; ?>
+                        <?php if ($deliverables = get_field('project_deliverables')) : ?>
+                            <div class="project-deliverables">
+                                <h3>Related Deliverables</h3>
+                                <div class="deliverables-grid">
+                                    <?php foreach ($deliverables as $deliverable) : 
+                                        // Get deliverable media for master card system
+                                        $featured_media = '';
+                                        if (has_post_thumbnail($deliverable->ID)) {
+                                            $featured_media = get_the_post_thumbnail_url($deliverable->ID, 'medium');
+                                        } else {
+                                            $media = get_field('deliverable_media', $deliverable->ID);
+                                            if ($media && !empty($media)) {
+                                                $first_media = $media[0];
+                                                if ($first_media['type'] === 'image') {
+                                                    $featured_media = $first_media['sizes']['medium'] ?? $first_media['url'];
+                                                }
+                                            }
+                                        }
+                                        
+                                        // Get deliverable excerpt
+                                        $excerpt = get_field('deliverable_excerpt', $deliverable->ID);
+                                        $description = $excerpt ?: get_the_excerpt($deliverable->ID);
+                                        
+                                        // Get deliverable type for tags
+                                        $tags = [];
+                                        $type = get_field('deliverable_type', $deliverable->ID);
+                                        if ($type) {
+                                            $type_term = get_term($type, 'deliverable_type');
+                                            if ($type_term && !is_wp_error($type_term)) {
+                                                $tags[] = get_singular_term_display_name($type_term->name);
+                                            }
+                                        }
+                                        
+                                                                // Use master card system for project deliverables
+                        ee_render_deliverable_card($deliverable->ID, 'single', [
+                            'image_url' => $featured_media,
+                            'image_alt' => $deliverable->post_title,
+                            'title' => $deliverable->post_title,
+                            'description' => $description,
+                            'tags' => $tags
+                        ]);
+                                    endforeach; ?>
                                 </div>
                             </div>
                         <?php endif; ?>
-                    </div>
-                </article>
+                    </article>
+
+                    <?php 
+                    // Include the flexible sidebar
+                    get_template_part('partials/project-sidebar', null, [
+                        'context' => 'project',
+                        'config' => [
+                            'show_meta' => true,
+                            'show_tags' => true,
+                            'show_related' => true,
+                            'related_count' => 5,
+                            'sidebar_class' => 'project-layout-sidebar'
+                        ]
+                    ]); 
+                    ?>
+                </div>
             </div>
         </section>
     <?php endwhile; else : ?>

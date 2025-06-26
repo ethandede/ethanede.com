@@ -13,10 +13,9 @@ module.exports = {
         'primary': 'var(--primary-color)',
         'secondary': 'var(--secondary-color)',
         'accent': 'var(--accent-color)',
-        'background': 'var(--background-color)',
-        'background-secondary': 'var(--background-secondary)',
-        'text-primary': 'var(--text-primary)',
-        'text-secondary': 'var(--text-secondary)',
+        'accent-light': 'var(--accent-color-light)',
+        'highlight': 'var(--highlight-color)',
+        'initial': 'var(--initial-color)',
       },
       fontFamily: {
         'sans': ['Open Sans', 'sans-serif'],

@@ -1,0 +1,143 @@
+# Cursor Rules - Coding Standards & Best Practices
+
+## General Principles
+- Write clean, readable, and maintainable code
+- Use meaningful and descriptive variable/function names
+- Prefer explicit over implicit behavior
+- Follow DRY (Don't Repeat Yourself) principle
+- Write self-documenting code with clear comments when needed
+- Use consistent indentation (2 spaces for web files, 4 for PHP)
+- Always handle error cases and edge conditions
+- Optimize for readability first, performance second
+
+## JavaScript/TypeScript Rules
+- Use `const` by default, `let` when reassignment needed, avoid `var`
+- Use arrow functions for short functions and callbacks
+- Prefer template literals over string concatenation
+- Use async/await instead of Promise chains when possible
+- Always use semicolons
+- Use camelCase for variables and functions
+- Use PascalCase for classes and constructors
+- Add JSDoc comments for complex functions
+- Prefer destructuring for objects and arrays
+- Use modern ES6+ features when appropriate
+- Always use strict equality (===) instead of loose equality (==)
+
+## PHP Rules (WordPress)
+- Follow WordPress PHP Coding Standards
+- Use snake_case for variable names and function names
+- Use PascalCase for class names
+- Always sanitize and validate user input
+- Use WordPress functions instead of native PHP when available
+- Add proper WordPress hooks and filters
+- Include proper error handling with wp_die() or wp_error
+- Use WordPress nonces for security
+- Follow WordPress file header standards
+- Use proper WordPress database methods ($wpdb)
+- Escape output with esc_html(), esc_attr(), etc.
+
+## CSS/SCSS Rules
+- Use BEM methodology for class naming (.block__element--modifier)
+- Use CSS custom properties (variables) for reusable values
+- Follow mobile-first responsive design approach
+- Use semantic HTML elements
+- Prefer CSS Grid and Flexbox over floats
+- Use consistent spacing units (rem/em over px when appropriate)
+- Group related properties together
+- Use shorthand properties when possible
+- Avoid !important unless absolutely necessary
+- Use meaningful class names that describe purpose, not appearance
+- Organize styles logically (base → components → pages)
+- Use proper vendor prefixes when needed
+
+## HTML Rules
+- Use semantic HTML5 elements
+- Always include alt attributes for images
+- Use proper heading hierarchy (h1 → h6)
+- Include ARIA attributes for accessibility
+- Use meaningful class and ID names
+- Validate HTML structure
+- Use proper form labels and input types
+- Keep HTML clean and free of inline styles
+
+## WordPress Specific
+- Use WordPress hooks (actions/filters) properly
+- Follow WordPress theme hierarchy
+- Use wp_enqueue_script() and wp_enqueue_style() for assets
+- Implement proper WordPress security measures
+- Use WordPress coding standards for file organization
+- Add proper theme support features
+- Use WordPress customizer for theme options
+- Follow WordPress accessibility guidelines
+- Use proper WordPress template tags
+- Implement proper WordPress loop structure
+
+## File Organization
+- Use consistent file and folder naming conventions
+- Group related files together
+- Use descriptive file names
+- Keep files focused on single responsibility
+- Organize assets logically (css/, js/, images/, etc.)
+- Use proper file extensions
+- Keep configuration files in root directory
+- Use kebab-case for JavaScript file names (e.g., portfolio-hover.js, mobile-menu.js)
+- Use kebab-case for SCSS file names with underscore prefix for partials (e.g., _mobile-menu.scss, _project-cards.scss)
+- Use camelCase for JavaScript variables and functions within files
+
+## Documentation
+- Add README files for complex features
+- Use inline comments for complex logic
+- Document function parameters and return values
+- Include usage examples for custom functions
+- Keep documentation up to date with code changes
+- Use clear and concise language
+
+## Security Best Practices
+- Always validate and sanitize user input
+- Use prepared statements for database queries
+- Implement proper authentication and authorization
+- Use HTTPS for sensitive data
+- Keep dependencies up to date
+- Follow principle of least privilege
+- Implement proper error handling without exposing sensitive info
+
+## Performance Guidelines
+- Optimize images and assets
+- Minimize HTTP requests
+- Use proper caching strategies
+- Minimize and compress CSS/JS files
+- Use lazy loading for images when appropriate
+- Avoid unnecessary database queries
+- Use efficient algorithms and data structures
+
+## Version Control
+- Write meaningful commit messages
+- Use present tense in commit messages ("Add feature" not "Added feature")
+- Keep commits focused on single changes
+- Use feature branches for new development
+- Review code before merging
+- Tag releases properly
+
+## Testing & Quality Assurance
+- Test code across different browsers and devices
+- Validate HTML and CSS
+- Test for accessibility compliance
+- Check for console errors
+- Test with different user permissions (WordPress)
+- Verify responsive design works properly
+
+## Error Handling
+- Always handle potential errors gracefully
+- Provide meaningful error messages to users
+- Log errors appropriately for debugging
+- Use try-catch blocks for risky operations
+- Validate data before processing
+- Provide fallback options when possible
+
+## Comments & Documentation
+- Explain WHY, not just WHAT
+- Update comments when code changes
+- Remove outdated or obvious comments
+- Use TODO comments for future improvements
+- Document complex algorithms or business logic
+- Include examples in function documentation 

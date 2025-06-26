@@ -7,11 +7,6 @@
 get_header();
 ?>
 
-<!-- Background Animation Container -->
-<div class="background-animation">
-  <svg class="animated-squares" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice"></svg>
-</div>
-
 <main id="main" class="site-main">
     
     <div class="container">
@@ -23,9 +18,6 @@ get_header();
     </div>
   </div>
 
-  <!-- Color controls UI -->
-  <?php get_template_part('partials/color-controls'); ?>
-
   <!-- Hero Section -->
   <section class="hero">
     <div class="container">
@@ -35,7 +27,7 @@ get_header();
         <span class="rotating-word-break"><br></span>
         <span class="rotating-word"></span>
       </h1>
-      <p class="supporting-text">I'm a digital strategist with over 20 years of experience blending technology, creativity, and marketing to build web experiences that deliver results.</p>
+                      <p class="supporting-text">I'm a digital strategist with over 20 years of experience blending tools, creativity, and marketing to build web experiences that deliver results.</p>
       <a href="#contact" class="hero-button cta-button text-semibold">Let's work together <i class="fa fa-arrow-right"></i></a>
     </div>
   </section>
@@ -55,7 +47,7 @@ get_header();
           <p>Collaborating with designers and developers to craft intuitive, user-focused digital experiences that balance aesthetics with seamless functionality.</p>
         </div>
         <div class="item">
-          <h4 class="text-primary">Development + Engineering</h4>
+          <h4 class="text-primary">Development</h4>
           <p>Working solo, with contractors, and/or internal teams to build robust, scalable solutions using modern technologies, ensuring innovative ideas come to life reliably.</p>
         </div>
         <div class="item">
@@ -133,92 +125,98 @@ get_header();
       <p class="supporting-text">My approach is rooted in collaboration, communication, and a commitment to shared success. I thrive in team environments, bringing clarity, creativity, and technical expertise to every project. Below are examples of how I've worked with teams to solve real-world challenges and deliver results.</p>
       <div class="portfolio-grid">
         <?php
-        // Get all project categories
+        // Get all project categories ordered by ACF field_display_order field
         $categories = get_terms([
           'taxonomy' => 'project_category',
           'hide_empty' => false,
-          'orderby' => 'name',
+          'meta_key' => 'field_display_order',
+          'orderby' => 'meta_value_num',
           'order' => 'ASC',
           'fields' => 'all'
         ]);
+        
+        // Fallback to name ordering if no field_display_order field is set
+        if (empty($categories)) {
+          $categories = get_terms([
+            'taxonomy' => 'project_category',
+            'hide_empty' => false,
+            'orderby' => 'name',
+            'order' => 'ASC',
+            'fields' => 'all'
+          ]);
+        }
 
         if (!empty($categories) && !is_wp_error($categories)) :
           foreach ($categories as $category) :
-            // Get the category image from ACF
+            // Get the category image from ACF field on the taxonomy term
             $category_image = get_field('category_image', 'project_category_' . $category->term_id);
             
-            // Fallback to first project image if no category image is set
-            if (!$category_image) {
-              $projects = get_posts([
-                'post_type' => 'project',
-                'posts_per_page' => 1,
-                'tax_query' => [
-                  [
-                    'taxonomy' => 'project_category',
-                    'field' => 'term_id',
-                    'terms' => $category->term_id,
-                  ],
-                ],
-              ]);
-
-              if (!empty($projects)) {
-                $featured_media = get_field('featured_media', $projects[0]->ID);
-                if ($featured_media) {
-                  $category_image = $featured_media;
+            // Find the corresponding regular post for linking by slug
+            // Try multiple slug variations to find matching post
+            $slug_variations = [];
+            
+            // Standard slug conversion
+            $slug_variations[] = sanitize_title($category->name);
+            
+            // Replace & with "and" - handle different spacing patterns
+            if (strpos($category->name, '&') !== false) {
+              // Clean the name first to avoid double encoding
+              $clean_name = html_entity_decode($category->name, ENT_QUOTES, 'UTF-8');
+              $slug_variations[] = sanitize_title(str_replace('&', 'and', $clean_name));
+              $slug_variations[] = sanitize_title(str_replace(' & ', ' and ', $clean_name));
+              $slug_variations[] = sanitize_title(str_replace(' & ', '-and-', $clean_name));
+            }
+            
+            // Replace + with "and" 
+            if (strpos($category->name, '+') !== false) {
+              $clean_name = html_entity_decode($category->name, ENT_QUOTES, 'UTF-8');
+              $slug_variations[] = sanitize_title(str_replace('+', 'and', $clean_name));
+              $slug_variations[] = sanitize_title(str_replace(' + ', ' and ', $clean_name));
+              $slug_variations[] = sanitize_title(str_replace(' + ', '-and-', $clean_name));
+            }
+            
+            // Try each slug variation
+            $category_post = [];
+            foreach ($slug_variations as $slug) {
+              if (!empty($slug)) {
+                $category_post = get_posts([
+                  'post_type' => 'post',
+                  'posts_per_page' => 1,
+                  'name' => $slug,
+                  'post_status' => 'publish'
+                ]);
+                
+                // If found, break out of loop
+                if (!empty($category_post)) {
+                  break;
                 }
               }
             }
 
-            // Find the corresponding post for this category
-            $category_post = get_posts([
-              'post_type' => 'post',
-              'posts_per_page' => 1,
-              'title' => $category->name,
-              'post_status' => 'publish'
-            ]);
-
             // Get the link - either to the post or the category archive as fallback
             $link = !empty($category_post) ? get_permalink($category_post[0]->ID) : get_term_link($category);
-            ?>
-            <a class="portfolio-link" href="<?php echo esc_url($link); ?>">
-              <div class="portfolio-item">
-                <div class="portfolio-overlay"></div>
-                <div class="portfolio-tags">
-                  <span class="tag"><?php echo esc_html($category->name); ?></span>
-                </div>
-                <?php if ($category_image) : ?>
-                  <img src="<?php echo esc_url($category_image); ?>" alt="<?php echo esc_attr($category->name); ?>">
-                <?php endif; ?>
-                <div class="portfolio-copy">
-                  <h3><?php echo esc_html($category->name); ?></h3>
-                  <p><?php echo esc_html($category->description); ?></p>
-                </div>
-                <div class="portfolio-arrow">
-                  <i class="fas fa-arrow-right"></i>
-                </div>
-              </div>
-            </a>
-          <?php endforeach;
+            
+            // Use master card system with taxonomy data
+            get_template_part('partials/card', null, [
+              'type' => 'project',
+              'context' => 'home',
+              'post_id' => !empty($category_post) ? $category_post[0]->ID : 0, // Use 0 for taxonomy-only cards
+              'link_url' => $link,
+              'image_url' => $category_image,
+              'image_alt' => $category->name,
+              'tags' => [$category->name],
+              'title' => $category->name,
+              'description' => $category->description,
+              'show_media_types' => false,
+              'arrow_position' => 'bottom-left'
+            ]);
+          endforeach;
         endif; ?>
       </div>
     </div>
   </section>
 
-  <!-- Contact Section (Overlay) -->
-  <section class="contact-section" id="contact">
-    <div class="contact-overlay">
-      <div class="container">
-        <div class="contact-form-container">
-          <header class="contact-header">
-            <h3>Get in Touch</h3>
-            <p>Please fill out the form below and I'll get back to you as soon as possible.</p>
-            <button class="contact-close">×</button>
-          </header>
-          <?php echo do_shortcode('[contact-form-7 id="eb95201" title="Contact Form - Ethan Ede"]'); ?>
-        </div>
-      </div>
-    </div>
-  </section>
+
 
 </div>
 </main>
