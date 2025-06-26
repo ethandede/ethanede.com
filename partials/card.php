@@ -138,9 +138,9 @@ $card_id = 'card-' . $args['post_id'] . '-' . uniqid();
     <!-- Card Content -->
     <div class="card__content">
         <div class="card__content-main">
-            <h4 id="<?php echo esc_attr($card_id); ?>-title" class="card__title">
+            <h3 id="<?php echo esc_attr($card_id); ?>-title" class="card__title">
                 <?php echo esc_html($args['title']); ?>
-            </h4>
+            </h3>
             
             <?php if (!empty($args['description'])) : ?>
                 <p id="<?php echo esc_attr($card_id); ?>-desc" class="card__description">
