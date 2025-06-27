@@ -229,10 +229,8 @@ function enqueue_custom_scripts() {
         wp_enqueue_script('mobile-menu', get_template_directory_uri() . '/assets/js/mobile-menu.js', ['gsap'], '1.0', true);
         wp_enqueue_script('contact', get_template_directory_uri() . '/assets/js/contact.js', ['gsap'], '1.3', true);
         
-        // Load background squares on homepage and single posts
-        if (is_front_page() || is_home() || is_single()) {
-            wp_enqueue_script('background-squares', get_template_directory_uri() . '/assets/js/background-squares.js', ['gsap', 'scroll-trigger'], '1.0', true);
-        }
+        // Load background squares on all pages
+        wp_enqueue_script('background-squares', get_template_directory_uri() . '/assets/js/background-squares.js', ['gsap', 'scroll-trigger'], '1.0', true);
         
         // Load homepage-specific scripts
         if (is_front_page() || is_home()) {
