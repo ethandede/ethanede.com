@@ -26,17 +26,20 @@ get_header();
             
             <!-- Filter Controls -->
             <div class="work-filters">
-                <div class="filter-form">
-                    <!-- Content Type Filter -->
-                    <div class="filter-group">
-                        <label for="content-type-filter"><i class="fas fa-layer-group"></i> Content Type</label>
-                        <select id="content-type-filter">
-                            <option value="">All Work</option>
-                            <option value="project">Projects Only</option>
-                            <option value="deliverable">Deliverables Only</option>
-                        </select>
-                    </div>
-
+                <div class="filter-controls">
+                    <!-- Filter Toggle Button -->
+                    <button type="button" id="filter-toggle" class="filter-toggle" aria-expanded="false">
+                        <i class="far fa-filter"></i>
+                        <i class="far fa-chevron-down filter-toggle-icon"></i>
+                    </button>
+                    <!-- Inline Reset Button -->
+                    <button type="button" id="reset-filters-inline" class="filter-reset-inline">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <!-- Collapsible Filter Form -->
+                <div class="filter-form" id="filter-form" aria-hidden="true">
                     <?php
                     // Get all published projects and deliverables for filter building
                     $all_projects = get_posts([
@@ -49,7 +52,55 @@ get_header();
                         'posts_per_page' => -1,
                         'post_status' => 'publish'
                     ]);
+
+                    // Content Type Filter - Get deliverable types used by deliverables
+                    $used_deliverable_type_ids = [];
                     
+                    // Collect from deliverables only
+                    foreach ($all_deliverables as $deliverable) {
+                        $deliverable_types = get_the_terms($deliverable->ID, 'deliverable_type');
+                        if ($deliverable_types && !is_wp_error($deliverable_types)) {
+                            foreach ($deliverable_types as $type) {
+                                $used_deliverable_type_ids[] = $type->term_id;
+                            }
+                        }
+                    }
+                    
+                    $deliverable_types = [];
+                    if (!empty($used_deliverable_type_ids)) {
+                        $deliverable_types = get_terms([
+                            'taxonomy' => 'deliverable_type',
+                            'include' => array_unique($used_deliverable_type_ids),
+                            'orderby' => 'name',
+                            'order' => 'ASC'
+                        ]);
+                    }
+                    
+                    if ($deliverable_types && !is_wp_error($deliverable_types)) : ?>
+                        <div class="filter-group">
+                            <label for="content-type-filter"><i class="fas fa-th-list"></i> Content Type</label>
+                            <select id="content-type-filter">
+                                <option value="">All Content Types</option>
+                                <?php foreach ($deliverable_types as $type) : ?>
+                                    <option value="<?php echo esc_attr($type->slug); ?>">
+                                        <?php echo esc_html($type->name); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Format Filter -->
+                    <div class="filter-group">
+                        <label for="format-filter"><i class="fas fa-layer-group"></i> Format</label>
+                        <select id="format-filter">
+                            <option value="">All Work</option>
+                            <option value="project">Projects Only</option>
+                            <option value="deliverable">Deliverables Only</option>
+                        </select>
+                    </div>
+                    
+                    <?php
                     // Project Filter (only show if we have projects)
                     if ($all_projects) : ?>
                         <div class="filter-group">
@@ -160,10 +211,6 @@ get_header();
                             </select>
                         </div>
                     <?php endif; ?>
-                    
-                    <button type="button" id="reset-filters" class="filter-reset">
-                        <i class="fas fa-undo"></i> Reset Filters
-                    </button>
                 </div>
             </div>
         </div>
@@ -349,12 +396,15 @@ get_header();
                         
                         // Get type info for deliverables
                         $type_term = null;
+                        $deliverable_type_slugs = [];
                         if (!$is_project) {
                             $type_terms = get_the_terms($work_item->ID, 'deliverable_type');
                             if ($type_terms && !is_wp_error($type_terms)) {
                                 $type_term = $type_terms[0];
+                                $deliverable_type_slugs = wp_list_pluck($type_terms, 'slug');
                             }
                         }
+                        $deliverable_type_slugs = array_filter(array_map('strval', (array)$deliverable_type_slugs));
                         // Prepare data for master card system
                         $image_url = $first_image ? $first_image['url'] : '';
                         $image_alt = $first_image ? $first_image['alt'] : $work_item->post_title;
@@ -380,7 +430,8 @@ get_header();
                         // Use unified master card system with data attributes
                         $card_extra_classes = ['card--' . $card_type, 'card--work'];
                         $card_data_attrs = [
-                            'data-content-type' => $is_project ? 'project' : 'deliverable',
+                            'data-content-type' => implode(',', $deliverable_type_slugs), // Now stores deliverable types
+                            'data-format' => $is_project ? 'project' : 'deliverable', // New attribute for format
                             'data-projects' => implode(',', $project_ids),
                             'data-technologies' => implode(',', $tech_slugs),
                             'data-companies' => implode(',', $company_slugs)
@@ -395,6 +446,7 @@ get_header();
                                 'tags' => $tags,
                                 'show_media_types' => !empty($available_media_types),
                                 'media_types' => $available_media_types,
+                                'show_company' => true,
                                 'extra_classes' => $card_extra_classes,
                                 'data_attributes' => $card_data_attrs
                             ]);
@@ -407,6 +459,7 @@ get_header();
                                 'tags' => $tags,
                                 'show_media_types' => !empty($available_media_types),
                                 'media_types' => $available_media_types,
+                                'show_company' => true,
                                 'extra_classes' => $card_extra_classes,
                                 'data_attributes' => $card_data_attrs
                             ]);
@@ -424,11 +477,65 @@ get_header();
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const contentTypeFilter = document.getElementById('content-type-filter');
+    const contentTypeFilter = document.getElementById('content-type-filter'); // Now filters deliverable types
+    const formatFilter = document.getElementById('format-filter'); // New filter for projects vs deliverables
     const projectFilter = document.getElementById('project-filter');
     const technologyFilter = document.getElementById('technology-filter');
     const companyFilter = document.getElementById('company-filter');
     const workCards = document.querySelectorAll('.card--project, .card--deliverable');
+    
+    // Filter toggle functionality
+    const filterToggle = document.getElementById('filter-toggle');
+    const filterForm = document.getElementById('filter-form');
+    const filterToggleIcon = filterToggle.querySelector('.filter-toggle-icon');
+    const resetButtonInline = document.getElementById('reset-filters-inline');
+    
+    function toggleFilters() {
+        const isExpanded = filterToggle.getAttribute('aria-expanded') === 'true';
+        
+        if (isExpanded) {
+            // Close filters with animation
+            filterForm.classList.remove('filter-form--visible');
+            setTimeout(() => {
+                filterForm.style.display = 'none';
+            }, 300); // Match CSS transition duration
+            
+            filterToggle.setAttribute('aria-expanded', 'false');
+            filterForm.setAttribute('aria-hidden', 'true');
+        } else {
+            // Open filters with animation
+            filterForm.style.display = 'block';
+            // Force reflow to ensure display:block is applied before adding class
+            filterForm.offsetHeight;
+            filterForm.classList.add('filter-form--visible');
+            
+            filterToggle.setAttribute('aria-expanded', 'true');
+            filterForm.setAttribute('aria-hidden', 'false');
+        }
+    }
+    
+    // Count active filters for better UX
+    function countActiveFilters() {
+        let count = 0;
+        if (contentTypeFilter && contentTypeFilter.value !== '') count++;
+        if (formatFilter && formatFilter.value !== '') count++;
+        if (projectFilter && projectFilter.value !== '') count++;
+        if (technologyFilter && technologyFilter.value !== '') count++;
+        if (companyFilter && companyFilter.value !== '') count++;
+        return count;
+    }
+    
+
+    
+    // Add click event to filter toggle
+    if (filterToggle) {
+        filterToggle.addEventListener('click', toggleFilters);
+    }
+    
+    // Initialize filters as closed
+    if (filterForm) {
+        filterForm.style.display = 'none';
+    }
     
     // Ensure all cards are visible on page load
     workCards.forEach(function(card) {
@@ -436,7 +543,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     function filterWork() {
-        const selectedContentType = contentTypeFilter ? contentTypeFilter.value : '';
+        const selectedContentType = contentTypeFilter ? contentTypeFilter.value : ''; // Deliverable types
+        const selectedFormat = formatFilter ? formatFilter.value : ''; // Projects vs deliverables
         const selectedProject = projectFilter ? projectFilter.value : '';
         const selectedTechnology = technologyFilter ? technologyFilter.value : '';
         const selectedCompany = companyFilter ? companyFilter.value : '';
@@ -446,10 +554,19 @@ document.addEventListener('DOMContentLoaded', function() {
         workCards.forEach(function(card) {
             let showCard = true;
             
-            // Filter by content type
+            // Filter by content type (deliverable types like videos, wireframes, etc.)
             if (selectedContentType !== '') {
-                const cardContentType = card.getAttribute('data-content-type') || '';
-                if (cardContentType !== selectedContentType) {
+                const cardContentTypesAttr = card.getAttribute('data-content-type') || '';
+                const cardContentTypes = cardContentTypesAttr ? cardContentTypesAttr.split(',') : [];
+                if (!cardContentTypes.includes(selectedContentType)) {
+                    showCard = false;
+                }
+            }
+            
+            // Filter by format (projects vs deliverables)
+            if (selectedFormat !== '' && showCard) {
+                const cardFormat = card.getAttribute('data-format') || '';
+                if (cardFormat !== selectedFormat) {
                     showCard = false;
                 }
             }
@@ -510,21 +627,35 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Check if any filters are active
     function checkFiltersActive() {
-        const resetButton = document.getElementById('reset-filters');
-        if (!resetButton) return;
-        
         const hasActiveFilters = (contentTypeFilter && contentTypeFilter.value !== '') ||
+                                (formatFilter && formatFilter.value !== '') ||
                                 (projectFilter && projectFilter.value !== '') ||
                                 (technologyFilter && technologyFilter.value !== '') ||
                                 (companyFilter && companyFilter.value !== '');
         
-        resetButton.style.opacity = hasActiveFilters ? '1' : '0.5';
-        resetButton.disabled = !hasActiveFilters;
+        // Update inline reset button visibility
+        if (resetButtonInline) {
+            if (hasActiveFilters) {
+                resetButtonInline.classList.add('visible');
+            } else {
+                resetButtonInline.classList.remove('visible');
+            }
+        }
+        
+        // Add visual indicator to filter toggle when filters are active
+        if (filterToggle) {
+            if (hasActiveFilters) {
+                filterToggle.classList.add('has-active-filters');
+            } else {
+                filterToggle.classList.remove('has-active-filters');
+            }
+        }
     }
     
     // Reset filters function
     function resetFilters() {
         if (contentTypeFilter) contentTypeFilter.value = '';
+        if (formatFilter) formatFilter.value = '';
         if (projectFilter) projectFilter.value = '';
         if (technologyFilter) technologyFilter.value = '';
         if (companyFilter) companyFilter.value = '';
@@ -540,12 +671,12 @@ document.addEventListener('DOMContentLoaded', function() {
             noResultsMessage.remove();
         }
         
-        // Update button state
+        // Update button states
         checkFiltersActive();
     }
     
     // Add event listeners
-    const filters = [contentTypeFilter, projectFilter, technologyFilter, companyFilter];
+    const filters = [contentTypeFilter, formatFilter, projectFilter, technologyFilter, companyFilter];
     filters.forEach(filter => {
         if (filter) {
             filter.addEventListener('change', function() {
@@ -555,10 +686,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Reset button event listener
-    const resetButton = document.getElementById('reset-filters');
-    if (resetButton) {
-        resetButton.addEventListener('click', resetFilters);
+    // Reset button event listener (inline button)
+    if (resetButtonInline) {
+        resetButtonInline.addEventListener('click', resetFilters);
         checkFiltersActive();
     }
 });

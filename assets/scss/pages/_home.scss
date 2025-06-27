@@ -17,7 +17,7 @@
     .hero {
       position: relative;
       overflow: hidden;
-      color: #fff;
+              color: var(--text-primary);
       text-align: left;
       padding: 140px 0;
       
@@ -39,7 +39,7 @@
       }
 
       .rotating-word {
-        color: vars.$highlight-color !important;
+        color: var(--secondary-color) !important;
         display: inline-block;
         transition: opacity 0.5s ease-in-out;
         opacity: 1;

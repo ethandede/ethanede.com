@@ -223,29 +223,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Close overlay
     closeBtn.addEventListener('click', () => {
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
+        closeGalleryOverlay();
     });
 
     // Close overlay when clicking outside the content
     overlay.addEventListener('click', (e) => {
-        console.log('Gallery overlay clicked:', {
-            target: e.target,
-            isOverlay: e.target === overlay,
-            containsTarget: overlayContent.contains(e.target),
-            closestContent: e.target.closest('.gallery-overlay-content')
-        });
+        // Check if click was on the overlay background or overlay-content (but not on interactive elements)
+        const isOverlayBackground = e.target === overlay;
+        const isOverlayContent = e.target === overlayContent;
+        const isCarousel = e.target.classList.contains('gallery-carousel');
+        const isInteractiveElement = e.target.closest('.carousel-item, .gallery-close, .gallery-prev, .gallery-next, video, img');
         
-        // Multiple approaches to detect click outside content
-        const isClickOutside = e.target === overlay || 
-                              (!overlayContent.contains(e.target) && 
-                               !e.target.closest('.gallery-overlay-content'));
-        
-        console.log('Should close overlay?', isClickOutside);
-        
-        if (isClickOutside) {
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
+        if ((isOverlayBackground || isOverlayContent || isCarousel) && !isInteractiveElement) {
+            closeGalleryOverlay();
         }
     });
 
@@ -286,8 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(checkContentHeight, 100);
                 break;
             case 'Escape':
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
+                closeGalleryOverlay();
                 break;
         }
     });
@@ -339,5 +328,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }, 50);
+    }
+
+    // Centralized function to close gallery overlay and stop all videos
+    function closeGalleryOverlay() {
+        // Stop all videos in the carousel
+        const allCarouselVideos = overlay.querySelectorAll('video');
+        allCarouselVideos.forEach(video => {
+            if (!video.paused) {
+                video.pause();
+            }
+        });
+        
+        // Also stop any gallery videos with poster containers
+        const allGalleryVideos = document.querySelectorAll('.video-poster-container .gallery-video');
+        allGalleryVideos.forEach(video => {
+            if (!video.paused) {
+                video.pause();
+            }
+        });
+        
+        // Close the overlay
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
     }
 }); 

@@ -30,11 +30,11 @@
         <header class="contact-header">
           <h3>Get in Touch</h3>
           <p>Please fill out the form below and I'll get back to you as soon as possible.</p>
-          <button class="contact-close">×</button>
+          <button class="contact-close"><i class="fa-solid fa-circle-xmark fa-duotone"></i></button>
         </header>
-        <?php echo do_shortcode('[contact-form-7 id="eb95201" title="Contact Form - Ethan Ede"]'); ?>
+        <?php echo do_shortcode('[contact-form-7 id="15" title="Contact Form - Ethan Ede"]'); ?>
         <button class="contact-close-mobile contact-close" style="display: none;">
-          <i class="fas fa-times-circle"></i> Cancel
+          Cancel <i class="fa-solid fa-xmark duotone-effect"></i>
         </button>
       </div>
     </div>

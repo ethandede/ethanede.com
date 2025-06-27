@@ -18,60 +18,60 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // Define default colors (from your Sass variables)
-  const defaultAccentColor = '#45748C';
-  const defaultHighlightColor = '#BF3978';
-  const defaultAccentColorLight = lightenColor(defaultAccentColor, 10); // Lightened by 10%
+  const defaultPrimaryColor = '#45748C';
+  const defaultSecondaryColor = '#BF3978';
+  const defaultPrimaryColorLight = lightenColor(defaultPrimaryColor, 10); // Lightened by 10%
 
   // Get references to the inputs and button
-  const accentInput = document.getElementById('accentColor');
-  const highlightInput = document.getElementById('highlightColor');
+  const primaryInput = document.getElementById('primaryColor');
+  const secondaryInput = document.getElementById('secondaryColor');
   const resetButton = document.getElementById('resetColors');
 
-  if (accentInput) {
-    accentInput.addEventListener('input', function() {
-      const newAccent = this.value;
+  if (primaryInput) {
+    primaryInput.addEventListener('input', function() {
+      const newPrimary = this.value;
       // Update hex value
-      document.documentElement.style.setProperty('--accent-color', newAccent);
+      document.documentElement.style.setProperty('--primary-color', newPrimary);
       // Update rgb value based on the new hex
-      const newRgb = hexToRgbString(newAccent);
-      document.documentElement.style.setProperty('--accent-color-rgb', newRgb);
+      const newRgb = hexToRgbString(newPrimary);
+      document.documentElement.style.setProperty('--primary-color-rgb', newRgb);
       // Also update squares or any other elements as needed
       updateSquaresColor();
     });
   } else {
-    console.log("Accent input not found.");
+    console.log("Primary input not found.");
   }
 
-  if (highlightInput) {
-    highlightInput.addEventListener('input', function() {
-      const newHighlight = this.value;
-      document.documentElement.style.setProperty('--highlight-color', newHighlight);
-      const newHighlightRgb = hexToRgbString(newHighlight);
-      document.documentElement.style.setProperty('--highlight-color-rgb', newHighlightRgb);
-      // Update any elements that use the highlight color if needed.
+  if (secondaryInput) {
+    secondaryInput.addEventListener('input', function() {
+      const newSecondary = this.value;
+      document.documentElement.style.setProperty('--secondary-color', newSecondary);
+      const newSecondaryRgb = hexToRgbString(newSecondary);
+      document.documentElement.style.setProperty('--secondary-color-rgb', newSecondaryRgb);
+      // Update any elements that use the secondary color if needed.
     });
   }
   
   if (resetButton) {
     resetButton.addEventListener('click', function() {
       console.log("Resetting colors to default.");
-      document.documentElement.style.setProperty('--accent-color', defaultAccentColor);
-      document.documentElement.style.setProperty('--highlight-color', defaultHighlightColor);
-      document.documentElement.style.setProperty('--accent-color-light', defaultAccentColorLight);
-      if (accentInput) {
-        accentInput.value = defaultAccentColor;
+      document.documentElement.style.setProperty('--primary-color', defaultPrimaryColor);
+      document.documentElement.style.setProperty('--secondary-color', defaultSecondaryColor);
+      document.documentElement.style.setProperty('--primary-color-light', defaultPrimaryColorLight);
+      if (primaryInput) {
+        primaryInput.value = defaultPrimaryColor;
       }
-      if (highlightInput) {
-        highlightInput.value = defaultHighlightColor;
+      if (secondaryInput) {
+        secondaryInput.value = defaultSecondaryColor;
       }
       updateSquaresColor();
     });
   }
 
-  // Retrieve the current accent color from the CSS variable and convert it to RGB
-  const accentHex = getComputedStyle(document.documentElement)
-                      .getPropertyValue('--accent-color').trim();
-  const accentRGB = hexToRgb(accentHex);
+  // Retrieve the current primary color from the CSS variable and convert it to RGB
+  const primaryHex = getComputedStyle(document.documentElement)
+                      .getPropertyValue('--primary-color').trim();
+  const primaryRGB = hexToRgb(primaryHex);
 
   // Select the SVG element that contains the animated squares
   const svg = document.querySelector('.animated-squares');
@@ -102,11 +102,11 @@ document.addEventListener("DOMContentLoaded", function() {
     rect.setAttribute("width", size);
     rect.setAttribute("height", size);
     
-    // Create a subtle variation around the accent color.
+    // Create a subtle variation around the primary color.
     const variation = 50;
-    const r = Math.max(0, Math.min(255, accentRGB.r + Math.floor((Math.random() - 0.5) * variation)));
-    const g = Math.max(0, Math.min(255, accentRGB.g + Math.floor((Math.random() - 0.5) * variation)));
-    const b = Math.max(0, Math.min(255, accentRGB.b + Math.floor((Math.random() - 0.5) * variation)));
+    const r = Math.max(0, Math.min(255, primaryRGB.r + Math.floor((Math.random() - 0.5) * variation)));
+    const g = Math.max(0, Math.min(255, primaryRGB.g + Math.floor((Math.random() - 0.5) * variation)));
+    const b = Math.max(0, Math.min(255, primaryRGB.b + Math.floor((Math.random() - 0.5) * variation)));
     const alpha = 0.1;
     rect.setAttribute("fill", `rgba(${r}, ${g}, ${b}, ${alpha})`);
     svg.appendChild(rect);
@@ -125,18 +125,18 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  // Function to update the fill colors of the squares based on the current accent color
+  // Function to update the fill colors of the squares based on the current primary color
   function updateSquaresColor() {
-    const accentHex = getComputedStyle(document.documentElement)
-                        .getPropertyValue('--accent-color').trim();
-    console.log('New accent color:', accentHex);
-    const accentRGB = hexToRgb(accentHex);
+    const primaryHex = getComputedStyle(document.documentElement)
+                        .getPropertyValue('--primary-color').trim();
+    console.log('New primary color:', primaryHex);
+    const primaryRGB = hexToRgb(primaryHex);
     const variation = 50;
   
     document.querySelectorAll('.animated-squares rect').forEach(rect => {
-      const r = Math.max(0, Math.min(255, accentRGB.r + Math.floor((Math.random() - 0.5) * variation)));
-      const g = Math.max(0, Math.min(255, accentRGB.g + Math.floor((Math.random() - 0.5) * variation)));
-      const b = Math.max(0, Math.min(255, accentRGB.b + Math.floor((Math.random() - 0.5) * variation)));
+      const r = Math.max(0, Math.min(255, primaryRGB.r + Math.floor((Math.random() - 0.5) * variation)));
+      const g = Math.max(0, Math.min(255, primaryRGB.g + Math.floor((Math.random() - 0.5) * variation)));
+      const b = Math.max(0, Math.min(255, primaryRGB.b + Math.floor((Math.random() - 0.5) * variation)));
       rect.setAttribute("fill", `rgba(${r}, ${g}, ${b}, 0.1)`);
       console.log('Updated square fill:', rect.getAttribute("fill"));
     });

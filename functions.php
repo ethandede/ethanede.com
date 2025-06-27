@@ -42,16 +42,138 @@ function ee_enqueue_assets() {
         null,
         false
     );
+    
+    // Enqueue duotone Font Awesome kit
+    wp_enqueue_script(
+        'fontawesome-duotone',
+        'https://kit.fontawesome.com/529c155b03.js',
+        [],
+        null,
+        false
+    );
 
-    // Enqueue Google Fonts
+    // Preload Google Fonts for better performance
+    add_action('wp_head', 'ee_preload_google_fonts', 1);
+    
+    // Enqueue Google Fonts with optimized loading (match theme's actual fonts)
     wp_enqueue_style(
         'google-fonts',
-        'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap',
+        'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Merriweather:ital,opsz,wght@0,8..144,300..900;1,8..144,300..900&display=optional',
         [],
         null
     );
 }
 add_action('wp_enqueue_scripts', 'ee_enqueue_assets');
+
+// Preload Google Fonts for faster loading
+function ee_preload_google_fonts() {
+    // Only preload on pages that need fonts (mainly homepage)
+    if (is_front_page() || is_home()) {
+        echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="anonymous">' . "\n";
+        echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">' . "\n";
+        
+        // Preload the most critical font files
+        echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2" crossorigin="anonymous">' . "\n";
+        echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/merriweather/v30/u-4n0qyriQwlOrhSvowK_l52xwNZWMf6hPvhPQ.woff2" crossorigin="anonymous">' . "\n";
+    }
+}
+
+// Add font loading optimization CSS
+function ee_font_loading_css() {
+    echo '<style>
+        /* Font loading optimization */
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        /* Hide main content until fonts are loaded to prevent FOUT, but keep contact form visible */
+        .fonts-loading body > *:not(.contact-section) {
+            visibility: hidden;
+        }
+        
+        /* Always keep contact form visible */
+        .fonts-loading .contact-section,
+        .fonts-loading .contact-section * {
+            visibility: visible !important;
+        }
+        
+        /* Show text when fonts are loaded */
+        .fonts-loaded body,
+        .fonts-failed body {
+            visibility: visible;
+        }
+        
+        .fonts-loaded body > *,
+        .fonts-failed body > * {
+            visibility: visible;
+        }
+        
+        /* Apply Google fonts after they load - match SCSS variables */
+        .fonts-loaded body,
+        .fonts-loaded p {
+            font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+        }
+        
+        .fonts-loaded h1, 
+        .fonts-loaded h2, 
+        .fonts-loaded h3, 
+        .fonts-loaded h4 {
+            font-family: "Merriweather", Georgia, "Times New Roman", serif;
+        }
+        
+        /* h5 and h6 use Roboto in the SCSS */
+        .fonts-loaded h5,
+        .fonts-loaded h6 {
+            font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+        }
+        
+        /* Fallback for users with slow connections */
+        @media (prefers-reduced-motion: reduce) {
+            .fonts-loading body > * {
+                visibility: visible;
+            }
+        }
+    </style>' . "\n";
+}
+add_action('wp_head', 'ee_font_loading_css', 2);
+
+// Add font loading detection script
+function ee_font_loading_script() {
+    if (is_front_page() || is_home()) {
+        echo '<script>
+            (function() {
+                // Add loading class initially
+                document.documentElement.classList.add("fonts-loading");
+                
+                // Check if fonts are already loaded (cached)
+                if (document.fonts && document.fonts.ready) {
+                    document.fonts.ready.then(function() {
+                        document.documentElement.classList.remove("fonts-loading");
+                        document.documentElement.classList.add("fonts-loaded");
+                    }).catch(function() {
+                        document.documentElement.classList.remove("fonts-loading");
+                        document.documentElement.classList.add("fonts-failed");
+                    });
+                } else {
+                    // Fallback for browsers without Font Loading API
+                    setTimeout(function() {
+                        document.documentElement.classList.remove("fonts-loading");
+                        document.documentElement.classList.add("fonts-loaded");
+                    }, 3000); // 3 second timeout
+                }
+                
+                // Additional timeout as safety net
+                setTimeout(function() {
+                    if (document.documentElement.classList.contains("fonts-loading")) {
+                        document.documentElement.classList.remove("fonts-loading");
+                        document.documentElement.classList.add("fonts-failed");
+                    }
+                }, 3000);
+            })();
+        </script>' . "\n";
+    }
+}
+add_action('wp_head', 'ee_font_loading_script', 3);
 
 // Register menus
 function ee_register_menus() {
@@ -119,6 +241,8 @@ function enqueue_custom_scripts() {
     }
 }
 add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
+
+
 
 // Disable comments
 function disable_comments() {
@@ -993,6 +1117,37 @@ function ensure_gif_upload($file) {
 }
 add_filter('wp_handle_upload_prefilter', 'ensure_gif_upload');
 
+// Allow SVG uploads for ACF fields (complement to Safe SVG plugin)
+function allow_svg_for_acf($mimes) {
+    // Ensure SVG is allowed even if Safe SVG plugin is not active
+    $mimes['svg'] = 'image/svg+xml';
+    $mimes['svgz'] = 'image/svg+xml';
+    
+    return $mimes;
+}
+add_filter('upload_mimes', 'allow_svg_for_acf', 10, 1);
+
+// Ensure SVG files are properly handled in ACF image fields
+function ensure_svg_upload_for_acf($file) {
+    if ($file['type'] === 'image/svg+xml' || $file['type'] === 'image/svg') {
+        $file['error'] = 0;
+    }
+    return $file;
+}
+add_filter('wp_handle_upload_prefilter', 'ensure_svg_upload_for_acf');
+
+// Additional SVG support for ACF specifically
+function acf_svg_support() {
+    // Allow SVG in ACF image fields
+    add_filter('acf/upload_prefilter/type=image', function($errors, $file, $field) {
+        if ($file['type'] === 'image/svg+xml' || pathinfo($file['name'], PATHINFO_EXTENSION) === 'svg') {
+            return $errors; // Allow the upload
+        }
+        return $errors;
+    }, 10, 3);
+}
+add_action('acf/init', 'acf_svg_support');
+
 // Add custom columns to project_category taxonomy
 add_filter('manage_edit-project_category_columns', 'add_project_category_taxonomy_columns');
 
@@ -1137,6 +1292,11 @@ function ee_configure_wp_mail() {
     // For now, we'll just ensure the from email is properly set
     add_filter('wp_mail_from', 'ee_custom_wp_mail_from');
     add_filter('wp_mail_from_name', 'ee_custom_wp_mail_from_name');
+    
+    // For local development, try to fix common mail issues
+    if (strpos(home_url(), '.local') !== false) {
+        add_action('phpmailer_init', 'ee_configure_local_mail');
+    }
 }
 add_action('init', 'ee_configure_wp_mail');
 
@@ -1158,28 +1318,43 @@ function ee_custom_wp_mail_from_name($original_email_from) {
     return 'Ethan Ede Website';
 }
 
+// Configure PHPMailer for local development
+function ee_configure_local_mail($phpmailer) {
+    $phpmailer->isSMTP();
+    $phpmailer->Host = 'localhost';
+    $phpmailer->Port = 1025; // Local by Flywheel's MailHog port
+    $phpmailer->SMTPAuth = false;
+    $phpmailer->SMTPSecure = false;
+    $phpmailer->Username = '';
+    $phpmailer->Password = '';
+    
+    // Disable SSL verification for local development
+    $phpmailer->SMTPOptions = array(
+        'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        )
+    );
+}
+
 // Add custom validation and processing for Contact Form 7
-// Temporarily disabled to troubleshoot CF7 error
-/*
 add_action('wpcf7_before_send_mail', 'ee_customize_cf7_mail');
 function ee_customize_cf7_mail($contact_form) {
     // Get form ID to ensure we're only affecting our contact form
-    if ($contact_form->id() == 'eb95201') {
+    if ($contact_form->id() == 15) { // Updated to use the actual form ID from your HTML
         // Add any custom processing here
         // For example, you could save submissions to database, 
         // integrate with CRM, add additional notifications, etc.
         
-        // Log the submission for debugging
+        // Log the submission for debugging (only if WP_DEBUG is enabled)
         if (WP_DEBUG) {
             error_log('Contact form submission received from form ID: ' . $contact_form->id());
         }
     }
 }
-*/
 
 // Customize Contact Form 7 validation messages
-// Temporarily disabled to troubleshoot CF7 error
-/*
 add_filter('wpcf7_messages', 'ee_customize_cf7_messages');
 function ee_customize_cf7_messages($messages) {
     $messages['mail_sent_ok'] = "Thank you for your message. I'll get back to you soon!";
@@ -1196,18 +1371,6 @@ function ee_customize_cf7_messages($messages) {
 
 // Remove Contact Form 7 auto-paragraph formatting for better control
 add_filter('wpcf7_autop_or_not', '__return_false');
-*/
-
-// Add reCAPTCHA support if you want to prevent spam
-// Uncomment these lines if you want to add reCAPTCHA to your form
-/*
-add_action('wp_enqueue_scripts', 'ee_enqueue_recaptcha');
-function ee_enqueue_recaptcha() {
-    if (function_exists('wpcf7_recaptcha_enqueue_scripts')) {
-        wpcf7_recaptcha_enqueue_scripts();
-    }
-}
-*/
 
 // Custom Contact Form 7 styling and scripting
 add_action('wpcf7_enqueue_scripts', 'ee_cf7_custom_scripts');
@@ -1233,28 +1396,6 @@ function ee_cf7_custom_scripts() {
     ');
 }
 
-// Test email functionality (remove this after testing)
-// You can call this function to test if emails are working
-function ee_test_email() {
-    $to = 'ethanede@gmail.com'; // Your Gmail address
-    $subject = 'WordPress Email Test - Local Site';
-    $message = 'If you receive this email, WordPress email functionality is working correctly on your local site.';
-    $headers = array('Content-Type: text/html; charset=UTF-8');
-    
-    $sent = wp_mail($to, $subject, $message, $headers);
-    
-    if ($sent) {
-        error_log('Test email sent successfully');
-        return true;
-    } else {
-        error_log('Test email failed to send');
-        return false;
-    }
-}
-
-// Uncomment the line below to test email on page load (remove after testing)
-// add_action('wp_loaded', 'ee_test_email');
-
 // Noindex unused taxonomy archives
 function noindex_unused_taxonomy_archives() {
     if (is_tax(['technology', 'skill', 'company'])) {
@@ -1278,3 +1419,4 @@ function get_singular_term_display_name($term_name) {
     
     return isset($conversions[$term_name]) ? $conversions[$term_name] : $term_name;
 }
+

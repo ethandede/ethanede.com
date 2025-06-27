@@ -134,6 +134,12 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                                     <img src="<?php echo esc_url($logo['url']); ?>" alt="<?php echo esc_attr($company->name); ?> logo" class="company-logo">
                                 <?php else : ?>
                                     <?php echo esc_html($company->name); ?>
+                                    <?php if (current_user_can('manage_options')) : ?>
+                                        <!-- Debug info for admins -->
+                                        <small style="display: block; opacity: 0.5; font-size: 10px;">
+                                            Debug: Company ID: <?php echo $company->term_id; ?>, Logo data: <?php echo $logo ? 'exists but invalid' : 'not found'; ?>
+                                        </small>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </span>
                         </div>
@@ -165,7 +171,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                         <h6>Skills Used</h6>
                         <div class="tags-cloud">
                             <?php foreach ($skills as $skill) : ?>
-                                <span class="tag tag-skill tag-non-clickable">
+                                <span class="tag tag-style-sidebar tag-skill tag-non-clickable">
                                     <?php echo esc_html($skill->name); ?>
                                 </span>
                             <?php endforeach; ?>
@@ -186,7 +192,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                         <h6>Tools Used</h6>
                         <div class="tags-cloud">
                             <?php foreach ($tools as $tool) : ?>
-                                <span class="tag tag-technology tag-non-clickable">
+                                <span class="tag tag-style-sidebar tag-technology tag-non-clickable">
                                     <?php echo esc_html($tool->name); ?>
                                 </span>
                             <?php endforeach; ?>
@@ -232,7 +238,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                     <h6>Tools Used</h6>
                     <div class="tags-cloud">
                         <?php foreach ($tools as $tool) : ?>
-                            <span class="tag tag-technology tag-non-clickable">
+                            <span class="tag tag-style-sidebar tag-technology tag-non-clickable">
                                 <?php echo esc_html($tool->name); ?>
                             </span>
                         <?php endforeach; ?>
@@ -252,7 +258,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                     <h6>Skills Used</h6>
                     <div class="tags-cloud">
                         <?php foreach ($skills as $skill) : ?>
-                            <span class="tag tag-skill tag-non-clickable">
+                            <span class="tag tag-style-sidebar tag-skill tag-non-clickable">
                                 <?php echo esc_html($skill->name); ?>
                             </span>
                         <?php endforeach; ?>
@@ -281,7 +287,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                                 $display_name = 'Animation';
                             }
                             ?>
-                            <span class="tag tag-type tag-non-clickable">
+                            <span class="tag tag-style-sidebar tag-deliverable-type tag-non-clickable">
                                 <?php echo esc_html($display_name); ?>
                             </span>
                         <?php endforeach; ?>
@@ -302,7 +308,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                     <h6>Category</h6>
                     <div class="tags-cloud">
                         <?php foreach ($categories as $category) : ?>
-                            <span class="tag tag-project-category tag-non-clickable">
+                            <span class="tag tag-style-sidebar tag-project-category tag-non-clickable">
                                 <?php echo esc_html($category->name); ?>
                             </span>
                         <?php endforeach; ?>

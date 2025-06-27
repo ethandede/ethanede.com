@@ -1,10 +1,16 @@
 @use "../abstracts/variables" as vars;
+@use "../abstracts/breakpoints" as breakpoints;
+
 
 .what-i-do {
-  padding: 60px 0 50px;
+  padding: 0 0 50px;
   background: transparent;
-  color: #fff;
+  color: var(--text-primary);
   z-index: 1;
+
+  @include breakpoints.md {
+    padding: 25px 0 50px;
+  }
 
   .container {
     max-width: 1300px;
@@ -41,12 +47,12 @@
       font-family: "Roboto";
       text-transform: uppercase;
       font-size: 1.2rem;
-      color: vars.$highlight-color;
+              color: var(--secondary-color);
       font-weight: 600;
     }
 
     p {
-      color: #ddd;
+      color: rgba(var(--white), 0.8);
       font-size: vars.$font-sm;
       line-height: 1.5;
     }

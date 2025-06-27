@@ -62,19 +62,26 @@ get_header();
                                 <h3>Related Deliverables</h3>
                                 <div class="deliverables-grid">
                                     <?php foreach ($deliverables as $deliverable) : 
-                                        // Get deliverable media for master card system
-                                        $featured_media = '';
-                                        if (has_post_thumbnail($deliverable->ID)) {
-                                            $featured_media = get_the_post_thumbnail_url($deliverable->ID, 'medium');
-                                        } else {
-                                            $media = get_field('deliverable_media', $deliverable->ID);
-                                            if ($media && !empty($media)) {
-                                                $first_media = $media[0];
-                                                if ($first_media['type'] === 'image') {
-                                                    $featured_media = $first_media['sizes']['medium'] ?? $first_media['url'];
-                                                }
-                                            }
-                                        }
+                                                                // Get deliverable media for master card system
+                        $featured_media = '';
+                        if (has_post_thumbnail($deliverable->ID)) {
+                            $featured_media = get_the_post_thumbnail_url($deliverable->ID, 'medium');
+                        } else {
+                            // Check for deliverable featured image field
+                            $deliverable_featured = get_field('deliverable_featured_image', $deliverable->ID);
+                            if ($deliverable_featured) {
+                                $featured_media = $deliverable_featured;
+                            } else {
+                                // Fallback to first image in media gallery
+                                $media = get_field('deliverable_media', $deliverable->ID);
+                                if ($media && !empty($media)) {
+                                    $first_media = $media[0];
+                                    if ($first_media['type'] === 'image') {
+                                        $featured_media = $first_media['sizes']['medium'] ?? $first_media['url'];
+                                    }
+                                }
+                            }
+                        }
                                         
                                         // Get deliverable excerpt
                                         $excerpt = get_field('deliverable_excerpt', $deliverable->ID);
@@ -82,12 +89,10 @@ get_header();
                                         
                                         // Get deliverable type for tags
                                         $tags = [];
-                                        $type = get_field('deliverable_type', $deliverable->ID);
-                                        if ($type) {
-                                            $type_term = get_term($type, 'deliverable_type');
-                                            if ($type_term && !is_wp_error($type_term)) {
-                                                $tags[] = get_singular_term_display_name($type_term->name);
-                                            }
+                                        $type_terms = get_the_terms($deliverable->ID, 'deliverable_type');
+                                        if ($type_terms && !is_wp_error($type_terms)) {
+                                            $type_term = $type_terms[0];
+                                            $tags[] = get_singular_term_display_name($type_term->name);
                                         }
                                         
                                                                 // Use master card system for project deliverables

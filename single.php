@@ -104,7 +104,7 @@ get_header();
         </section>
       </div>
       <aside class="single-sidebar">
-        <h3>How I Work</h3>
+        <h3>How I work</h3>
         <div class="sidebar-posts">
           <?php
           // Get all project categories

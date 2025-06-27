@@ -8,7 +8,7 @@
   right: 0;
   width: 100vw; // Use viewport width
   z-index: 900;
-  background: rgba(vars.$secondary-color, 0.9);
+  background: rgba(var(--black), 0.95);
   overflow-x: hidden; // Prevent horizontal overflow
 
   .container {
@@ -40,14 +40,14 @@
     display: flex;
 
     a {
-      color: vars.$primary-color;
+      color: var(--text-primary);
       font-family: vars.$header-font;
       font-size: vars.$font-lg;
       text-decoration: none;
       transition: color 0.3s ease;
 
       &:hover {
-        color: vars.$accent-color;
+        color: var(--primary-color);
       }
     }
   }
@@ -64,7 +64,7 @@
       display: block;
       width: 25px;
       height: 3px;
-      background: vars.$primary-color;
+      background: var(--text-primary);
       margin: 5px 0;
       transition: all 0.3s ease;
     }
@@ -83,7 +83,7 @@
     }
 
     a {
-      color: vars.$primary-color;
+      color: var(--text-primary);
       font-family: vars.$body-font;
       font-size: vars.$font-sm;
       text-decoration: none;
@@ -93,7 +93,7 @@
       white-space: nowrap; // Prevent link text from wrapping
 
       &:hover {
-        color: vars.$accent-color;
+        color: var(--primary-color);
       }
 
       &.contact-trigger {
@@ -102,7 +102,7 @@
         padding: 10px;
         font-family: vars.$body-font;
         font-size: vars.$font-sm;
-        color: vars.$primary-color;
+        color: var(--text-primary);
         display: flex;
         align-items: center;
         gap: 8px;
@@ -115,7 +115,7 @@
         &:hover {
           background: none;
           border: none;
-          color: vars.$accent-color;
+          color: var(--primary-color);
 
           i {
             transform: translateX(5px);
@@ -153,7 +153,7 @@
 
     &__title {
       a {
-        color: #fff;
+        color: var(--text-primary);
         font-weight: 600;
         font-size: 1.4rem;
       }
@@ -168,7 +168,7 @@
       padding: 10px;
       
       .bar {
-        background: #fff;
+        background: var(--surface-light);
         width: 25px;
         height: 3px;
         margin: 5px 0;

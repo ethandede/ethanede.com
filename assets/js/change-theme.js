@@ -1,18 +1,18 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const accentInput = document.getElementById('accentColor');
-  const highlightInput = document.getElementById('highlightColor');
+  const primaryInput = document.getElementById('primaryColor');
+  const secondaryInput = document.getElementById('secondaryColor');
 
-  if (accentInput) {
-    accentInput.addEventListener('input', function() {
-      console.log("Accent color changed to:", this.value);
-      document.documentElement.style.setProperty('--accent-color', this.value);
+  if (primaryInput) {
+    primaryInput.addEventListener('input', function() {
+      console.log("Primary color changed to:", this.value);
+      document.documentElement.style.setProperty('--primary-color', this.value);
       updateSquaresColor();
     });
   }
 
-  if (highlightInput) {
-    highlightInput.addEventListener('input', function() {
-      document.documentElement.style.setProperty('--highlight-color', this.value);
+  if (secondaryInput) {
+    secondaryInput.addEventListener('input', function() {
+      document.documentElement.style.setProperty('--secondary-color', this.value);
     });
   }
 });

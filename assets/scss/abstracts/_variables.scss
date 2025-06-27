@@ -1,27 +1,71 @@
 @use "sass:color";
 @use "breakpoints" as *;
 
-// Global Colors
-$primary-color: #fff;
-$secondary-color: #1f1c2c;
-$accent-color: #45748C;
-$highlight-color: #BF3978;
-$accent-color-light: color.adjust($accent-color, $lightness: 10%);
+// Global Colors - Brand-focused hierarchy
+$primary-color: #45748C;        // Brand blue-gray (was accent)
+$secondary-color: #BF3978;      // Brand magenta (was highlight)
+$tertiary-color: #10b981;       // Brand teal-green (complementary to magenta)
+$quaternary-color: #f59e0b;     // Brand amber (triadic harmony)
+$primary-color-light: color.adjust($primary-color, $lightness: 10%);
 $initial-color: #999;   // Gray for initial numbers (renamed from $solved-color)
+
+// Tag-specific colors aligned with brand system
+$tag-technology-color: $primary-color;      // Blue-gray for technology/tools  
+$tag-skill-color: $tertiary-color;          // Teal-green for skills
+$tag-deliverable-color: $quaternary-color;  // Amber for deliverables (swapped)
+$tag-project-color: $secondary-color;       // Magenta for projects (swapped)
 
 // Output as CSS variables for runtime use
 :root {
+  // Base RGB channels for flexible gray system
+  --black: 0, 0, 0;
+  --white: 255, 255, 255;
+  
+  /* Common gray usage patterns:
+   * rgba(var(--black), 0.05)  // Very light gray (~#f3f3f3)
+   * rgba(var(--black), 0.1)   // Light gray (~#e6e6e6) - subtle backgrounds
+   * rgba(var(--black), 0.2)   // Medium-light gray (~#cccccc) - borders
+   * rgba(var(--black), 0.4)   // Medium gray (~#999999) - secondary text
+   * rgba(var(--black), 0.6)   // Medium-dark gray (~#666666) - text
+   * rgba(var(--black), 0.8)   // Dark gray (~#333333) - primary text
+   * rgba(var(--black), 0.9)   // Very dark gray (~#1a1a1a)
+   * 
+   * rgba(var(--white), 0.1)   // 10% white overlay
+   * rgba(var(--white), 0.2)   // 20% white overlay - subtle on dark
+   * rgba(var(--white), 0.8)   // 80% white - text on dark backgrounds
+   * rgba(var(--white), 0.9)   // 90% white - primary text on dark
+   */
+  
+  // Brand color system
   --primary-color: #{$primary-color};
   --primary-color-rgb: #{color.channel($primary-color, "red", $space: rgb)}, #{color.channel($primary-color, "green", $space: rgb)}, #{color.channel($primary-color, "blue", $space: rgb)};
+  --primary-color-light: #{$primary-color-light};
   --secondary-color: #{$secondary-color};
   --secondary-color-rgb: #{color.channel($secondary-color, "red", $space: rgb)}, #{color.channel($secondary-color, "green", $space: rgb)}, #{color.channel($secondary-color, "blue", $space: rgb)};
-  --accent-color: #{$accent-color};
-  --accent-color-rgb: #{color.channel($accent-color, "red", $space: rgb)}, #{color.channel($accent-color, "green", $space: rgb)}, #{color.channel($accent-color, "blue", $space: rgb)};
-  --accent-color-light: #{$accent-color-light};
-  --highlight-color: #{$highlight-color};
-  --highlight-color-rgb: #{color.channel($highlight-color, "red", $space: rgb)}, #{color.channel($highlight-color, "green", $space: rgb)}, #{color.channel($highlight-color, "blue", $space: rgb)};
+  --tertiary-color: #{$tertiary-color};
+  --tertiary-color-rgb: #{color.channel($tertiary-color, "red", $space: rgb)}, #{color.channel($tertiary-color, "green", $space: rgb)}, #{color.channel($tertiary-color, "blue", $space: rgb)};
+  --quaternary-color: #{$quaternary-color};
+  --quaternary-color-rgb: #{color.channel($quaternary-color, "red", $space: rgb)}, #{color.channel($quaternary-color, "green", $space: rgb)}, #{color.channel($quaternary-color, "blue", $space: rgb)};
+  
+  // Surface colors using RGBA system
+  --surface-light: rgba(var(--white), 0.95);    // Light backgrounds
+  --surface-dark: rgba(var(--black), 0.9);      // Dark backgrounds  
+  --text-primary: rgba(var(--white), 0.9);      // Primary text on dark
+  --text-secondary: rgba(var(--white), 0.7);    // Secondary text on dark
+  --text-dark: rgba(var(--black), 0.8);         // Primary text on light
+  --text-muted: rgba(var(--black), 0.6);        // Secondary text on light
   --initial-color: #{$initial-color}; // New variable for initial numbers
   --initial-color-rgb: #{color.channel($initial-color, "red", $space: rgb)}, #{color.channel($initial-color, "green", $space: rgb)}, #{color.channel($initial-color, "blue", $space: rgb)};
+  
+  // Tag-specific color variables (using brand system)
+  --tag-technology-color: #{$tag-technology-color};
+  --tag-technology-color-rgb: #{color.channel($tag-technology-color, "red", $space: rgb)}, #{color.channel($tag-technology-color, "green", $space: rgb)}, #{color.channel($tag-technology-color, "blue", $space: rgb)};
+  --tag-skill-color: #{$tag-skill-color};
+  --tag-skill-color-rgb: #{color.channel($tag-skill-color, "red", $space: rgb)}, #{color.channel($tag-skill-color, "green", $space: rgb)}, #{color.channel($tag-skill-color, "blue", $space: rgb)};
+  --tag-deliverable-color: #{$tag-deliverable-color};
+  --tag-deliverable-color-rgb: #{color.channel($tag-deliverable-color, "red", $space: rgb)}, #{color.channel($tag-deliverable-color, "green", $space: rgb)}, #{color.channel($tag-deliverable-color, "blue", $space: rgb)};
+  --tag-project-color: #{$tag-project-color};
+  --tag-project-color-rgb: #{color.channel($tag-project-color, "red", $space: rgb)}, #{color.channel($tag-project-color, "green", $space: rgb)}, #{color.channel($tag-project-color, "blue", $space: rgb)};
 }
 
 // Typography Variables & Global Settings

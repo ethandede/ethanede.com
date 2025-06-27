@@ -3,7 +3,7 @@
 .ai-tools {
   padding: 0;
   background: transparent;
-  color: vars.$primary-color;
+  color: var(--text-primary);
   z-index: 1;
 
   .container {
@@ -15,7 +15,7 @@
   h2 {
     line-height: 1.2;
     margin-bottom: 0.5rem;
-    color: vars.$primary-color;
+    color: var(--text-primary);
   }
 
   .supporting-text {
@@ -23,7 +23,7 @@
     font-style: italic;
     text-align: left;
     padding-left: 1rem;
-    border-left: 4px solid vars.$accent-color;
+    border-left: 4px solid var(--primary-color);
     margin-bottom: 2.5rem;
     max-width: 600px;
   }
@@ -49,11 +49,11 @@
 
     h4 {
       margin-bottom: 10px;
-      color: vars.$primary-color;
+      color: var(--text-primary);
     }
 
     p {
-      color: #ddd;
+      color: rgba(var(--black), 0.1);
       font-size: 1rem;
       line-height: 1.5;
     }

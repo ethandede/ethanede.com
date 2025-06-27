@@ -1,0 +1,330 @@
+@use "../abstracts/variables" as vars;
+@use "../abstracts/mixins";
+@use "../abstracts/breakpoints";
+
+// =============================================================================
+// MASTER TAG SYSTEM
+// Unified tag styling across all contexts (cards, sidebar, archive, etc.)
+// =============================================================================
+
+// =============================================================================
+// BASE TAG MIXINS
+// =============================================================================
+
+// Base tag styling - core structure and behavior
+@mixin tag-base {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: vars.$font-xxs;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 2rem;
+  transition: all 0.3s ease;
+  cursor: default;
+  text-decoration: none;
+  
+  // Ensure consistent text color
+        color: var(--text-primary);
+}
+
+// Tag style variants
+@mixin tag-style($style) {
+  @if $style == 'homepage' or $style == 'card' {
+    // Homepage/card style - using secondary color with opacity
+    background: rgba(var(--secondary-color-rgb), 0.5);
+    border: 1px solid rgba(var(--secondary-color-rgb), 0.7);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    color: var(--text-primary);
+    
+    &:hover {
+      background: rgba(var(--secondary-color-rgb), 0.85);
+      border-color: rgba(var(--secondary-color-rgb), 0.9);
+    }
+  } @else if $style == 'sidebar' {
+    // Sidebar style - subtle background with border
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--color-text, var(--text-primary));
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  } @else if $style == 'minimal' {
+    // Minimal style for basic contexts
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+// Tag color variants - All colors now use CSS variables from _variables.scss
+// Color mapping with new brand system (swapped project/deliverable):
+// - project/project-category: --tag-project-color (magenta #BF3978)
+// - deliverable/deliverable-type: --tag-deliverable-color (amber #f59e0b)
+// - technology/tool: --tag-technology-color (blue-gray #45748C)
+// - skill: --tag-skill-color (teal-green #10b981)
+// - company: --primary-color (blue-gray #45748C)
+@mixin tag-color($color-type) {
+  @if $color-type == 'project' or $color-type == 'project-category' {
+    // Magenta for projects/categories using project color
+    &.tag-style-homepage,
+    &.tag-style-card {
+      background: rgba(var(--tag-project-color-rgb), 0.5);
+      border-color: rgba(var(--tag-project-color-rgb), 0.7);
+      
+      &:hover {
+        background: rgba(var(--tag-project-color-rgb), 0.85);
+      }
+    }
+    
+    &.tag-style-sidebar {
+      background-color: rgba(var(--tag-project-color-rgb), 0.1);
+      border-color: rgba(var(--tag-project-color-rgb), 0.2);
+      
+      &:hover {
+        background-color: var(--tag-project-color);
+        border-color: var(--tag-project-color);
+        color: var(--text-primary);
+      }
+    }
+  } @else if $color-type == 'deliverable' or $color-type == 'deliverable-type' {
+    // Amber for deliverables using tag-deliverable-color
+    &.tag-style-homepage,
+    &.tag-style-card {
+      background: rgba(var(--tag-deliverable-color-rgb), 0.5);
+      border-color: rgba(var(--tag-deliverable-color-rgb), 0.7);
+      
+      &:hover {
+        background: rgba(var(--tag-deliverable-color-rgb), 0.85);
+      }
+    }
+    
+    &.tag-style-sidebar {
+      background-color: rgba(var(--tag-deliverable-color-rgb), 0.1);
+      border-color: rgba(var(--tag-deliverable-color-rgb), 0.2);
+      
+      &:hover {
+        background-color: var(--tag-deliverable-color);
+        border-color: var(--tag-deliverable-color);
+        color: var(--text-primary);
+      }
+    }
+  } @else if $color-type == 'technology' or $color-type == 'tool' {
+    // Blue for technology/tools using tag-technology-color
+    &.tag-style-homepage,
+    &.tag-style-card {
+      background: rgba(var(--tag-technology-color-rgb), 0.5);
+      border-color: rgba(var(--tag-technology-color-rgb), 0.7);
+      
+      &:hover {
+        background: rgba(var(--tag-technology-color-rgb), 0.85);
+      }
+    }
+    
+    &.tag-style-sidebar {
+      background-color: rgba(var(--tag-technology-color-rgb), 0.1);
+      border-color: rgba(var(--tag-technology-color-rgb), 0.2);
+      
+      &:hover {
+        background-color: var(--tag-technology-color);
+        border-color: var(--tag-technology-color);
+        color: var(--text-primary);
+      }
+    }
+  } @else if $color-type == 'skill' {
+    // Green for skills using tag-skill-color
+    &.tag-style-homepage,
+    &.tag-style-card {
+      background: rgba(var(--tag-skill-color-rgb), 0.5);
+      border-color: rgba(var(--tag-skill-color-rgb), 0.7);
+      
+      &:hover {
+        background: rgba(var(--tag-skill-color-rgb), 0.85);
+      }
+    }
+    
+    &.tag-style-sidebar {
+      background-color: rgba(var(--tag-skill-color-rgb), 0.1);
+      border-color: rgba(var(--tag-skill-color-rgb), 0.2);
+      
+      &:hover {
+        background-color: var(--tag-skill-color);
+        border-color: var(--tag-skill-color);
+        color: var(--text-primary);
+      }
+    }
+  } @else if $color-type == 'company' {
+    // Blue-gray for companies using primary color
+    &.tag-style-homepage,
+    &.tag-style-card {
+      background: rgba(var(--primary-color-rgb), 0.5);
+      border-color: rgba(var(--primary-color-rgb), 0.7);
+      
+      &:hover {
+        background: rgba(var(--primary-color-rgb), 0.85);
+      }
+    }
+    
+    &.tag-style-sidebar {
+      background-color: rgba(var(--primary-color-rgb), 0.15);
+      border-color: rgba(var(--primary-color-rgb), 0.3);
+      
+      &:hover {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: var(--text-primary);
+      }
+    }
+  }
+}
+
+// Tag state modifiers
+@mixin tag-state($state) {
+  @if $state == 'non-clickable' {
+    cursor: default;
+    
+    &:hover {
+      transform: none !important;
+      box-shadow: none !important;
+      background-color: inherit !important;
+      border-color: inherit !important;
+      color: inherit !important;
+    }
+  } @else if $state == 'clickable' {
+    cursor: pointer;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+// =============================================================================
+// MASTER TAG CLASSES
+// =============================================================================
+
+.tag {
+  @include tag-base;
+
+  // Style variants
+  &.tag-style-homepage,
+  &.tag-style-card {
+    @include tag-style('homepage');
+  }
+
+  &.tag-style-sidebar {
+    @include tag-style('sidebar');
+  }
+
+  &.tag-style-minimal {
+    @include tag-style('minimal');
+  }
+
+  // Color variants
+  &.tag-project,
+  &.tag-project-category {
+    @include tag-color('project');
+  }
+
+  &.tag-deliverable,
+  &.tag-deliverable-type,
+  &.tag-type {
+    @include tag-color('deliverable');
+  }
+
+  &.tag-technology,
+  &.tag-tool {
+    @include tag-color('technology');
+  }
+
+  &.tag-skill {
+    @include tag-color('skill');
+  }
+
+  &.tag-company {
+    @include tag-color('company');
+  }
+
+  // State modifiers
+  &.tag-non-clickable {
+    @include tag-state('non-clickable');
+  }
+
+  &.tag-clickable {
+    @include tag-state('clickable');
+  }
+}
+
+// =============================================================================
+// CONTEXT-SPECIFIC HELPERS
+// =============================================================================
+
+// Card tags container
+.card__tags {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  z-index: 20;
+
+  .tag {
+    // Tags in cards default to homepage style
+    @include tag-style('homepage');
+  }
+}
+
+// Sidebar tags container
+.tags-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  .tag {
+    // Tags in sidebar default to sidebar style
+    @include tag-style('sidebar');
+  }
+}
+
+// Archive/listing tags container
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  .tag {
+    // Tags in lists default to minimal style
+    @include tag-style('minimal');
+  }
+}
+
+// =============================================================================
+// RESPONSIVE DESIGN
+// =============================================================================
+
+@include breakpoints.md {
+  .tags-cloud {
+    gap: 0.5rem;
+    
+    .tag {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+    }
+  }
+} 

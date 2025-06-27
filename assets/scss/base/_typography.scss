@@ -4,8 +4,8 @@ body {
   font-family: vars.$body-font;
   font-size: vars.$font-sm;
   line-height: 1.5;
-  color: var(--primary-color);
-  background: linear-gradient(to bottom, #000, #1f1c2c);
+      color: var(--text-primary);
+    background: linear-gradient(to bottom, rgba(var(--black), 1), #1f1c2c);
   font-family: vars.$body-font;
   font-weight: 400;
 }
@@ -78,7 +78,7 @@ ul:not(nav ul):not(.menu):not(.nav):not([class*="nav"]):not([class*="menu"]):not
       position: absolute;
       left: 0.83rem; // Fine-tuned positioning
       top: 0.2em;
-      color: var(--accent-color);
+      color: var(--primary-color);
       font-size: 0.8em;
     }
   }
@@ -96,7 +96,7 @@ ol:not(nav ol):not(.menu ol):not(.nav ol):not([class*="nav"] ol):not([class*="me
     font-weight: 400;
     
     &::marker {
-      color: var(--accent-color);
+      color: var(--primary-color);
       font-weight: 600;
     }
   }
@@ -107,7 +107,7 @@ ol:not(nav ol):not(.menu ol):not(.nav ol):not([class*="nav"] ol):not([class*="me
   font-style: italic;
   text-align: left;
   padding-left: 1rem;
-  border-left: 4px solid var(--accent-color);
+  border-left: 4px solid var(--primary-color);
   margin-bottom: 2.5rem;
   max-width: 600px;
 }

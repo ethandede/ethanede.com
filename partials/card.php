@@ -55,7 +55,8 @@ $defaults = [
     'show_media_types' => false,
     'media_types' => [],
 
-    'extra_classes' => []
+    'extra_classes' => [],
+    'show_company' => false
 ];
 
 $args = wp_parse_args($args, $defaults);
@@ -115,8 +116,30 @@ $card_id = 'card-' . $args['post_id'] . '-' . uniqid();
     <!-- Card Tags -->
     <?php if (!empty($args['tags']) && is_array($args['tags'])) : ?>
         <div class="card__tags" aria-label="Tags">
-            <?php foreach ($args['tags'] as $tag) : ?>
-                <span class="tag"><?php echo esc_html($tag); ?></span>
+            <?php foreach ($args['tags'] as $tag) : 
+                // Determine tag class based on card type and tag content
+                $tag_classes = ['tag'];
+                
+                // Add style class (cards use homepage/card style)
+                $tag_classes[] = 'tag-style-card';
+                
+                // Add color class based on card type and tag content
+                if ($args['type'] === 'project') {
+                    $tag_classes[] = 'tag-project';
+                } elseif ($args['type'] === 'deliverable') {
+                    $tag_classes[] = 'tag-deliverable';
+                }
+                
+                // Additional semantic classes based on tag content
+                if (in_array(strtolower($tag), ['project'])) {
+                    $tag_classes[] = 'tag-project-category';
+                } elseif (in_array(strtolower($tag), ['animation', 'microsite', 'website', 'email'])) {
+                    $tag_classes[] = 'tag-deliverable-type';
+                }
+            ?>
+                <span class="<?php echo esc_attr(implode(' ', $tag_classes)); ?>">
+                    <?php echo esc_html($tag); ?>
+                </span>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
@@ -175,6 +198,29 @@ $card_id = 'card-' . $args['post_id'] . '-' . uniqid();
         </div>
         
         <div class="card__content-footer">
+            <!-- Company Information -->
+            <?php if (!$is_taxonomy_card && isset($args['show_company']) && $args['show_company']) : ?>
+                <div class="card__company" aria-label="Company">
+                    <?php
+                    // Get company information
+                    $companies = get_the_terms($args['post_id'], 'company');
+                    if ($companies && !is_wp_error($companies)) :
+                        $company = $companies[0]; // Use first company
+                        $logo = get_field('company_logo', 'company_' . $company->term_id);
+                    ?>
+                        <div class="company-info">
+                            <?php if ($logo && is_array($logo) && !empty($logo['url'])) : ?>
+                                <img src="<?php echo esc_url($logo['url']); ?>" 
+                                     alt="<?php echo esc_attr($company->name); ?> logo" 
+                                     class="company-logo-card">
+                            <?php else : ?>
+                                <span class="company-name"><?php echo esc_html($company->name); ?></span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+            
             <!-- Card Arrow (Always visible for navigation) -->
             <div class="card__arrow" aria-hidden="true">
                 <i class="fas fa-arrow-right"></i>
