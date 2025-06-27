@@ -10,7 +10,6 @@
 
 #work-archive {
   min-height: 100vh;
-  background: var(--background-color);
   color: var(--text-primary);
 }
 
@@ -20,7 +19,6 @@
 
 .work-header {
   padding: 6rem 0 4rem;
-  background: linear-gradient(135deg, var(--background-color) 0%, var(--surface-color) 100%);
   
   @include breakpoints.md {
     padding: 4rem 0 3rem;

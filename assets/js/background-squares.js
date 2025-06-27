@@ -7,6 +7,12 @@ document.addEventListener("DOMContentLoaded", function() {
     return `${rgb.r}, ${rgb.g}, ${rgb.b}`;
   }
 
+  // Helper function to convert hex to RGB string
+  function hexToRgbString(hex) {
+    const rgb = hexToRgb(hex);
+    return `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+  }
+
   // Helper function to lighten a color
   function lightenColor(hex, percent) {
     // Convert hex to RGB
