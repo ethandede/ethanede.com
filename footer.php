@@ -34,7 +34,7 @@
         </header>
         <?php echo do_shortcode('[contact-form-7 id="15" title="Contact Form - Ethan Ede"]'); ?>
         <button class="contact-close-mobile contact-close" style="display: none;">
-          Cancel <i class="fa-solid fa-xmark duotone-effect"></i>
+          Cancel <i class="fa-duotone fa-regular fa-circle-xmark" style="--fa-primary-color: #005eff; --fa-secondary-color: #fff700;"></i>
         </button>
       </div>
     </div>

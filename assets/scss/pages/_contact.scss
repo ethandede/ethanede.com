@@ -283,19 +283,20 @@
         i {
           margin-right: 0.5rem;
           font-size: 1rem;
+          color: unset;
         }
         
         // Style for the cloned cancel button
         &.cancel-btn {
-          background: transparent;
-          border: 2px solid rgba(255, 255, 255, 0.5);
+          background: rgba(255, 255, 255, 0.05); // Very low opacity white background
+          border: 1px solid var(--primary-color); // Match cta-button border
           color: var(--primary-color);
-          font-family: vars.$body-font;
+          font-family: vars.$header-font; // Match cta-button font
           font-size: 1rem;
-          font-weight: 500;
+          font-weight: normal; // Match cta-button weight
           cursor: pointer;
-          padding: 0.75rem 1.5rem;
-          border-radius: 6px;
+          padding: 10px 20px; // Match cta-button padding
+          border-radius: 7px; // Match cta-button border radius
           transition: all 0.3s ease;
           text-decoration: none;
           flex-shrink: 0;
@@ -304,14 +305,24 @@
           margin: 0;
 
           &:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1); // Slightly more opacity on hover
+            border-color: rgba(var(--white), 0.95); // Match cta-button hover
             color: var(--text-primary);
           }
 
           i {
-            margin-right: 0.5rem;
+            margin-left: 0.5rem; // Match cta-button icon margin
             font-size: 1rem;
+            transition: transform 0.3s ease-in-out; // Match cta-button transition
+            
+            // Duotone icon styling
+            // --fa-primary-color: var(--primary-color);
+            // --fa-secondary-color: var(--secondary-color);
+            // --fa-secondary-opacity: 0.8;
+          }
+          
+          &:hover i {
+            transform: translateX(3px); // Subtle movement for cancel
           }
         }
       }

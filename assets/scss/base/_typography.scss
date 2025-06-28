@@ -161,8 +161,7 @@ blockquote a,
   }
   
   &:focus {
-    outline: 2px solid var(--tertiary-color);
-    outline-offset: 2px;
+    outline: none;
   }
 }
 

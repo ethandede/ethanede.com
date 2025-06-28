@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
           
           // Clone and style the cancel button to match brand
           const clonedCancelBtn = mobileCloseBtn.cloneNode(true);
-          clonedCancelBtn.innerHTML = 'Cancel <i class="fas fa-xmark" aria-hidden="true"></i>';
+          clonedCancelBtn.innerHTML = 'Cancel <i class="fa-duotone fa-regular fa-circle-xmark"></i>';
           clonedCancelBtn.className = 'contact-close-mobile cancel-btn';
           
           // Add click handler for cancel button
