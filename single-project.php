@@ -14,6 +14,7 @@ get_header();
         <section class="hero">
             <div class="container">
                 <div class="hero__content">
+                    <?php ee_display_single_page_tag(); ?>
                     <h1 class="hero__title text-gray-900"><?php echo esc_html(get_the_title()); ?></h1>
                 </div>
             </div>

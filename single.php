@@ -22,6 +22,7 @@ get_header();
         if (have_posts()) :
           while (have_posts()) : the_post();
             ?>
+            <?php ee_display_single_page_tag(); ?>
             <h1><?php the_title(); ?></h1>
             <?php
           endwhile;

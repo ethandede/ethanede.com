@@ -55,8 +55,7 @@ $defaults = [
     'show_media_types' => false,
     'media_types' => [],
 
-    'extra_classes' => [],
-    'show_company' => false
+    'extra_classes' => []
 ];
 
 $args = wp_parse_args($args, $defaults);
@@ -76,7 +75,7 @@ if (!array_key_exists('tags', $original_args) && !$is_taxonomy_card) {
     $taxonomy = ($args['type'] === 'project') ? 'project_category' : 'technology';
     $terms = get_the_terms($args['post_id'], $taxonomy);
     if ($terms && !is_wp_error($terms)) {
-        $args['tags'] = array_map(function($term) {
+        $args['tags'] = array_map(function ($term) {
             return $term->name;
         }, $terms);
     }
@@ -88,7 +87,7 @@ if ($args['show_media_types'] && empty($args['media_types']) && !$is_taxonomy_ca
     $gallery_images = get_field('gallery_images', $args['post_id']);
     $gallery_videos = get_field('gallery_videos', $args['post_id']);
     $pdf_files = get_field('pdf_files', $args['post_id']);
-    
+
     if (!empty($gallery_images)) {
         $args['media_types'][] = 'images';
     }
@@ -102,79 +101,83 @@ if ($args['show_media_types'] && empty($args['media_types']) && !$is_taxonomy_ca
 
 // Generate unique ID for accessibility
 $card_id = 'card-' . $args['post_id'] . '-' . uniqid();
+
+// Build data attributes string
+$data_attributes_html = '';
+if (!empty($args['data_attributes']) && is_array($args['data_attributes'])) {
+    foreach ($args['data_attributes'] as $attr_name => $attr_value) {
+        $data_attributes_html .= ' ' . esc_attr($attr_name) . '="' . esc_attr($attr_value) . '"';
+    }
+}
 ?>
 
-<a href="<?php echo esc_url($args['link_url']); ?>" 
-   class="<?php echo esc_attr(implode(' ', $card_classes)); ?>" 
-   id="<?php echo esc_attr($card_id); ?>"
-   aria-labelledby="<?php echo esc_attr($card_id); ?>-title"
-   aria-describedby="<?php echo esc_attr($card_id); ?>-desc">
-    
+<a href="<?php echo esc_url($args['link_url']); ?>" class="<?php echo esc_attr(implode(' ', $card_classes)); ?>"
+    id="<?php echo esc_attr($card_id); ?>" aria-labelledby="<?php echo esc_attr($card_id); ?>-title"
+    aria-describedby="<?php echo esc_attr($card_id); ?>-desc" <?php echo $data_attributes_html; ?>>
+
     <!-- Card Overlay -->
     <div class="card__overlay" aria-hidden="true"></div>
-    
+
     <!-- Card Tags -->
-    <?php if (!empty($args['tags']) && is_array($args['tags'])) : ?>
+    <?php if (!empty($args['tags']) && is_array($args['tags'])): ?>
         <div class="card__tags" aria-label="Tags">
-            <?php foreach ($args['tags'] as $tag) : 
+            <?php foreach ($args['tags'] as $tag):
                 // Determine tag class based on card type and tag content
                 $tag_classes = ['tag'];
-                
+
                 // Add style class (cards use homepage/card style)
                 $tag_classes[] = 'tag-style-card';
-                
+
                 // Add color class based on card type and tag content
                 if ($args['type'] === 'project') {
                     $tag_classes[] = 'tag-project';
                 } elseif ($args['type'] === 'deliverable') {
                     $tag_classes[] = 'tag-deliverable';
                 }
-                
+
                 // Additional semantic classes based on tag content
                 if (in_array(strtolower($tag), ['project'])) {
                     $tag_classes[] = 'tag-project-category';
                 } elseif (in_array(strtolower($tag), ['animation', 'microsite', 'website', 'email'])) {
                     $tag_classes[] = 'tag-deliverable-type';
                 }
-            ?>
+                ?>
                 <span class="<?php echo esc_attr(implode(' ', $tag_classes)); ?>">
                     <?php echo esc_html($tag); ?>
                 </span>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
-    
+
     <!-- Card Image -->
-    <?php if (!empty($args['image_url'])) : ?>
+    <?php if (!empty($args['image_url'])): ?>
         <div class="card__image-container">
-            <img src="<?php echo esc_url($args['image_url']); ?>" 
-                 alt="<?php echo esc_attr($args['image_alt']); ?>" 
-                 class="card__image"
-                 loading="lazy">
+            <img src="<?php echo esc_url($args['image_url']); ?>" alt="<?php echo esc_attr($args['image_alt']); ?>"
+                class="card__image" loading="lazy">
         </div>
-    <?php else : ?>
+    <?php else: ?>
         <div class="card__image-container card__placeholder">
             <i class="fas fa-image" aria-hidden="true"></i>
         </div>
     <?php endif; ?>
-    
+
     <!-- Card Content -->
     <div class="card__content">
         <div class="card__content-main">
             <h3 id="<?php echo esc_attr($card_id); ?>-title" class="card__title">
                 <?php echo esc_html($args['title']); ?>
             </h3>
-            
-            <?php if (!empty($args['description'])) : ?>
+
+            <?php if (!empty($args['description'])): ?>
                 <p id="<?php echo esc_attr($card_id); ?>-desc" class="card__description">
                     <?php echo esc_html($args['description']); ?>
                 </p>
             <?php endif; ?>
-            
+
             <!-- Media Types -->
-            <?php if ($args['show_media_types'] && !empty($args['media_types'])) : ?>
+            <?php if ($args['show_media_types'] && !empty($args['media_types'])): ?>
                 <div class="card__media-types" aria-label="Available media types">
-                    <?php foreach ($args['media_types'] as $media_type) : ?>
+                    <?php foreach ($args['media_types'] as $media_type): ?>
                         <span class="media-type-icon" title="<?php echo esc_attr(ucfirst($media_type)); ?>">
                             <?php
                             $icon_class = 'fas fa-file';
@@ -196,35 +199,12 @@ $card_id = 'card-' . $args['post_id'] . '-' . uniqid();
                 </div>
             <?php endif; ?>
         </div>
-        
+
         <div class="card__content-footer">
-            <!-- Company Information -->
-            <?php if (!$is_taxonomy_card && isset($args['show_company']) && $args['show_company']) : ?>
-                <div class="card__company" aria-label="Company">
-                    <?php
-                    // Get company information
-                    $companies = get_the_terms($args['post_id'], 'company');
-                    if ($companies && !is_wp_error($companies)) :
-                        $company = $companies[0]; // Use first company
-                        $logo = get_field('company_logo', 'company_' . $company->term_id);
-                    ?>
-                        <div class="company-info">
-                            <?php if ($logo && is_array($logo) && !empty($logo['url'])) : ?>
-                                <img src="<?php echo esc_url($logo['url']); ?>" 
-                                     alt="<?php echo esc_attr($company->name); ?> logo" 
-                                     class="company-logo-card">
-                            <?php else : ?>
-                                <span class="company-name"><?php echo esc_html($company->name); ?></span>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
-            
-            <!-- Card Arrow (Always visible for navigation) -->
+             <!-- Card Arrow (Always visible for navigation) -->
             <div class="card__arrow" aria-hidden="true">
                 <i class="fas fa-arrow-right"></i>
             </div>
         </div>
     </div>
-</a> 
+</a>

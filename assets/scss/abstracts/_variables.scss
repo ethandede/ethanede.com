@@ -49,7 +49,7 @@ $tag-project-color: $secondary-color;       // Magenta for projects (swapped)
   
   // Surface colors using RGBA system
   --surface-light: rgba(var(--white), 0.95);    // Light backgrounds
-  --surface-dark: rgba(var(--black), 0.9);      // Dark backgrounds  
+  --surface-dark: rgba(var(--black), 0.85);      // Dark backgrounds  
   --text-primary: rgba(var(--white), 0.9);      // Primary text on dark
   --text-secondary: rgba(var(--white), 0.7);    // Secondary text on dark
   --text-dark: rgba(var(--black), 0.8);         // Primary text on light

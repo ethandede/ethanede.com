@@ -12,18 +12,7 @@ get_header(); ?>
         the_post(); ?>
         <section class="deliverable-header">
             <div class="container">
-                <?php
-                // Show deliverable type above h1 on mobile with tag treatment
-                $type_terms = get_the_terms(get_the_ID(), 'deliverable_type');
-                if ($type_terms && !is_wp_error($type_terms)) :
-                    $type_term = $type_terms[0];
-                    ?>
-                    <div class="deliverable-type-tag">
-                        <span class="type-tag"><?php 
-                            echo esc_html(get_singular_term_display_name($type_term->name)); 
-                        ?></span>
-                    </div>
-                <?php endif; ?>
+                <?php ee_display_single_page_tag(null, ['wrapper_class' => 'deliverable-type-tag']); ?>
                 
                 <h1><?php the_title(); ?></h1>
                 

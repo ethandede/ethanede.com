@@ -12,7 +12,6 @@
       padding: 0 1rem;
       display: grid;
       grid-template-columns: 2fr 1fr;
-      gap: 4rem;
 
       @media screen and (max-width: 1370px) {
         max-width: 90vw;
@@ -27,24 +26,22 @@
         font-weight: 700;
         color: var(--color-text);
         margin: 0;
+        margin-top: 0.25rem;
         text-align: left;
         grid-column: 1;
       }
 
       .deliverable-type-tag {
-        margin-bottom: 1rem;
-        display: none; // Hidden on desktop
+        margin-bottom: 0.25rem;
+        display: block; // Show on all screen sizes like other single page tags
 
-        @media (max-width: 768px) {
-          display: block;
-        }
-
-        .type-tag {
+        .type-tag,
+        .single-page-tag {
           display: inline-block;
           padding: 0.5rem 1rem;
-          background: rgba(var(--secondary-color-rgb), 0.15);
-          border: 1px solid rgba(var(--secondary-color-rgb), 0.3);
-          color: var(--secondary-color);
+          background: rgba(var(--quaternary-color-rgb), 0.15);
+          border: 1px solid rgba(var(--quaternary-color-rgb), 0.3);
+          color: var(--quaternary-color);
           border-radius: 2rem;
           font-size: 0.875rem;
           font-weight: 600;

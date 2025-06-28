@@ -236,6 +236,14 @@ function enqueue_custom_scripts() {
         if (is_front_page() || is_home()) {
             wp_enqueue_script('logo-scroll', get_template_directory_uri() . '/assets/js/logo-scroll.js', [], '1.0', true);
         }
+        
+        // Load work filter script on work archive page
+        // Temporarily disabled - uncomment to restore filter functionality
+        /*
+        if (is_page_template('page-work.php')) {
+            wp_enqueue_script('work-filter', get_template_directory_uri() . '/assets/js/work-filter.js', [], '1.0', true);
+        }
+        */
     }
 }
 add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
@@ -1416,5 +1424,83 @@ function get_singular_term_display_name($term_name) {
     ];
     
     return isset($conversions[$term_name]) ? $conversions[$term_name] : $term_name;
+}
+
+/**
+ * Display a single tag above h1 on template pages
+ * Follows the same logic as work cards: "Project" for projects, deliverable type for deliverables
+ * 
+ * @param int $post_id Optional post ID, defaults to current post
+ * @param array $args Optional configuration arguments
+ * @return void Outputs HTML directly
+ */
+function ee_display_single_page_tag($post_id = null, $args = []) {
+    if (!$post_id) {
+        $post_id = get_the_ID();
+    }
+    
+    if (!$post_id) {
+        return;
+    }
+    
+    $post_type = get_post_type($post_id);
+    $tag_text = '';
+    $tag_classes = ['single-page-tag'];
+    
+    // Default configuration
+    $defaults = [
+        'wrapper_class' => 'single-page-tag-wrapper',
+        'show_wrapper' => true,
+        'additional_classes' => []
+    ];
+    $config = wp_parse_args($args, $defaults);
+    
+    // Determine tag text and classes based on post type
+    if ($post_type === 'project') {
+        $tag_text = 'Project';
+        $tag_classes[] = 'tag-project';
+    } elseif ($post_type === 'deliverable') {
+        $type_terms = get_the_terms($post_id, 'deliverable_type');
+        if ($type_terms && !is_wp_error($type_terms)) {
+            $type_term = $type_terms[0];
+            $tag_text = get_singular_term_display_name($type_term->name);
+            $tag_classes[] = 'tag-deliverable';
+        }
+    } elseif ($post_type === 'post') {
+        // For blog posts, show "Service" tag with icon since these are high-level practice areas
+        $tag_text = '<i class="fa-duotone fa-briefcase"></i>Service';
+        $tag_classes[] = 'tag-service-area';
+        $tag_classes[] = 'tag-with-icon';
+    }
+    
+    // Add any additional classes
+    if (!empty($config['additional_classes'])) {
+        $tag_classes = array_merge($tag_classes, (array)$config['additional_classes']);
+    }
+    
+    // Only display if we have tag text
+    if ($tag_text) {
+        if ($config['show_wrapper']) {
+            echo '<div class="' . esc_attr($config['wrapper_class']) . '">';
+        }
+        
+        echo '<span class="' . esc_attr(implode(' ', $tag_classes)) . '">';
+        // Allow HTML for icons in tag text, but escape if no HTML detected
+        if (strpos($tag_text, '<') !== false) {
+            echo wp_kses($tag_text, [
+                'i' => [
+                    'class' => [],
+                    'aria-hidden' => []
+                ]
+            ]);
+        } else {
+            echo esc_html($tag_text);
+        }
+        echo '</span>';
+        
+        if ($config['show_wrapper']) {
+            echo '</div>';
+        }
+    }
 }
 

@@ -327,4 +327,67 @@
       font-size: 0.8125rem;
     }
   }
+}
+
+// Single Page Tags (above h1s on template pages)
+.single-page-tag-wrapper {
+  margin-bottom: 1rem;
+
+  .single-page-tag {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+
+    // Default styling
+    background: rgba(var(--secondary-color-rgb), 0.15);
+    border: 1px solid rgba(var(--secondary-color-rgb), 0.3);
+    color: var(--secondary-color);
+
+    // Project-specific styling
+    &.tag-project {
+      background: rgba(var(--primary-color-rgb), 0.15);
+      border: 1px solid rgba(var(--primary-color-rgb), 0.3);
+      color: var(--primary-color);
+    }
+
+    // Deliverable-specific styling
+    &.tag-deliverable {
+      background: rgba(var(--quaternary-color-rgb), 0.15);
+      border: 1px solid rgba(var(--quaternary-color-rgb), 0.3);
+      color: var(--quaternary-color);
+    }
+
+    // Service Area-specific styling (blog posts)
+    &.tag-service-area {
+      background: rgba(var(--tertiary-color-rgb), 0.15);
+      border: 1px solid rgba(var(--tertiary-color-rgb), 0.3);
+      color: var(--tertiary-color);
+    }
+
+    // Icon styling for tags with icons
+    &.tag-with-icon {
+      i {
+        margin-right: 0.5rem;
+        font-size: 0.875rem;
+        
+        // Duotone icon styling - primary layer uses tag color, secondary layer is more subtle
+        &.fa-duotone {
+          --fa-primary-color: currentColor;
+          --fa-secondary-color: currentColor;
+          --fa-secondary-opacity: 0.4;
+        }
+        
+        // Light icon styling - clean, minimal appearance
+        &.fa-light {
+          font-weight: 300;
+          opacity: 0.9;
+        }
+      }
+    }
+  }
 } 

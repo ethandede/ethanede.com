@@ -10,9 +10,14 @@
 .deliverable-layout-sidebar {
     position: sticky;
     top: 2rem;
+    margin-top: 3.5rem;
     
     @media (max-width: 1024px) {
         position: static;
+        margin-top: unset;
+    }
+    
+    @media (max-width: 767px) {
     }
     
     // Sidebar sections spacing

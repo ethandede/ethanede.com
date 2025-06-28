@@ -14,6 +14,8 @@
 @use 'components/logo-banner';
 @use 'components/color-controls';
 @use 'components/sidebar';
+// Temporarily disabled - uncomment to restore filter functionality
+// @use 'components/work-filter';
 
 // Layout
 @use 'layout/header';
