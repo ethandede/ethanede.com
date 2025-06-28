@@ -76,6 +76,10 @@ p {
   margin-bottom: 1rem;
   font-family: vars.$body-font;
   font-weight: 400;
+
+  @media (max-width: 1024px) {
+    font-size:1.25rem;
+  }    
 }
 
 // Universal list styling for WYSIWYG content (exclude navigation)
