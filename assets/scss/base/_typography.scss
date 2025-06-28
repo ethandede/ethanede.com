@@ -6,8 +6,8 @@ body {
   font-family: vars.$body-font;
   font-size: vars.$font-sm;
   line-height: 1.5;
-      color: var(--text-primary);
-    background: linear-gradient(to bottom, rgba(var(--black), 1), #1f1c2c) !important;
+  color: var(--text-primary);
+  background: linear-gradient(to bottom, rgba(var(--black), 1), #1f1c2c) !important;
   font-family: vars.$body-font;
   font-weight: 400;
 }
@@ -147,8 +147,6 @@ blockquote a,
 // Explicitly exclude navigation links from dashed borders
 .site-nav a,
 .site-nav__links a,
-.mobile-menu a,
-.mobile-menu__links a,
 nav a,
 .nav a,
 .menu a,
@@ -157,6 +155,27 @@ nav a,
   border-bottom: none !important;
   
   &:hover {
+    border-bottom: none !important;
+  }
+}
+
+// Mobile menu links should not have dashed borders, but list items can keep their borders
+.mobile-menu a,
+.mobile-menu__links a {
+  border-bottom: none !important;
+  
+  &:hover {
+    border-bottom: none !important;
+  }
+}
+
+// But preserve the list item borders in mobile menu
+.mobile-menu__links li {
+  border-bottom: 1px solid rgba(var(--primary-color), 0.3) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  padding-bottom: 5px !important;
+  
+  &:last-child {
     border-bottom: none !important;
   }
 }

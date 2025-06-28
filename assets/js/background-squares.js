@@ -220,11 +220,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const r = Math.max(0, Math.min(255, primaryRGB.r + Math.floor((Math.random() - 0.5) * variation)));
     const g = Math.max(0, Math.min(255, primaryRGB.g + Math.floor((Math.random() - 0.5) * variation)));
     const b = Math.max(0, Math.min(255, primaryRGB.b + Math.floor((Math.random() - 0.5) * variation)));
-    const alpha = 0.1;
+    const alpha = 0.3;
     rect.setAttribute("fill", `rgba(${r}, ${g}, ${b}, ${alpha})`);
     
     // Ensure visibility on mobile
-    rect.setAttribute("opacity", "0.1");
+    rect.setAttribute("opacity", "0.3");
     rect.setAttribute("visibility", "visible");
     
     svg.appendChild(rect);

@@ -127,11 +127,30 @@ function ee_font_loading_css() {
             font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
         }
         
-        /* Fallback for users with slow connections */
+        /* Fallback for users with slow connections or mobile */
         @media (prefers-reduced-motion: reduce) {
             .fonts-loading body > * {
                 visibility: visible;
             }
+        }
+        
+        /* Force show content on mobile after 3 seconds */
+        @media (max-width: 768px) {
+            .fonts-loading body > * {
+                animation: forceShow 3s forwards;
+            }
+        }
+        
+        @keyframes forceShow {
+            to {
+                visibility: visible;
+            }
+        }
+        
+        /* Ensure navigation is always visible */
+        .fonts-loading .site-nav,
+        .fonts-loading .site-nav * {
+            visibility: visible !important;
         }
     </style>' . "\n";
 }
@@ -139,39 +158,53 @@ add_action('wp_head', 'ee_font_loading_css', 2);
 
 // Add font loading detection script
 function ee_font_loading_script() {
-    if (is_front_page() || is_home()) {
-        echo '<script>
-            (function() {
-                // Add loading class initially
-                document.documentElement.classList.add("fonts-loading");
-                
-                // Check if fonts are already loaded (cached)
-                if (document.fonts && document.fonts.ready) {
-                    document.fonts.ready.then(function() {
-                        document.documentElement.classList.remove("fonts-loading");
-                        document.documentElement.classList.add("fonts-loaded");
-                    }).catch(function() {
-                        document.documentElement.classList.remove("fonts-loading");
-                        document.documentElement.classList.add("fonts-failed");
-                    });
-                } else {
-                    // Fallback for browsers without Font Loading API
-                    setTimeout(function() {
-                        document.documentElement.classList.remove("fonts-loading");
-                        document.documentElement.classList.add("fonts-loaded");
-                    }, 3000); // 3 second timeout
-                }
-                
-                // Additional timeout as safety net
+    echo '<script>
+        (function() {
+            // Add loading class initially
+            document.documentElement.classList.add("fonts-loading");
+            
+            // Function to mark fonts as loaded
+            function markFontsLoaded() {
+                document.documentElement.classList.remove("fonts-loading");
+                document.documentElement.classList.add("fonts-loaded");
+            }
+            
+            // Function to mark fonts as failed
+            function markFontsFailed() {
+                document.documentElement.classList.remove("fonts-loading");
+                document.documentElement.classList.add("fonts-failed");
+            }
+            
+            // Check if fonts are already loaded (cached)
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(function() {
+                    markFontsLoaded();
+                }).catch(function() {
+                    markFontsFailed();
+                });
+            } else {
+                // Fallback for browsers without Font Loading API
                 setTimeout(function() {
-                    if (document.documentElement.classList.contains("fonts-loading")) {
-                        document.documentElement.classList.remove("fonts-loading");
-                        document.documentElement.classList.add("fonts-failed");
-                    }
-                }, 3000);
-            })();
-        </script>' . "\n";
-    }
+                    markFontsLoaded();
+                }, 2000); // Reduced timeout to 2 seconds
+            }
+            
+            // Additional timeout as safety net - shorter timeout for mobile
+            var timeout = /iPad|iPhone|iPod|Android/.test(navigator.userAgent) ? 2000 : 3000;
+            setTimeout(function() {
+                if (document.documentElement.classList.contains("fonts-loading")) {
+                    markFontsFailed();
+                }
+            }, timeout);
+            
+            // Force show content after 4 seconds as ultimate fallback
+            setTimeout(function() {
+                if (document.documentElement.classList.contains("fonts-loading")) {
+                    markFontsFailed();
+                }
+            }, 4000);
+        })();
+    </script>' . "\n";
 }
 add_action('wp_head', 'ee_font_loading_script', 3);
 
@@ -244,7 +277,8 @@ function ee_enqueue_scripts() {
         'contact' => '/assets/js/contact.js',
         'gallery' => '/assets/js/gallery.js',
         'acf-video-selector' => '/assets/js/acf-video-selector.js',
-        'change-theme' => '/assets/js/change-theme.js'
+        'change-theme' => '/assets/js/change-theme.js',
+        'work-filter' => '/assets/js/work-filter.js'
     ];
     
     foreach ($scripts as $handle => $path) {
@@ -1523,10 +1557,10 @@ function ee_display_single_page_tag($post_id = null, $args = []) {
 function ee_mobile_font_optimizations() {
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">' . "\n";
     
-    // Force cache refresh for mobile
-    echo '<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">' . "\n";
-    echo '<meta http-equiv="Pragma" content="no-cache">' . "\n";
-    echo '<meta http-equiv="Expires" content="0">' . "\n";
+    // Remove aggressive cache control that might interfere with font loading
+    // echo '<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">' . "\n";
+    // echo '<meta http-equiv="Pragma" content="no-cache">' . "\n";
+    // echo '<meta http-equiv="Expires" content="0">' . "\n";
 }
 add_action('wp_head', 'ee_mobile_font_optimizations', 1);
 
