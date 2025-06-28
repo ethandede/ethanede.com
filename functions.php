@@ -52,7 +52,7 @@ function ee_enqueue_assets() {
         false
     );
 
-    // Preload Google Fonts for better performance
+    // Preload Google Fonts for faster loading
     add_action('wp_head', 'ee_preload_google_fonts', 1);
     
     // Enqueue Google Fonts with optimized loading (match theme's actual fonts)
@@ -67,16 +67,26 @@ add_action('wp_enqueue_scripts', 'ee_enqueue_assets');
 
 // Preload Google Fonts for faster loading
 function ee_preload_google_fonts() {
-    // Only preload on pages that need fonts (mainly homepage)
-    if (is_front_page() || is_home()) {
-        // Preload the most critical font files
-        echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2" crossorigin="anonymous">' . "\n";
-        echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/merriweather/v30/u-4n0qyriQwlOrhSvowK_l52xwNZWMf6hPvhPQ.woff2" crossorigin="anonymous">' . "\n";
-    }
-    
     // Always include the Google Fonts stylesheet links for proper loading
     echo '<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">' . "\n";
+    
+    // Preload critical fonts for better performance
+    if (is_front_page() || is_home()) {
+        // Preload the most critical font files with multiple formats for Safari
+        echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2" crossorigin="anonymous">' . "\n";
+        echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/merriweather/v30/u-4n0qyriQwlOrhSvowK_l52xwNZWMf6hPvhPQ.woff2" crossorigin="anonymous">' . "\n";
+        
+        // Add preconnect for better performance
+        echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="anonymous">' . "\n";
+        echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">' . "\n";
+    }
 }
+
+// Add Google Fonts link early for better Safari support
+function ee_add_google_fonts_early() {
+    echo '<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">' . "\n";
+}
+add_action('wp_head', 'ee_add_google_fonts_early', 1);
 
 // Add font loading optimization CSS
 function ee_font_loading_css() {
@@ -125,6 +135,23 @@ function ee_font_loading_css() {
         .fonts-loaded h5,
         .fonts-loaded h6 {
             font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+        }
+        
+        /* Safari-specific font loading improvements */
+        @supports (-webkit-appearance: none) {
+            .fonts-loaded h1, 
+            .fonts-loaded h2, 
+            .fonts-loaded h3, 
+            .fonts-loaded h4 {
+                font-family: "Merriweather", "Georgia", "Times New Roman", serif !important;
+                font-display: swap;
+            }
+            
+            .fonts-loaded body,
+            .fonts-loaded p {
+                font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif !important;
+                font-display: swap;
+            }
         }
         
         /* Fallback for users with slow connections or mobile */
@@ -186,23 +213,28 @@ function ee_font_loading_script() {
                 // Fallback for browsers without Font Loading API
                 setTimeout(function() {
                     markFontsLoaded();
-                }, 2000); // Reduced timeout to 2 seconds
+                }, 1500); // Reduced timeout to 1.5 seconds
             }
             
-            // Additional timeout as safety net - shorter timeout for mobile
-            var timeout = /iPad|iPhone|iPod|Android/.test(navigator.userAgent) ? 2000 : 3000;
+            // Safari-specific font loading detection
+            var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            var isMobile = /iPad|iPhone|iPod|Android/.test(navigator.userAgent);
+            
+            // Shorter timeout for Safari mobile
+            var timeout = (isSafari && isMobile) ? 1500 : 2000;
+            
             setTimeout(function() {
                 if (document.documentElement.classList.contains("fonts-loading")) {
                     markFontsFailed();
                 }
             }, timeout);
             
-            // Force show content after 4 seconds as ultimate fallback
+            // Force show content after 3 seconds as ultimate fallback
             setTimeout(function() {
                 if (document.documentElement.classList.contains("fonts-loading")) {
                     markFontsFailed();
                 }
-            }, 4000);
+            }, 3000);
         })();
     </script>' . "\n";
 }
