@@ -215,7 +215,8 @@ nav a,
 .nav a,
 .menu a,
 [class*="nav"] a,
-[class*="menu"] a {
+[class*="menu"] a,
+.site-footer a {
   border-bottom: none !important;
   
   &:hover {
