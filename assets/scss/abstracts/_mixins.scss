@@ -9,6 +9,33 @@
   }
 }
 
+// Page Padding Mixin - Handles fixed navigation spacing
+@mixin page-padding {
+  padding-top: 80px; // Account for fixed navigation on desktop
+  
+  @media (max-width: 1024px) {
+    padding-top: 0; // Remove padding on mobile since nav is at bottom
+  }
+}
+
+// Hero/Header Padding Mixin - Ensures consistent spacing
+@mixin hero-padding {
+  padding: 4rem 0 2rem; // Standard hero padding
+  
+  @media (max-width: 768px) {
+    padding: 2rem 0 1rem; // Reduced padding on mobile
+  }
+}
+
+// Page Header Padding Mixin - For page headers (like work-archive)
+@mixin page-header-padding {
+  padding: 6rem 0 4rem; // Larger padding for page headers
+  
+  @media (max-width: 768px) {
+    padding: 4rem 0 3rem; // Reduced padding on mobile
+  }
+}
+
 // Apply container mixin to .container class
 .container {
   @include container;

@@ -192,14 +192,14 @@ li a,
 blockquote a,
 .hero .hero-content a:not(.cta-button):not(.contact-trigger),
 .supporting-text a {
-  color: var(--tertiary-color);
+  color: var(--secondary-color);
   text-decoration: none;
-  border-bottom: 1px dashed var(--tertiary-color);
+  border-bottom: 1px dashed var(--secondary-color);
   transition: all 0.3s ease;
   
   &:hover {
-    color: color.adjust(#10b981, $lightness: 15%);
-    border-bottom-color: color.adjust(#10b981, $lightness: 15%);
+    color: var(--secondary-color-light);
+    border-bottom-color: var(--secondary-color-light);
     border-bottom-style: solid;
   }
   
@@ -282,16 +282,16 @@ p .link-button,
 li .link-button {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background: var(--tertiary-color);
+  background: var(--secondary-color);
   color: white;
-  border: 1px solid var(--tertiary-color);
+  border: 1px solid var(--secondary-color);
   border-radius: 4px;
   text-decoration: none;
   transition: all 0.3s ease;
   
   &:hover {
-    background: color.adjust(#10b981, $lightness: 15%);
-    border-color: color.adjust(#10b981, $lightness: 15%);
+    background: var(--secondary-color-light);
+    border-color: var(--secondary-color-light);
     color: white;
     transform: translateY(-1px);
   }

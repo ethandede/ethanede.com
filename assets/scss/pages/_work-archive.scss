@@ -18,11 +18,7 @@
 // =============================================================================
 
 .work-header {
-  padding: 6rem 0 4rem;
-  
-  @include breakpoints.md {
-    padding: 4rem 0 3rem;
-  }
+  @include mixins.page-header-padding;
 
   .container {
     @include mixins.container;

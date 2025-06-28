@@ -38,6 +38,7 @@
     opacity: 0;
     transition: opacity 0.3s ease;
     overflow-y: auto;
+    overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 .gallery-overlay.active {
@@ -53,6 +54,7 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
+    overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 .gallery-overlay-content.tall-content {
@@ -66,6 +68,7 @@
     align-items: center;
     justify-content: center;
     padding: 2rem 0;
+    overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 .carousel-item {
@@ -93,6 +96,16 @@
 @media screen and (max-width: 768px) {
     .carousel-item {
         max-width: 80%;
+    }
+    
+    .carousel-item img,
+    .carousel-item video {
+        max-width: 100%;
+        max-height: 90vh; /* Prevent images from being taller than viewport */
+    }
+    
+    .gallery-overlay-content {
+        padding: 1rem;
     }
 }
 

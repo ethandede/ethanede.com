@@ -1,15 +1,12 @@
 // Import portfolio styles for associated projects
 @use 'portfolio';
 @use "../abstracts/variables" as vars;
+@use "../abstracts/breakpoints" as *;
 @use "../abstracts/mixins" as mixins;
 
 // Single Post Page Styles
 .single {
-  padding-top: 80px; // Account for fixed navigation
-  
-  @media (max-width: 1024px) {
-    padding-top: 0; // Remove padding on mobile
-  }
+  @include mixins.page-padding;
   
   .container {
     @include mixins.container;

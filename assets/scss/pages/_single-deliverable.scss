@@ -2,7 +2,8 @@
 @use "../abstracts/mixins" as mixins;
 
 #deliverable {
-  padding-top: 80px; // Account for fixed navigation
+  @include mixins.page-padding;
+  overflow-x: hidden; // Prevent horizontal overflow
 
   .container {
     @include mixins.container;
@@ -12,6 +13,8 @@
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
       gap: 0rem;
+      overflow-x: hidden;
+      width: 100%;
     }
 
     h1 {
@@ -94,7 +97,7 @@
   }
 
   .deliverable-header {
-    padding: 4rem 0;
+    @include mixins.hero-padding;
     background-color: var(--color-background-alt);
 
     .container {
@@ -111,7 +114,10 @@
 
       @media (max-width: 768px) {
         grid-template-columns: 1fr;
-        gap: 0rem;
+        gap: 2rem;
+        max-width: 100%;
+        padding: 0 1rem;
+        overflow-x: hidden;
       }
 
       h1 {
@@ -1245,7 +1251,7 @@
 // Responsive styles
 @media (max-width: 768px) {
   #deliverable {
-    padding-top: 0; // Remove top padding on mobile since nav is at bottom
+    // Page padding is now handled by the mixin - no need to override
 
     .deliverable-content {
       .container {
@@ -1255,7 +1261,7 @@
     }
 
     .deliverable-header {
-      padding: 6rem 0 2rem;
+      // Hero padding is now handled by the mixin - no need to override
       margin-bottom: 2rem;
 
       .deliverable-meta {
@@ -1272,3 +1278,5 @@
     }
   }
 }
+
+// Gallery overlay styles are handled by assets/css/gallery.css

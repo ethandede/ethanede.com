@@ -1,6 +1,11 @@
 @use "../abstracts/variables" as vars;
 @use "../abstracts/mixins" as mixins;
 
+// =============================================================================
+// PORTFOLIO SECTION STYLES
+// Now uses master card system - only grid layout styles remain
+// =============================================================================
+
 .portfolio {
   padding: 60px 0;
   color: var(--text-primary);
@@ -14,10 +19,9 @@
       gap: 30px;
       max-width: 1200px;
       margin: 0 auto;
-      grid-auto-rows: minmax(400px, auto); // Minimum height with ability to grow
       grid-auto-rows: 1fr; // Makes all rows equal height
       
-      // Support for new master card system
+      // Support for master card system
       .card {
         height: 100%;
       }
@@ -191,6 +195,10 @@
     }
   }
 }
+
+// =============================================================================
+// PORTFOLIO PAGE LAYOUT (if needed for future use)
+// =============================================================================
 
 .portfolio-page {
   @include mixins.container;
