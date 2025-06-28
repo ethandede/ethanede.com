@@ -70,14 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Create a flex container for submit and close buttons
         const actionsContainer = document.createElement('div');
         actionsContainer.className = 'form-actions-mobile';
-        actionsContainer.style.display = 'flex';
-        actionsContainer.style.justifyContent = 'center';
-        actionsContainer.style.alignItems = 'center';
-        actionsContainer.style.marginTop = '0.75rem'; // Reduced to match CSS
-        actionsContainer.style.gap = '1rem';
-        actionsContainer.style.width = '100%';
-        actionsContainer.style.flexShrink = '0';
-        actionsContainer.style.paddingBottom = '1rem'; // Reduced to match CSS
         
         // Get the form container
         const formContainer = document.querySelector('.contact-form-container');
@@ -97,48 +89,24 @@ document.addEventListener('DOMContentLoaded', () => {
           submitButton.className = 'wpcf7-submit cta-button custom-submit';
           submitButton.innerHTML = 'Send Message <i class="fa fa-arrow-right" aria-hidden="true"></i>';
           
-          // Style the submit button to match cta-button
-          submitButton.style.backgroundColor = 'var(--accent-color)';
-          submitButton.style.color = '#fff';
-          submitButton.style.border = '1px solid rgba(255, 255, 255, 0.5)';
-          submitButton.style.borderRadius = '7px';
-          submitButton.style.padding = '10px 20px';
-          submitButton.style.fontSize = '1rem';
-          submitButton.style.fontFamily = 'Merriweather, serif';
-          submitButton.style.fontWeight = 'normal';
-          submitButton.style.cursor = 'pointer';
-          submitButton.style.transition = 'background-color 0.3s ease';
-          submitButton.style.width = 'fit-content';
-          submitButton.style.margin = '0';
-          submitButton.style.textDecoration = 'none';
-          submitButton.style.display = 'inline-block';
+          // Associate with the original form
+          if (submitBtn.form) {
+            submitButton.form = submitBtn.form;
+          }
           
           // Clone and style the cancel button to match brand
           const clonedCancelBtn = mobileCloseBtn.cloneNode(true);
           clonedCancelBtn.innerHTML = 'Cancel <i class="fas fa-xmark" aria-hidden="true"></i>';
-          clonedCancelBtn.style.backgroundColor = 'transparent';
-          clonedCancelBtn.style.color = '#fff';
-          clonedCancelBtn.style.border = '1px solid rgba(255, 255, 255, 0.5)';
-          clonedCancelBtn.style.borderRadius = '7px';
-          clonedCancelBtn.style.padding = '10px 20px';
-          clonedCancelBtn.style.fontSize = '1rem';
-          clonedCancelBtn.style.fontFamily = 'Merriweather, serif';
-          clonedCancelBtn.style.fontWeight = 'normal';
-          clonedCancelBtn.style.cursor = 'pointer';
-          clonedCancelBtn.style.transition = 'all 0.3s ease';
-          clonedCancelBtn.style.width = 'fit-content';
-          clonedCancelBtn.style.margin = '0';
-          clonedCancelBtn.style.textDecoration = 'none';
-          clonedCancelBtn.style.display = 'inline-block';
+          clonedCancelBtn.className = 'contact-close-mobile cancel-btn';
           
-          // COMPLETELY HIDE the original submit button and its parent paragraph
-          submitBtn.style.display = 'none !important';
-          submitBtn.style.visibility = 'hidden';
-          submitBtn.style.opacity = '0';
-          submitBtn.style.position = 'absolute';
-          submitBtn.style.left = '-9999px';
-          submitBtn.style.zIndex = '-999';
-          submitBtn.style.pointerEvents = 'none';
+          // Add click handler for cancel button
+          clonedCancelBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeOverlay();
+          });
+          
+          // Hide original submit button but keep it functional
+          submitBtn.style.display = 'none';
           
           // Also hide the paragraph wrapper if it only contains the submit button
           const submitParent = submitBtn.closest('p');
@@ -153,9 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (otherContent.length === 0) {
               submitParent.style.display = 'none';
-              submitParent.style.visibility = 'hidden';
-              submitParent.style.height = '0';
-              submitParent.style.overflow = 'hidden';
             }
           }
           
