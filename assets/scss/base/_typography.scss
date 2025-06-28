@@ -8,8 +8,30 @@ body {
   line-height: 1.5;
   color: var(--text-primary);
   background: linear-gradient(to bottom, #000000, #1f1c2c) !important;
+  background-color: #000000 !important;
   font-family: vars.$body-font;
   font-weight: 400;
+}
+
+/* Ensure background is applied on all browsers */
+html body {
+  background: linear-gradient(to bottom, #000000, #1f1c2c) !important;
+  background-color: #000000 !important;
+}
+
+/* Safari-specific fixes */
+@supports (-webkit-appearance: none) {
+  body {
+    background: -webkit-linear-gradient(top, #000000, #1f1c2c) !important;
+    background: linear-gradient(to bottom, #000000, #1f1c2c) !important;
+    background-color: #000000 !important;
+  }
+  
+  html body {
+    background: -webkit-linear-gradient(top, #000000, #1f1c2c) !important;
+    background: linear-gradient(to bottom, #000000, #1f1c2c) !important;
+    background-color: #000000 !important;
+  }
 }
 
 // Global Typography for Headings and Paragraphs
