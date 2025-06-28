@@ -69,13 +69,13 @@ add_action('wp_enqueue_scripts', 'ee_enqueue_assets');
 function ee_preload_google_fonts() {
     // Only preload on pages that need fonts (mainly homepage)
     if (is_front_page() || is_home()) {
-        echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="anonymous">' . "\n";
-        echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">' . "\n";
-        
         // Preload the most critical font files
         echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2" crossorigin="anonymous">' . "\n";
         echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/merriweather/v30/u-4n0qyriQwlOrhSvowK_l52xwNZWMf6hPvhPQ.woff2" crossorigin="anonymous">' . "\n";
     }
+    
+    // Always include the Google Fonts stylesheet links for proper loading
+    echo '<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">' . "\n";
 }
 
 // Add font loading optimization CSS
