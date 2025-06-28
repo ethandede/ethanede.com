@@ -92,13 +92,13 @@
     }
 
     &__title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      color: var(--text-primary);
+      // font-size: 2.5rem;
+      // font-weight: 700;
+      // margin-bottom: 1.5rem;
+      // color: var(--text-primary);
 
       @media (min-width: 768px) {
-        font-size: 3rem;
+        // font-size: 3rem;
       }
     }
 
@@ -217,13 +217,13 @@
       }
 
       &__title {
-        font-size: 1rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        color: var(--text-secondary);
+        // font-size: 1rem;
+        // font-weight: 600;
+        // margin-bottom: 0.5rem;
+        // color: var(--text-secondary);
 
         @include min-sm {
-          font-size: 1.25rem;
+          // font-size: 1.25rem;
         }
       }
 
@@ -411,10 +411,10 @@
       }
 
       &__title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        color: var(--primary-color);
+        // font-size: 1.2rem;
+        // font-weight: 600;
+        // margin-bottom: 1rem;
+        // color: var(--primary-color);
       }
 
       &__terms {
