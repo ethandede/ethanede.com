@@ -1,4 +1,5 @@
 @use "../abstracts/variables" as vars;
+@use "../abstracts/mixins" as mixins;
 @use "../components/buttons" as *;
 
 // Contact Section Overlay
@@ -11,11 +12,13 @@
   z-index: 1000;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease-in-out;
+  pointer-events: none; // Prevent any interactions when hidden
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 
   &.active {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto; // Re-enable interactions when active
   }
 
   .contact-overlay {

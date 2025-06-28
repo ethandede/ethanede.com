@@ -1,19 +1,18 @@
 // Import portfolio styles for associated projects
 @use 'portfolio';
+@use "../abstracts/variables" as vars;
+@use "../abstracts/mixins" as mixins;
 
 // Single Post Page Styles
-.hero {
-  padding: 120px 0 60px;
-  overflow-x: hidden;
+.single {
+  padding-top: 80px; // Account for fixed navigation
+  
+  @media (max-width: 1024px) {
+    padding-top: 0; // Remove padding on mobile
+  }
   
   .container {
-    max-width: 1300px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
-    @media screen and (max-width: 1370px) {
-      max-width: 90vw;
-    }
+    @include mixins.container;
   }
   
   .hero-content {
@@ -35,15 +34,25 @@
 .single-layout {
   padding: 60px 0;
   overflow-x: hidden;
+  @include mixins.container;
+  
+  @media screen and (max-width: 1370px) {
+    @include mixins.container;
+  }
+
+  &__content {
+    @include mixins.container;
+    
+    @media screen and (max-width: 1370px) {
+      @include mixins.container;
+    }
+  }
+  
   .container {
-    max-width: 1300px;
-    margin: 0 auto;
+    @include mixins.container;
     display: flex;
     gap: 3rem;
     align-items: flex-start;
-    @media screen and (max-width: 1370px) {
-      max-width: 90vw;
-    }
     @media (max-width: 1024px) {
       flex-direction: column;
       gap: 2rem;

@@ -1,12 +1,12 @@
 @use "../abstracts/variables" as vars;
+@use "../abstracts/mixins" as mixins;
 
 .portfolio {
   padding: 60px 0;
   color: var(--text-primary);
 
   .container {
-    max-width: 1300px;
-    margin: 0 auto;
+    @include mixins.container;
 
     .portfolio-grid {
       display: grid;
@@ -189,5 +189,13 @@
         }
       }
     }
+  }
+}
+
+.portfolio-page {
+  @include mixins.container;
+  
+  &__content {
+    @include mixins.container;
   }
 }

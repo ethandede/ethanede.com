@@ -1,5 +1,6 @@
 @use "sass:color";
 @use "../abstracts/variables" as vars;
+@use "../abstracts/mixins" as mixins;
 
 .persistent-cta {
   position: fixed;
@@ -26,13 +27,10 @@
   }
 
   .container {
-    max-width: 1300px;
-    margin: 0 auto;
+    @include mixins.container;
     display: flex;
     align-items: center;
-    padding: 0 5vw;
     justify-content: flex-start; // CTA button on right
-    width: 100%;
     height: 100%;
   }
 

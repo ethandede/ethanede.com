@@ -1,20 +1,19 @@
+@use "../abstracts/variables" as vars;
+@use "../abstracts/mixins" as mixins;
+
 .clients {
   padding: 60px 0;
-
+  
   .container {
-    max-width: 1300px;
-    margin: 0 auto;
-    
-    h2 {
-      text-align: left;
-      margin-bottom: 20px;
-    }
-    
-    .supporting-text {
-      text-align: left;
-      max-width: 600px;
-      margin: 0 0 40px;
-    }
+    @include mixins.container;
+  }
+}
+
+.clients-page {
+  @include mixins.container;
+  
+  &__content {
+    @include mixins.container;
   }
 }
   

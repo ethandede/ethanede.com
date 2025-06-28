@@ -1,9 +1,9 @@
 @use "../abstracts/variables" as vars;
 @use "../abstracts/breakpoints" as breakpoints;
-
+@use "../abstracts/mixins" as mixins;
 
 .what-i-do {
-  padding: 0 0 50px;
+  padding: 60px 0;
   background: transparent;
   color: var(--text-primary);
   z-index: 1;
@@ -13,8 +13,7 @@
   }
 
   .container {
-    max-width: 1300px;
-    margin: 0 auto;
+    @include mixins.container;
   }
 
   @keyframes fadeIn {
@@ -57,4 +56,8 @@
       line-height: 1.5;
     }
   }
+}
+
+.what-i-do-page {
+  @include mixins.container;
 }

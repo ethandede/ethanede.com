@@ -1,5 +1,6 @@
 @use "../abstracts/variables" as vars;
 @use "../abstracts/breakpoints" as *;
+@use "../abstracts/mixins" as mixins;
 
 .single {
   .main {
@@ -18,9 +19,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
     .container {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 0 5vw;
+      @include mixins.container;
       height: 100%;
       display: flex;
       align-items: center;
@@ -85,13 +84,7 @@
     z-index: 10;
 
     .container {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 0 5vw;
-
-      @media screen and (max-width: 1370px) {
-        max-width: 90vw;
-      }
+      @include mixins.container;
     }
 
     &__content {
@@ -133,13 +126,7 @@
     padding: 2rem 0 4rem;
 
     .container {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 0 5vw;
-
-      @media screen and (max-width: 1370px) {
-        max-width: 90vw;
-      }
+      @include mixins.container;
     }
   }
 
