@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Ethan Ede WordPress Theme",
   "scripts": {
-    "scss": "sass assets/scss/main.scss assets/css/main.css",
+    "scss": "npx gulp styles",
     "tailwind": "npx tailwindcss -i ./assets/css/tailwind.css -o ./assets/css/tailwind-output.css --minify",
     "build": "npm run scss && npm run tailwind",
     "watch": "gulp watch"

@@ -144,6 +144,23 @@ blockquote a,
   }
 }
 
+// Explicitly exclude navigation links from dashed borders
+.site-nav a,
+.site-nav__links a,
+.mobile-menu a,
+.mobile-menu__links a,
+nav a,
+.nav a,
+.menu a,
+[class*="nav"] a,
+[class*="menu"] a {
+  border-bottom: none !important;
+  
+  &:hover {
+    border-bottom: none !important;
+  }
+}
+
 // Link variants - also restricted to WYSIWYG content
 .entry-content .link-bold,
 .single-layout .entry-content .link-bold,

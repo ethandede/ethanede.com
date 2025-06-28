@@ -12,7 +12,18 @@ function styles() {
   return gulp.src('assets/scss/main.scss')
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
-    .pipe(autoprefixer({ cascade: false }))
+    .pipe(autoprefixer({ 
+      cascade: false,
+      overrideBrowserslist: [
+        'last 2 versions',
+        '> 1%',
+        'Firefox >= 3.6', // This will add -moz- prefixes
+        'Chrome >= 10',
+        'Safari >= 5.1',
+        'iOS >= 5.1',
+        'Android >= 4.4'
+      ]
+    }))
     .pipe(cleanCSS({
       sourceMap: true,
       compatibility: '*'

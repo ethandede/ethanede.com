@@ -80,6 +80,9 @@
 
     li {
       margin: 0 10px;
+      border-bottom: none; // Explicitly remove bottom borders
+      box-shadow: none; // Remove any box shadows
+      padding-bottom: 0; // Remove bottom padding
     }
 
     a {
@@ -91,6 +94,7 @@
       transition: color 0.3s ease;
       display: block;
       white-space: nowrap; // Prevent link text from wrapping
+      border-bottom: none; // Explicitly remove bottom borders
 
       &:hover {
         color: var(--primary-color);
