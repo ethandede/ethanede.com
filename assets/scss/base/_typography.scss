@@ -1,4 +1,6 @@
+@use "sass:color";
 @use "../abstracts/variables" as vars;
+@use "../abstracts/breakpoints";
 
 body {
   font-family: vars.$body-font;
@@ -110,4 +112,73 @@ ol:not(nav ol):not(.menu ol):not(.nav ol):not([class*="nav"] ol):not([class*="me
   border-left: 4px solid var(--primary-color);
   margin-bottom: 2.5rem;
   max-width: 600px;
+}
+
+// =============================================================================
+// TEXT LINKS
+// =============================================================================
+
+// Link Styles with dashed underline
+a {
+  color: var(--tertiary-color);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--tertiary-color);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    color: color.adjust(#10b981, $lightness: 15%);
+    border-bottom-color: color.adjust(#10b981, $lightness: 15%);
+    border-bottom-style: solid;
+  }
+  
+  &:focus {
+    outline: 2px solid var(--tertiary-color);
+    outline-offset: 2px;
+  }
+}
+
+// Link variants
+.link-bold {
+  font-weight: 600;
+}
+
+.link-large {
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.link-external {
+  &::after {
+    content: " ↗";
+    font-size: 0.875em;
+    opacity: 0.7;
+  }
+}
+
+.link-button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: var(--tertiary-color);
+  color: white;
+  border: 1px solid var(--tertiary-color);
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: color.adjust(#10b981, $lightness: 15%);
+    border-color: color.adjust(#10b981, $lightness: 15%);
+    color: white;
+    transform: translateY(-1px);
+  }
+}
+
+.link-inverted {
+  color: white;
+  border-bottom-color: white;
+  
+  &:hover {
+    color: rgba(255, 255, 255, 0.8);
+    border-bottom-color: rgba(255, 255, 255, 0.8);
+  }
 }

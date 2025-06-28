@@ -1,5 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
   console.log("backgroundSquares.js loaded");
+  console.log("Device info:", {
+    userAgent: navigator.userAgent,
+    viewport: {
+      width: window.innerWidth,
+      height: window.innerHeight
+    },
+    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  });
 
   // Helper function to convert hex to RGB string
   function hexToRgbString(hex) {
@@ -168,7 +176,15 @@ document.addEventListener("DOMContentLoaded", function() {
   // Retrieve the current primary color from the CSS variable and convert it to RGB
   const primaryHex = getComputedStyle(document.documentElement)
                       .getPropertyValue('--primary-color').trim();
-  const primaryRGB = hexToRgb(primaryHex);
+  
+  // Fallback to default color if CSS variable is empty or invalid
+  const fallbackColor = '#45748C';
+  const effectivePrimaryHex = primaryHex || fallbackColor;
+  
+  console.log('Primary color from CSS:', primaryHex);
+  console.log('Effective primary color:', effectivePrimaryHex);
+  
+  const primaryRGB = hexToRgb(effectivePrimaryHex);
 
   // Select the SVG element that contains the animated squares
   const svg = document.querySelector('.animated-squares');
@@ -206,6 +222,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const b = Math.max(0, Math.min(255, primaryRGB.b + Math.floor((Math.random() - 0.5) * variation)));
     const alpha = 0.1;
     rect.setAttribute("fill", `rgba(${r}, ${g}, ${b}, ${alpha})`);
+    
+    // Ensure visibility on mobile
+    rect.setAttribute("opacity", "0.1");
+    rect.setAttribute("visibility", "visible");
+    
     svg.appendChild(rect);
     
     const shiftX = (Math.random() - 0.5) * 3500;
@@ -221,6 +242,11 @@ document.addEventListener("DOMContentLoaded", function() {
       ease: "sine.inOut"
     });
   }
+  
+  console.log(`Created ${numSquares} background squares`);
+  console.log('Primary color used:', effectivePrimaryHex);
+  console.log('SVG element:', svg);
+  console.log('Squares in SVG:', svg.querySelectorAll('rect').length);
 
   // Function to update the fill colors of the squares based on the current primary color
   function updateSquaresColor() {
