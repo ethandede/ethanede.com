@@ -31,7 +31,7 @@
     gap: 2rem;
 
     @media (max-width: 768px) {
-      flex-direction: row-reverse; // Nav on left, copyright on right
+      flex-direction: column-reverse; // Nav on left, copyright on right
       justify-content: space-between;
       align-items: center; // Keep everything aligned on the same line
       gap: 1rem;
@@ -41,7 +41,7 @@
   p {
     margin: 0;
     font-family: "Roboto", sans-serif;
-    font-weight: 500;
+    font-weight: 300;
     letter-spacing: 0.5px;
 
     @media (max-width: 768px) {
@@ -74,7 +74,7 @@
           text-decoration: none;
           transition: color 0.3s ease;
           font-family: "Roboto", sans-serif;
-          font-weight: 500;
+          font-weight: 400;
           letter-spacing: 0.5px;
           font-size: 1rem;
           background: none;

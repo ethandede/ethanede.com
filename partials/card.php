@@ -100,7 +100,7 @@ if ($args['show_media_types'] && empty($args['media_types']) && !$is_taxonomy_ca
 }
 
 // Generate unique ID for accessibility
-$card_id = 'card-' . $args['post_id'] . '-' . uniqid();
+$card_id = 'card-' . $args['post_id'];
 
 // Build data attributes string
 $data_attributes_html = '';
