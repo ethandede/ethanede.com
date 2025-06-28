@@ -106,24 +106,120 @@ get_header();
       </div>
       <aside class="single-sidebar">
         <h3>How I work</h3>
+        
+        <?php
+        // Debug: Let's see what categories we're getting
+        $categories = get_terms([
+          'taxonomy' => 'project_category',
+          'hide_empty' => true,
+          'orderby' => 'name',
+          'order' => 'ASC'
+        ]);
+        
+        echo "<!-- Debug: Found " . count($categories) . " categories -->";
+        
+        if (!empty($categories) && !is_wp_error($categories)) :
+          foreach ($categories as $category) :
+            $category_image = get_field('category_image', 'project_category_' . $category->term_id);
+            echo "<!-- Debug: Category: " . $category->name . " (ID: " . $category->term_id . ") | Image: " . ($category_image ? $category_image : 'NO IMAGE') . " -->";
+          endforeach;
+        endif;
+        ?>
+        
         <div class="sidebar-posts">
           <?php
-          // Get all project categories
+          // Get the current post's category to exclude it
+          $current_post_categories = get_the_terms(get_the_ID(), 'project_category');
+          $current_category_names = [];
+          
+          if ($current_post_categories && !is_wp_error($current_post_categories)) {
+            $current_category_names = array_map(function($cat) {
+              return $cat->name;
+            }, $current_post_categories);
+          }
+          
+          // Get all project categories ordered by ACF field_display_order field
           $categories = get_terms([
             'taxonomy' => 'project_category',
             'hide_empty' => true,
-            'orderby' => 'name',
-            'order' => 'ASC'
+            'meta_key' => 'field_display_order',
+            'orderby' => 'meta_value_num',
+            'order' => 'ASC',
+            'fields' => 'all'
           ]);
+          
+          // Fallback to name ordering if no field_display_order field is set
+          if (empty($categories)) {
+            $categories = get_terms([
+              'taxonomy' => 'project_category',
+              'hide_empty' => true,
+              'orderby' => 'name',
+              'order' => 'ASC',
+              'fields' => 'all'
+            ]);
+          }
 
           if (!empty($categories) && !is_wp_error($categories)) :
             foreach ($categories as $category) :
+              // Skip if this category matches the current post's category
+              if (in_array($category->name, $current_category_names)) {
+                continue;
+              }
+              
+              // Get the category image from ACF field on the taxonomy term
+              $category_image = get_field('category_image', 'project_category_' . $category->term_id);
+              
+              // Find the corresponding regular post for linking by slug
+              $slug_variations = [];
+              
+              // Standard slug conversion
+              $slug_variations[] = sanitize_title($category->name);
+              
+              // Replace & with "and" - handle different spacing patterns
+              if (strpos($category->name, '&') !== false) {
+                $clean_name = html_entity_decode($category->name, ENT_QUOTES, 'UTF-8');
+                $slug_variations[] = sanitize_title(str_replace('&', 'and', $clean_name));
+                $slug_variations[] = sanitize_title(str_replace(' & ', ' and ', $clean_name));
+                $slug_variations[] = sanitize_title(str_replace(' & ', '-and-', $clean_name));
+              }
+              
+              // Replace + with "and" 
+              if (strpos($category->name, '+') !== false) {
+                $clean_name = html_entity_decode($category->name, ENT_QUOTES, 'UTF-8');
+                $slug_variations[] = sanitize_title(str_replace('+', 'and', $clean_name));
+                $slug_variations[] = sanitize_title(str_replace(' + ', ' and ', $clean_name));
+                $slug_variations[] = sanitize_title(str_replace(' + ', '-and-', $clean_name));
+              }
+              
+              // Try each slug variation
+              $category_post = [];
+              foreach ($slug_variations as $slug) {
+                if (!empty($slug)) {
+                  $category_post = get_posts([
+                    'post_type' => 'post',
+                    'posts_per_page' => 1,
+                    'name' => $slug,
+                    'post_status' => 'publish'
+                  ]);
+                  
+                  // If found, break out of loop
+                  if (!empty($category_post)) {
+                    break;
+                  }
+                }
+              }
+
+              // Get the link - either to the post or the category archive as fallback
+              $link = !empty($category_post) ? get_permalink($category_post[0]->ID) : get_term_link($category);
+              
               // Use master card system for sidebar category cards
               get_template_part('partials/card', null, [
                 'type' => 'project',
                 'context' => 'sidebar',
-                'post_id' => 0, // Taxonomy-only card
-                'link_url' => get_term_link($category),
+                'post_id' => !empty($category_post) ? $category_post[0]->ID : 0, // Use actual post ID if found
+                'link_url' => $link,
+                'image_url' => $category_image, // Add the category image
+                'image_alt' => $category->name,
                 'title' => $category->name,
                 'description' => $category->description ?: 'Explore ' . $category->name . ' projects',
                 'show_media_types' => false
