@@ -259,13 +259,7 @@
     padding: 3rem 0;
 
     .container {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 0 5vw;
-
-      @media screen and (max-width: 1370px) {
-        max-width: 90vw;
-      }
+      @include mixins.container;
     }
 
     &__text {
