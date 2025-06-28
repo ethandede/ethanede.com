@@ -1,11 +1,24 @@
 <?php
 
+// Development mode toggle for easier cache busting
+function is_development_mode() {
+    // Set to true when actively developing to force cache busting
+    return true; // Change to false when done developing
+}
+
 function disable_cache_headers() {
     // Only apply cache headers on front-end, non-REST API requests
     if (!is_admin() && !defined('REST_REQUEST')) {
         header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
+        
+        // Add Safari-specific cache headers
+        if (is_development_mode()) {
+            header("Cache-Control: no-cache, no-store, must-revalidate");
+            header("Pragma: no-cache");
+            header("Expires: 0");
+        }
     }
 }
 add_action('send_headers', 'disable_cache_headers');
@@ -280,6 +293,12 @@ add_action('after_setup_theme', 'register_navwalker');
 // Enqueue main CSS with cache busting
 function ee_enqueue_styles() {
     $css_version = filemtime(get_template_directory() . '/assets/css/main.css');
+    
+    // Add timestamp in development mode for easier cache busting
+    if (is_development_mode()) {
+        $css_version = $css_version . '.' . time();
+    }
+    
     wp_enqueue_style('main-style', get_template_directory_uri() . '/assets/css/main.css', array(), $css_version);
 }
 add_action('wp_enqueue_scripts', 'ee_enqueue_styles');
@@ -1598,4 +1617,35 @@ function ee_mobile_font_optimizations() {
     // echo '<meta http-equiv="Expires" content="0">' . "\n";
 }
 add_action('wp_head', 'ee_mobile_font_optimizations', 1);
+
+// Safari-specific cache busting script
+function ee_safari_cache_bust() {
+    if (is_development_mode()) {
+        echo '<script>
+            // Safari cache busting for development
+            if (navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome")) {
+                // Force reload on Safari if page was cached
+                if (performance.navigation.type === 1) {
+                    // Page was reloaded, clear any cached resources
+                    if ("caches" in window) {
+                        caches.keys().then(function(names) {
+                            for (let name of names) {
+                                caches.delete(name);
+                            }
+                        });
+                    }
+                }
+                
+                // Add cache busting parameter to CSS/JS requests
+                const links = document.querySelectorAll("link[rel=\'stylesheet\']");
+                links.forEach(function(link) {
+                    if (link.href && !link.href.includes("?")) {
+                        link.href = link.href + "?v=" + Date.now();
+                    }
+                });
+            }
+        </script>' . "\n";
+    }
+}
+add_action('wp_footer', 'ee_safari_cache_bust', 999);
 
