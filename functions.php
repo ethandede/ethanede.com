@@ -276,9 +276,7 @@ function ee_enqueue_scripts() {
         'typed-init' => '/assets/js/typed-init.js',
         'contact' => '/assets/js/contact.js',
         'gallery' => '/assets/js/gallery.js',
-        'acf-video-selector' => '/assets/js/acf-video-selector.js',
-        'change-theme' => '/assets/js/change-theme.js',
-        'work-filter' => '/assets/js/work-filter.js'
+        'change-theme' => '/assets/js/change-theme.js'
     ];
     
     foreach ($scripts as $handle => $path) {
@@ -292,6 +290,11 @@ function ee_enqueue_scripts() {
     // Load homepage-specific scripts
     if (is_front_page() || is_home()) {
         wp_enqueue_script('logo-scroll', get_template_directory_uri() . '/assets/js/logo-scroll.js', [], filemtime(get_template_directory() . '/assets/js/logo-scroll.js'), true);
+    }
+    
+    // Load work-filter only on work archive page
+    if (is_page('work') || is_post_type_archive(['project', 'deliverable'])) {
+        wp_enqueue_script('work-filter', get_template_directory_uri() . '/assets/js/work-filter.js', [], filemtime(get_template_directory() . '/assets/js/work-filter.js'), true);
     }
     
     // Localize script for AJAX
