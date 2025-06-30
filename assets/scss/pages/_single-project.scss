@@ -276,12 +276,12 @@
 
           .single-page-tag {
             display: inline-block;
-            padding: 0.5rem 1rem;
-            background: rgba(var(--primary-color-rgb), 0.15);
-            border: 1px solid rgba(var(--primary-color-rgb), 0.3);
+            padding: .375rem .75rem;
+            background: rgba(var(--primary-color-rgb), .3);
+            border: 1px solid rgba(var(--primary-color-rgb), .5);
             color: var(--primary-color);
             border-radius: 2rem;
-            font-size: 0.875rem;
+            font-size: .83rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;

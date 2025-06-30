@@ -83,8 +83,8 @@
     // Magenta for projects/categories using project color
     &.tag-style-homepage,
     &.tag-style-card {
-      background: rgba(var(--tag-project-color-rgb), 0.5);
-      border-color: rgba(var(--tag-project-color-rgb), 0.7);
+      background: rgba(var(--tag-project-color-rgb), .3);
+      border-color: rgba(var(--tag-project-color-rgb), .5);
       
       &:hover {
         background: rgba(var(--tag-project-color-rgb), 0.85);
@@ -92,8 +92,8 @@
     }
     
     &.tag-style-sidebar {
-      background-color: rgba(var(--tag-project-color-rgb), 0.1);
-      border-color: rgba(var(--tag-project-color-rgb), 0.2);
+      background-color: rgba(var(--tag-project-color-rgb), .3);
+      border-color: rgba(var(--tag-project-color-rgb), .5);
       
       &:hover {
         background-color: var(--tag-project-color);
@@ -327,6 +327,13 @@
       font-size: 0.8125rem;
     }
   }
+  
+  .single-page-tag-wrapper {
+    .single-page-tag {
+      padding: .25rem .5rem;
+      font-size: .75rem;
+    }
+  }
 } 
 
 // Single Page Tags (above h1s on template pages)
@@ -335,9 +342,9 @@
 
   .single-page-tag {
     display: inline-block;
-    padding: 0.5rem 1rem;
+    padding: .375rem .75rem;
     border-radius: 2rem;
-    font-size: 0.875rem;
+    font-size: .83rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -350,8 +357,8 @@
 
     // Project-specific styling
     &.tag-project {
-      background: rgba(var(--primary-color-rgb), 0.15);
-      border: 1px solid rgba(var(--primary-color-rgb), 0.3);
+      background: rgba(var(--primary-color-rgb), .3);
+      border: 1px solid rgba(var(--primary-color-rgb), .5);
       color: var(--primary-color);
     }
 

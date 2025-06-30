@@ -196,6 +196,33 @@ function ee_font_loading_css() {
 }
 add_action('wp_head', 'ee_font_loading_css', 2);
 
+// Add favicon support
+function ee_add_favicon() {
+    $favicon_svg = get_template_directory_uri() . '/assets/img/logo_ethanEde_blue.svg';
+    $favicon_png = get_template_directory_uri() . '/assets/img/logo_ethanEde_blue.png';
+    
+    // SVG favicon for modern browsers (preferred)
+    echo '<link rel="icon" type="image/svg+xml" href="' . esc_url($favicon_svg) . '">' . "\n";
+    
+    // PNG fallback for older browsers
+    echo '<link rel="icon" type="image/png" href="' . esc_url($favicon_png) . '">' . "\n";
+    
+    // Apple touch icon for iOS devices
+    echo '<link rel="apple-touch-icon" href="' . esc_url($favicon_png) . '">' . "\n";
+    
+    // Windows tile icon
+    echo '<meta name="msapplication-TileImage" content="' . esc_url($favicon_png) . '">' . "\n";
+    echo '<meta name="msapplication-TileColor" content="#45748C">' . "\n";
+    
+    // Additional meta tags for better favicon support
+    echo '<meta name="theme-color" content="#45748C">' . "\n";
+    echo '<meta name="msapplication-config" content="none">' . "\n";
+    
+    // Web app manifest for PWA support
+    echo '<link rel="manifest" href="' . esc_url(get_template_directory_uri() . '/site.webmanifest') . '">' . "\n";
+}
+add_action('wp_head', 'ee_add_favicon', 1);
+
 // Add font loading detection script
 function ee_font_loading_script() {
     echo '<script>

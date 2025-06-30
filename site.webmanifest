@@ -1,0 +1,23 @@
+{
+  "name": "Ethan Ede - Digital Marketing & Web Development",
+  "short_name": "Ethan Ede",
+  "description": "Digital marketing, web development, and strategic consulting services",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#45748C",
+  "theme_color": "#45748C",
+  "icons": [
+    {
+      "src": "/wp-content/themes/ethanede/assets/img/logo_ethanEde_blue.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/wp-content/themes/ethanede/assets/img/logo_ethanEde_blue.png",
+      "sizes": "225x300",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+} 
