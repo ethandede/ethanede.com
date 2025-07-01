@@ -77,15 +77,11 @@
     }
   }
 
-  // Hero Section
-  .hero {
-    @include mixins.hero-padding;
+  // Project Header Section
+  .project-header {
+    @include mixins.standard-header;
     position: relative;
     z-index: 10;
-
-    .container {
-      @include mixins.container;
-    }
 
     &__content {
       max-width: 48rem;
@@ -269,29 +265,6 @@
   }
 
   .single-project {
-    .hero {
-      .hero__content {
-        .single-page-tag-wrapper {
-          margin-bottom: 1rem;
-
-          .single-page-tag {
-            display: inline-block;
-            padding: .375rem .75rem;
-            background: rgba(var(--primary-color-rgb), .3);
-            border: 1px solid rgba(var(--primary-color-rgb), .5);
-            color: var(--primary-color);
-            border-radius: 2rem;
-            font-size: .83rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-
-
-        }
-      }
-    }
-
     .project-featured-media {
       margin-bottom: 2rem;
 

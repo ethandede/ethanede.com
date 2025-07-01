@@ -240,9 +240,12 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                     return $b->count - $a->count;
                 });
                 ?>
-                <div class="tags-sidebar">
-                    <h6>Tools Used</h6>
-                    <div class="tags-cloud">
+                <div class="tags-sidebar tags-accordion">
+                    <h6 class="accordion-trigger" data-target="deliverable-tools-accordion">
+                        Tools Used
+                        <span class="accordion-icon">+</span>
+                    </h6>
+                    <div class="tags-cloud accordion-content" id="deliverable-tools-accordion">
                         <?php foreach ($tools as $tool) : ?>
                             <span class="tag tag-style-sidebar tag-technology tag-non-clickable">
                                 <?php echo esc_html($tool->name); ?>
@@ -260,9 +263,12 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                     return $b->count - $a->count;
                 });
                 ?>
-                <div class="tags-sidebar">
-                    <h6>Skills Used</h6>
-                    <div class="tags-cloud">
+                <div class="tags-sidebar tags-accordion">
+                    <h6 class="accordion-trigger" data-target="deliverable-skills-accordion">
+                        Skills Used
+                        <span class="accordion-icon">+</span>
+                    </h6>
+                    <div class="tags-cloud accordion-content" id="deliverable-skills-accordion">
                         <?php foreach ($skills as $skill) : ?>
                             <span class="tag tag-style-sidebar tag-skill tag-non-clickable">
                                 <?php echo esc_html($skill->name); ?>
@@ -280,9 +286,12 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                     return $b->count - $a->count;
                 });
                 ?>
-                <div class="tags-sidebar">
-                    <h6>Type</h6>
-                    <div class="tags-cloud">
+                <div class="tags-sidebar tags-accordion">
+                    <h6 class="accordion-trigger" data-target="deliverable-type-accordion">
+                        Type
+                        <span class="accordion-icon">+</span>
+                    </h6>
+                    <div class="tags-cloud accordion-content" id="deliverable-type-accordion">
                         <?php foreach ($types as $type) : ?>
                             <?php 
                             $display_name = $type->name;
@@ -300,6 +309,33 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                     </div>
                 </div>
             <?php endif;
+
+            // Get deliverable categories from related project
+            $related_project = get_field('related_project');
+            if ($related_project && is_array($related_project) && !empty($related_project)) {
+                $project_id = $related_project[0];
+                $categories = get_the_terms($project_id, 'project_category');
+                if ($categories && !is_wp_error($categories)) : 
+                    // Sort categories by usage count (descending)
+                    usort($categories, function($a, $b) {
+                        return $b->count - $a->count;
+                    });
+                    ?>
+                    <div class="tags-sidebar tags-accordion">
+                        <h6 class="accordion-trigger" data-target="deliverable-category-accordion">
+                            Category
+                            <span class="accordion-icon">+</span>
+                        </h6>
+                        <div class="tags-cloud accordion-content" id="deliverable-category-accordion">
+                            <?php foreach ($categories as $category) : ?>
+                                <span class="tag tag-style-sidebar tag-project-category tag-non-clickable">
+                                    <?php echo esc_html($category->name); ?>
+                                </span>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif;
+            }
 
         } elseif ($context === 'project') {
             // Get project categories

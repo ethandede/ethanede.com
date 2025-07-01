@@ -36,6 +36,67 @@
   }
 }
 
+// Standard Header Mixin - For consistent header styling across templates
+@mixin standard-header {
+  @include page-padding;
+  @include hero-padding;
+  background-color: var(--color-background-alt);
+  
+  .container {
+    @include container;
+  }
+  
+  h1 {
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+    margin-top: 0.25rem;
+    text-align: left;
+  }
+}
+
+// Card Grid Mixins - Standardize grid layouts across the theme
+@mixin card-grid($min-width: 320px, $gap: 24px, $mobile-gap: 16px, $max-width: 400px) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+  gap: $gap;
+  margin-top: 2rem;
+
+  .card {
+    max-width: $max-width;
+    justify-self: start; // Align cards to the start of their grid cell
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: $mobile-gap;
+    
+    .card {
+      max-width: 100%; // Allow full width on mobile
+    }
+  }
+}
+
+// Standard deliverables grid mixin
+@mixin deliverables-grid {
+  @include card-grid(320px, 24px, 16px);
+}
+
+// Portfolio grid mixin
+@mixin portfolio-grid {
+  @include card-grid(320px, 24px, 16px);
+}
+
+// Work grid mixin
+@mixin work-grid {
+  @include card-grid(320px, 24px, 16px);
+}
+
+// Small grid mixin (for home page, AI tools)
+@mixin small-grid {
+  @include card-grid(320px, 20px, 16px);
+}
+
 // Apply container mixin to .container class
 .container {
   @include container;

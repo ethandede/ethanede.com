@@ -2,121 +2,27 @@
 @use "../abstracts/mixins" as mixins;
 @use "../components/tags" as *;
 
+// =============================================================================
+// SINGLE DELIVERABLE PAGE
+// =============================================================================
+
 #deliverable {
   overflow-x: hidden; // Prevent horizontal overflow
 
-  .container {
-    @include mixins.container;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-      gap: 0rem;
-      overflow-x: hidden;
-    }
-
-    h1 {
-      font-weight: 700;
-      color: var(--color-text);
-      margin: 0;
-      margin-top: 0.25rem;
-      text-align: left;
-      grid-column: 1;
-    }
-
-    .deliverable-type-tag {
-      margin-bottom: 1rem;
-      display: block; // Show on all screen sizes like other single page tags
-
-      .type-tag,
-      .single-page-tag {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        background: rgba(var(--quaternary-color-rgb), 0.15);
-        border: 1px solid rgba(var(--quaternary-color-rgb), 0.3);
-        color: var(--quaternary-color);
-        border-radius: 2rem;
-        font-size: 0.875rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-    }
-
-    .deliverable-meta-mobile {
-      margin-top: 1.5rem;
-      display: none; // Hidden on desktop
-      
-      @media (max-width: 768px) {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        align-items: left;
-      }
-
-      .meta-item-mobile {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-
-        .meta-label {
-          font-size: 0.875rem;
-          color: var(--color-text);
-          opacity: 0.7;
-          font-weight: 500;
-        }
-
-        .meta-value {
-          color: var(--color-text);
-          text-decoration: none;
-          font-weight: 500;
-          transition: color 0.3s ease;
-
-          &:hover {
-            color: var(--color-primary);
-          }
-        }
-
-        .company-link {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-
-          .company-logo-small {
-            max-height: 32px;
-            max-width: 64px;
-            width: auto;
-            object-fit: contain;
-          }
-        }
-      }
-    }
-  }
-
   .deliverable-header {
-    @include mixins.page-padding;
-    @include mixins.hero-padding;
-    background-color: var(--color-background-alt);
+    @include mixins.standard-header;
 
     .container {
-      @include mixins.container;
       display: grid;
       grid-template-columns: 2fr 1fr;
 
       @media (max-width: 768px) {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 0;
         overflow-x: hidden;
       }
 
       h1 {
-        font-weight: 700;
-        color: var(--color-text);
-        margin: 0;
-        margin-top: 0.25rem;
-        text-align: left;
         grid-column: 1;
       }
 
@@ -127,6 +33,7 @@
         .type-tag,
         .single-page-tag {
           // Use master single-page-tag system with deliverable color
+          @include tag-base;
           @include tag-style('minimal');
           background: rgba(var(--quaternary-color-rgb), 0.15);
           border: 1px solid rgba(var(--quaternary-color-rgb), 0.3);
@@ -173,13 +80,6 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-
-            .company-logo-small {
-              max-height: 32px;
-              max-width: 64px;
-              width: auto;
-              object-fit: contain;
-            }
           }
         }
       }

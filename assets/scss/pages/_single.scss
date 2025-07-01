@@ -4,6 +4,13 @@
 @use "../abstracts/breakpoints" as *;
 @use "../abstracts/mixins" as mixins;
 
+// Single Header Section
+.single-header {
+  @include mixins.standard-header;
+  position: relative;
+  z-index: 10;
+}
+
 // Single Post Page Styles
 .single {
   @include mixins.page-padding;
@@ -12,7 +19,7 @@
     @include mixins.container;
   }
   
-  .hero-content {
+  .single-header__content {
     max-width: 800px;
     margin: 0;
     
@@ -148,11 +155,10 @@
 .related-projects {
   .deliverables-grid {
     // Limit to 2 columns max for related projects in sidebar layout
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    @include mixins.deliverables-grid;
     max-width: calc(2 * 320px + 24px); // 2 cards + 1 gap
     
     @media (max-width: 768px) {
-      grid-template-columns: 1fr;
       max-width: 100%;
     }
   }

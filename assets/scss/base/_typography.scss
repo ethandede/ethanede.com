@@ -190,7 +190,7 @@ ol:not(nav ol):not(.menu ol):not(.nav ol):not([class*="nav"] ol):not([class*="me
 p a,
 li a,
 blockquote a,
-.hero .hero-content a:not(.cta-button):not(.contact-trigger),
+.home-header .home-header__content a:not(.cta-button):not(.contact-trigger),
 .supporting-text a {
   color: var(--secondary-color);
   text-decoration: none;

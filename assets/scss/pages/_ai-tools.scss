@@ -30,10 +30,8 @@
   }
 
   .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-  }
+  @include mixins.small-grid;
+}
 
   .item {
     background: rgba(255, 255, 255, 0.1);

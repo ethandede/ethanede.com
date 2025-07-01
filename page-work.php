@@ -30,7 +30,7 @@ get_header();
 
 <main id="work-archive">
 
-    <!-- Hero Section -->
+    <!-- Work Header Section -->
     <section class="work-header">
         <div class="container">
             <h1>My Work</h1>
@@ -51,9 +51,20 @@ get_header();
                         // Combine all projects and deliverables
                         $all_work = array_merge($all_projects, $all_deliverables);
                         
-                        // Sort by date (newest first)
+                        // Sort: projects first, then deliverables, then by date (newest first) within each type
                         usort($all_work, function($a, $b) {
-                            return strtotime($b->post_date) - strtotime($a->post_date);
+                            // First, prioritize projects over deliverables
+                            $a_is_project = ($a->post_type === 'project');
+                            $b_is_project = ($b->post_type === 'project');
+                            
+                            if ($a_is_project && !$b_is_project) {
+                                return -1; // Project comes first
+                            } elseif (!$a_is_project && $b_is_project) {
+                                return 1; // Deliverable comes after
+                            } else {
+                                // Both are same type, sort by date (newest first)
+                                return strtotime($b->post_date) - strtotime($a->post_date);
+                            }
                         });
                         
                         if ($all_work) :

@@ -18,8 +18,8 @@ get_header();
     </div>
   </div>
 
-  <!-- Hero Section -->
-  <section class="hero">
+  <!-- Home Header Section -->
+  <section class="home-header">
     <div class="container">
       <h4>Welcome.</h4>
       <h1>
@@ -28,33 +28,7 @@ get_header();
         <span class="rotating-word"></span>
       </h1>
                       <p class="supporting-text">I'm a digital strategist with over 20 years of experience blending tools, creativity, and marketing to build web experiences that deliver results.</p>
-      <a href="#contact" class="hero-button cta-button text-semibold">Let's work together <i class="fa fa-arrow-right"></i></a>
-    </div>
-  </section>
-
-  <!-- Things I Do Section -->
-  <section class="what-i-do" id="about">
-    <div class="container">
-      <h2>What I do</h2>
-      <p class="supporting-text">My passion is collaborating with teams to craft digital experiences that engage users and drive growth, powered by modern tools and AI innovation. I help deliver experiences that resonate with audiences and achieve measurable outcomes.</p>
-      <div class="grid">
-        <div class="item">
-          <h4 class="text-primary">Strategy + Vision</h4>
-          <p>Working closely with clients and stakeholders to help transform complex challenges into clear, actionable plans that align business objectives with emerging opportunities.</p>
-        </div>
-        <div class="item">
-          <h4 class="text-primary">Design + Experience</h4>
-          <p>Collaborating with designers and developers to craft intuitive, user-focused digital experiences that balance aesthetics with seamless functionality.</p>
-        </div>
-        <div class="item">
-          <h4 class="text-primary">Development</h4>
-          <p>Working solo, with contractors, and/or internal teams to build robust, scalable solutions using modern technologies, ensuring innovative ideas come to life reliably.</p>
-        </div>
-        <div class="item">
-          <h4 class="text-primary">Marketing + Analytics</h4>
-          <p>Partnering with clients and marketing teams to develop data-driven campaigns that connect brands with their audiences and deliver actionable insights for growth.</p>
-        </div>
-      </div>
+      <a href="#contact" class="home-header__button cta-button text-semibold">Let's work together <i class="fa fa-arrow-right"></i></a>
     </div>
   </section>
 
@@ -121,7 +95,7 @@ get_header();
   <!-- Portfolio Section -->
   <section class="portfolio" id="skills">
     <div class="container">
-      <h2>How I work</h2>
+      <h2>What I do</h2>
       <p class="supporting-text">My approach is rooted in collaboration, communication, and a commitment to shared success. I thrive in team environments, bringing clarity, creativity, and technical expertise to every project. Below are examples of how I've worked with teams to solve real-world challenges and deliver results.</p>
       <div class="portfolio-grid">
         <?php

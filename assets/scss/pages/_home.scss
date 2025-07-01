@@ -57,7 +57,7 @@
 }
 
 // =============================================================================
-// HERO SECTION
+// HOME HEADER SECTION
 // =============================================================================
 
 .page-template-page-home {
@@ -69,20 +69,15 @@
       max-width: 90vw;
     }
     
-    .hero {
+    .home-header {
+      @include mixins.standard-header;
+      padding: 10rem 0 6rem;
       position: relative;
       overflow: hidden;
       color: var(--text-primary);
       text-align: left;
-      padding: 8rem 0 2rem;
-      
-      @media screen and (max-width: 768px) {
-        padding: 3.5rem 0;
-      }
       
       .container {
-        max-width: 1300px;
-        margin: 0 auto;
         position: relative;
         z-index: 1;
       }
@@ -115,6 +110,10 @@
           display: none;
         }
       }
+      
+      &__button {
+        // Inherit from cta-button but with specific home header styling
+      }
     }
     
     .content-wrapper {
@@ -123,71 +122,6 @@
       width: 100%;
     }
   }
-}
-
-// =============================================================================
-// WHAT I DO SECTION
-// =============================================================================
-
-.what-i-do {
-  padding: 60px 0;
-  background: transparent;
-  color: var(--text-primary);
-  z-index: 1;
-
-  @include breakpoints.md {
-    padding: 25px 0 50px;
-  }
-
-  .container {
-    @include mixins.container;
-  }
-
-  @keyframes fadeIn {
-    to {
-      opacity: 1;
-    }
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-  }
-
-  .item {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-    &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    h4.text-primary {
-      margin-bottom: 10px;
-      font-family: "Roboto", sans-serif !important;
-      text-transform: uppercase;
-      font-size: 1.2rem;
-      color: var(--secondary-color) !important;
-      font-weight: 600;
-    }
-
-    p {
-      color: rgba(var(--white), 0.8);
-      font-size: vars.$font-sm;
-      line-height: 1.5;
-    }
-  }
-}
-
-// Standalone what-i-do page styles
-.what-i-do-page {
-  @include mixins.container;
 }
 
 // =============================================================================

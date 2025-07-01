@@ -10,12 +10,12 @@ get_header();
 
 <main class="main single-project">
     <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-        <!-- Hero Section -->
-        <section class="hero">
+        <!-- Project Header Section -->
+        <section class="project-header">
             <div class="container">
-                <div class="hero__content">
+                <div class="project-header__content">
                     <?php ee_display_single_page_tag(); ?>
-                    <h1 class="hero__title text-gray-900"><?php echo esc_html(get_the_title()); ?></h1>
+                    <h1 class="project-header__title"><?php echo esc_html(get_the_title()); ?></h1>
                 </div>
             </div>
         </section>

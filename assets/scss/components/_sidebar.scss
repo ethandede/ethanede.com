@@ -156,6 +156,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.75rem;
+            padding-left: 0.75rem
             
             // Tags styling is now handled by the master tag system in components/_tags.scss
             // Default behavior for sidebar tags is defined in .tags-cloud in _tags.scss
@@ -268,10 +269,13 @@
     font-size: 0.95em;
     font-weight: 600;
     margin-bottom: 0.5rem;
-    padding-left: 1rem;
+    padding: 0.5rem 0 0.5rem 1rem;
     padding-top: 0.5rem;
     position: relative;
-    
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }        
     // Subtle gradient border on left and top (similar to PDF title)
     &::before {
       content: "";
@@ -315,11 +319,23 @@
     position: relative;
     overflow: hidden;
     max-height: 3.5em; // About 1.5 rows of tags
+    min-height: 3.5em; // Ensure minimum height so gradient doesn't cover first row
     transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
     will-change: max-height;
     
     &.is-open {
       max-height: 500px; // Large enough for all tags
+      min-height: auto; // Allow natural height when expanded
+    }
+    
+    // Ensure tags don't inherit the min-height
+    .tags-cloud {
+      min-height: auto; // Override any inherited min-height
+      
+      // Prevent individual tags from inheriting container min-height
+      .tag {
+        max-height: fit-content;
+      }
     }
 
     // Gradient fade at bottom in collapsed state

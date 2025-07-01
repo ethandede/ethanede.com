@@ -15,62 +15,6 @@ get_header(); ?>
                 <?php ee_display_single_page_tag(null, ['wrapper_class' => 'deliverable-type-tag']); ?>
                 
                 <h1><?php the_title(); ?></h1>
-                
-                <?php
-                // Show related project and company info below h1 on mobile
-                ?>
-                <div class="deliverable-meta-mobile">
-                    <?php
-                    // Related Project
-                    $related_project = get_field('related_project');
-                    if ($related_project && is_array($related_project) && !empty($related_project)) :
-                        $project_id = $related_project[0];
-                        $project = get_post($project_id);
-                        if ($project && !is_wp_error($project)) :
-                        ?>
-                        <div class="meta-item-mobile">
-                            <span class="meta-label">Related Project:</span>
-                            <a href="<?php echo get_permalink($project_id); ?>" class="meta-value">
-                                <?php echo esc_html($project->post_title); ?>
-                            </a>
-                        </div>
-                    <?php 
-                        endif;
-                    endif; ?>
-
-                    <?php
-                    // Company info (While At)
-                    $company = null;
-                    $deliverable_companies = get_the_terms(get_the_ID(), 'company');
-                    
-                    if ($deliverable_companies && !is_wp_error($deliverable_companies)) {
-                        $company = $deliverable_companies[0];
-                    } else {
-                        // Fallback: Get company from related project
-                        if ($related_project && is_array($related_project) && !empty($related_project)) {
-                            $project_id = $related_project[0];
-                            $project_companies = get_the_terms($project_id, 'company');
-                            if ($project_companies && !is_wp_error($project_companies)) {
-                                $company = $project_companies[0];
-                            }
-                        }
-                    }
-                    
-                    if ($company) :
-                        $logo = get_field('company_logo', 'company_' . $company->term_id);
-                        ?>
-                                                 <div class="meta-item-mobile">
-                             <span class="meta-label">While At:</span>
-                             <a href="<?php echo esc_url(get_term_link($company)); ?>" class="meta-value company-link">
-                                 <?php if ($logo && is_array($logo) && !empty($logo['url'])) : ?>
-                                     <img src="<?php echo esc_url($logo['url']); ?>" alt="<?php echo esc_attr($company->name); ?> logo" class="company-logo-small">
-                                 <?php else : ?>
-                                     <?php echo esc_html($company->name); ?>
-                                 <?php endif; ?>
-                             </a>
-                         </div>
-                    <?php endif; ?>
-                </div>
             </div>
         </section>
 

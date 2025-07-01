@@ -8,16 +8,14 @@
 // =============================================================================
 
 .portfolio {
-  padding: 60px 0;
+  padding: 6rem 0;
   color: var(--text-primary);
 
   .container {
     @include mixins.container;
 
     .portfolio-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 30px;
+      @include mixins.portfolio-grid;
       max-width: 1200px;
       margin: 0 auto;
       grid-auto-rows: 1fr; // Makes all rows equal height

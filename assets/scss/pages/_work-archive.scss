@@ -18,10 +18,9 @@
 // =============================================================================
 
 .work-header {
-  @include mixins.page-header-padding;
+  @include mixins.standard-header;
 
   .container {
-    @include mixins.container;
     text-align: center;
   }
 
@@ -314,14 +313,7 @@
 }
 
 .work-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
-
-  @include breakpoints.md {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
+  @include mixins.work-grid;
 }
 
 // =============================================================================

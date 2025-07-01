@@ -9,7 +9,7 @@
   right: 0;
   width: 100vw; // Use viewport width
   z-index: 900;
-  background: rgba(var(--black), 0.95);
+  background: rgba(13,12,18,.9);
   overflow-x: hidden; // Prevent horizontal overflow
 
   .container {
@@ -134,7 +134,7 @@
   @media screen and (max-width: 768px) {
     top: auto;
     bottom: 0;
-    background: rgba(13, 12, 18, 0.95);
+    background: rgba(13,12,18,.9);
     backdrop-filter: blur(10px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);

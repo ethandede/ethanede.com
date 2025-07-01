@@ -14,10 +14,10 @@ get_header();
     </div>
   </div>
 
-  <!-- Hero Section -->
-  <section class="hero">
+  <!-- Single Header Section -->
+  <section class="single-header">
     <div class="container">
-      <div class="hero-content">
+      <div class="single-header__content">
         <?php
         if (have_posts()) :
           while (have_posts()) : the_post();

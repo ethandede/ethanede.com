@@ -228,6 +228,7 @@
 
 .tag {
   @include tag-base;
+  max-height: fit-content; // Prevent height inheritance from containers
 
   // Style variants
   &.tag-style-homepage,
@@ -350,9 +351,9 @@
 
   .single-page-tag {
     display: inline-block;
-    padding: .375rem .75rem;
+    padding: .25rem .75rem;
     border-radius: 2rem;
-    font-size: .83rem;
+    font-size: .75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
