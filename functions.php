@@ -2058,10 +2058,7 @@ function render_excel_embed($field_value, $args = []) {
     ?>
     <div class="<?php echo esc_attr($container_class); ?>"<?php echo $data_attr_string; ?>>
         <div class="excel-embed-header">
-            <h3 class="excel-embed-title">
-                <i class="fas fa-file-excel" aria-hidden="true"></i>
-                <?php echo esc_html($settings['title']); ?>
-            </h3>
+            <h3 class="excel-embed-title"><?php echo esc_html($settings['title']); ?></h3>
             
             <?php if ($settings['enable_search'] || $settings['enable_filters']): ?>
                 <div class="excel-embed-controls">
