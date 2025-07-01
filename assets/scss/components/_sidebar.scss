@@ -251,4 +251,91 @@
     }
     
     // Tag responsive styles now handled by master tag system in _tags.scss
+}
+
+// Accordion-style tags section
+.tags-accordion {
+  position: relative;
+  margin-bottom: 2rem;
+
+  .accordion-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+    font-size: 0.95em;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+    padding-top: 0.5rem;
+    position: relative;
+    
+    // Subtle gradient border on left and top (similar to PDF title)
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.1),
+        transparent
+      );
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.1),
+        transparent
+      );
+    }
+    
+    .accordion-icon {
+      margin-left: 0.5em;
+      font-size: 1.1em;
+      transition: transform 0.2s;
+    }
+    &.is-open .accordion-icon {
+      transform: rotate(45deg);
+    }
+  }
+
+  .accordion-content {
+    position: relative;
+    overflow: hidden;
+    max-height: 3.5em; // About 1.5 rows of tags
+    transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+    will-change: max-height;
+    
+    &.is-open {
+      max-height: 500px; // Large enough for all tags
+    }
+
+    // Gradient fade at bottom in collapsed state
+    &::after {
+      content: '';
+      display: block;
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 2em;
+      pointer-events: none;
+      background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, var(--sidebar-bg, #181c20) 100%);
+      transition: opacity 0.3s;
+      opacity: 1;
+    }
+    &.is-open::after {
+      opacity: 0;
+    }
+  }
 } 

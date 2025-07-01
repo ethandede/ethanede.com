@@ -1,0 +1,446 @@
+/* Excel Embed Frontend Styles - Matches Theme Design System */
+
+.excel-embed-container {
+    background: var(--card-bg, rgba(255, 255, 255, 0.08));
+    border-radius: 18px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.07);
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+}
+
+.excel-embed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.excel-embed-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--heading-color, var(--text-primary));
+    margin: 0;
+    font-family: var(--font-family-heading, "Merriweather", serif);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.excel-embed-title i {
+    color: var(--primary-color, #3b82f6);
+    font-size: 1.25rem;
+    opacity: 0.9;
+}
+
+.excel-embed-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.excel-search-box {
+    position: relative;
+    min-width: 250px;
+}
+
+.excel-search-box input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.excel-search-box input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+}
+
+.excel-search-box::before {
+    content: "🔍";
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.875rem;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.excel-filter-dropdown {
+    position: relative;
+    min-width: 150px;
+}
+
+.excel-filter-dropdown select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+.excel-filter-dropdown select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+}
+
+/* Table Styles */
+.excel-table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    max-width: 100%;
+    margin: 0 -0.5rem;
+    padding: 0 0.5rem;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.excel-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    table-layout: fixed;
+    min-width: 600px;
+}
+
+.excel-table thead {
+    background: rgba(var(--primary-color-rgb), 0.95);
+    border-bottom: 2px solid rgba(var(--primary-color-rgb), 0.3);
+}
+
+.excel-table th {
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 400;
+    color: var(--text-primary);
+    font-family: "Roboto", sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    min-width: 80px;
+    max-width: 200px;
+    background: rgba(var(--primary-color-rgb), 0.95);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.excel-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    vertical-align: top;
+    line-height: 1.4;
+    word-wrap: break-word;
+    max-width: 200px;
+    min-width: 60px;
+}
+
+.excel-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.excel-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.excel-table th:hover {
+    background: rgba(var(--primary-color-rgb), 1);
+    transition: background-color 0.2s ease;
+}
+
+.excel-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Column width optimizations */
+.excel-table th:first-child,
+.excel-table td:first-child {
+    width: 60px;
+}
+
+.excel-table th:first-child {
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.excel-table th:last-child {
+    border-right: none;
+}
+
+.excel-table th:nth-child(2),
+.excel-table td:nth-child(2) {
+    width: 200px;
+}
+
+.excel-table th:nth-child(3),
+.excel-table td:nth-child(3) {
+    width: 140px;
+}
+
+.excel-table th:nth-child(4),
+.excel-table td:nth-child(4) {
+    width: 100px;
+}
+
+.excel-table th:nth-child(5),
+.excel-table td:nth-child(5) {
+    width: 70px;
+}
+
+/* Make remaining columns flexible */
+.excel-table th:nth-child(n+6),
+.excel-table td:nth-child(n+6) {
+    width: 120px;
+}
+
+/* Status Indicators */
+.excel-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.excel-status.status-done {
+    background: rgba(var(--tertiary-color-rgb), 0.2);
+    color: var(--tertiary-color);
+    border: 1px solid rgba(var(--tertiary-color-rgb), 0.3);
+}
+
+.excel-status.status-verified {
+    background: rgba(var(--primary-color-rgb), 0.2);
+    color: var(--primary-color);
+    border: 1px solid rgba(var(--primary-color-rgb), 0.3);
+}
+
+.excel-status.status-pending {
+    background: rgba(var(--quaternary-color-rgb), 0.2);
+    color: var(--quaternary-color);
+    border: 1px solid rgba(var(--quaternary-color-rgb), 0.3);
+}
+
+.excel-status.status-in-progress {
+    background: rgba(var(--secondary-color-rgb), 0.2);
+    color: var(--secondary-color);
+    border: 1px solid rgba(var(--secondary-color-rgb), 0.3);
+}
+
+/* Pagination */
+.excel-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.excel-pagination-info {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.excel-pagination-controls {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.excel-pagination-btn {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 2rem;
+    justify-content: center;
+}
+
+.excel-pagination-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+}
+
+.excel-pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.excel-pagination-btn.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* Loading States */
+.excel-loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+}
+
+.excel-loading::after {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(var(--primary-color-rgb), 0.3);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 0.5rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error States */
+.excel-error {
+    background: rgba(var(--secondary-color-rgb), 0.1);
+    border: 1px solid rgba(var(--secondary-color-rgb), 0.3);
+    color: var(--secondary-color);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    margin: 1rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .excel-embed-container {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .excel-embed-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .excel-embed-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .excel-search-box {
+        min-width: auto;
+    }
+    
+    .excel-table-wrapper {
+        max-height: 400px;
+    }
+    
+    .excel-table {
+        font-size: 0.75rem;
+    }
+    
+    .excel-table th,
+    .excel-table td {
+        padding: 0.5rem 0.75rem;
+        min-width: 60px;
+        max-width: 120px;
+    }
+    
+    /* Mobile column optimizations */
+    .excel-table th:first-child,
+    .excel-table td:first-child {
+        min-width: 50px;
+        max-width: 60px;
+        width: 60px;
+    }
+    
+    .excel-table th:nth-child(2),
+    .excel-table td:nth-child(2) {
+        min-width: 120px;
+        max-width: 180px;
+        width: 150px;
+    }
+    
+    .excel-table th:nth-child(3),
+    .excel-table td:nth-child(3) {
+        min-width: 80px;
+        max-width: 120px;
+        width: 100px;
+    }
+    
+    .excel-pagination {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .excel-pagination-controls {
+        justify-content: center;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .excel-embed-controls,
+    .excel-pagination {
+        display: none;
+    }
+    
+    .excel-table-wrapper {
+        overflow: visible;
+        border: 1px solid #000;
+    }
+    
+    .excel-table {
+        color: #000;
+    }
+    
+    .excel-table th {
+        background: #f0f0f0 !important;
+        color: #000 !important;
+    }
+    
+    .excel-table td {
+        border-bottom: 1px solid #ccc;
+    }
+} 

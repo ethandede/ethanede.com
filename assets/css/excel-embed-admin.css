@@ -1,0 +1,221 @@
+/* Excel Embed ACF Field Admin Styles */
+
+.acf-excel-embed-field {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.acf-excel-embed-row {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: flex-start;
+}
+
+.acf-excel-embed-row:last-child {
+    margin-bottom: 0;
+}
+
+.acf-excel-embed-row .acf-label {
+    flex: 0 0 120px;
+    margin-right: 15px;
+    padding-top: 5px;
+}
+
+.acf-excel-embed-row .acf-label label {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.acf-excel-embed-row .acf-input {
+    flex: 1;
+}
+
+.acf-excel-embed-row .acf-input input[type="url"],
+.acf-excel-embed-row .acf-input input[type="text"],
+.acf-excel-embed-row .acf-input input[type="number"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.acf-excel-embed-row .acf-input input[type="url"]:focus,
+.acf-excel-embed-row .acf-input input[type="text"]:focus,
+.acf-excel-embed-row .acf-input input[type="number"]:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+    outline: none;
+}
+
+.acf-excel-embed-row .acf-input input.error {
+    border-color: #dc3232;
+    box-shadow: 0 0 0 1px #dc3232;
+}
+
+.acf-excel-embed-row .acf-input .description {
+    margin: 5px 0 0 0;
+    font-size: 13px;
+    color: #666;
+    font-style: italic;
+}
+
+.acf-excel-embed-row .acf-input .description.error {
+    color: #dc3232;
+}
+
+/* Checkbox list styling */
+.acf-excel-embed-row .acf-checkbox-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.acf-excel-embed-row .acf-checkbox-list li {
+    margin-bottom: 8px;
+}
+
+.acf-excel-embed-row .acf-checkbox-list li:last-child {
+    margin-bottom: 0;
+}
+
+.acf-excel-embed-row .acf-checkbox-list label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.acf-excel-embed-row .acf-checkbox-list input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Preview section */
+.acf-excel-embed-preview {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.acf-excel-embed-preview .preview-excel-data {
+    margin-bottom: 15px;
+}
+
+.excel-preview-container {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.excel-preview-loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+}
+
+.excel-preview-table-wrapper {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.excel-preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: #fff;
+    border: 1px solid #ddd;
+}
+
+.excel-preview-table th {
+    background: #f1f1f1;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #ddd;
+    white-space: nowrap;
+}
+
+.excel-preview-table td {
+    padding: 6px 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+}
+
+.excel-preview-table tr:hover {
+    background: #f9f9f9;
+}
+
+.excel-preview-note {
+    margin: 10px 0 0 0;
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .acf-excel-embed-row {
+        flex-direction: column;
+    }
+    
+    .acf-excel-embed-row .acf-label {
+        flex: none;
+        margin-right: 0;
+        margin-bottom: 8px;
+    }
+    
+    .excel-preview-table {
+        font-size: 12px;
+    }
+    
+    .excel-preview-table th,
+    .excel-preview-table td {
+        padding: 4px 8px;
+    }
+}
+
+/* Status indicators preview */
+.excel-preview-table .status-done {
+    background: #d4edda;
+    color: #155724;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.excel-preview-table .status-pending {
+    background: #fff3cd;
+    color: #856404;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.excel-preview-table .status-verified {
+    background: #d1ecf1;
+    color: #0c5460;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.excel-preview-table .status-in-progress {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+} 

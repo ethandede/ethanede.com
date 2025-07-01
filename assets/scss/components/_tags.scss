@@ -44,19 +44,20 @@
     }
   } @else if $style == 'sidebar' {
     // Sidebar style - subtle background with border
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 2rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
     font-weight: 500;
     text-transform: none;
     letter-spacing: normal;
-    color: var(--color-text, var(--text-primary));
+    color: rgba(255, 255, 255, 0.75);
     
     &:hover {
       transform: translateY(-1px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      color: rgba(255, 255, 255, 0.9);
     }
   } @else if $style == 'minimal' {
     // Minimal style for basic contexts
@@ -92,8 +93,9 @@
     }
     
     &.tag-style-sidebar {
-      background-color: rgba(var(--tag-project-color-rgb), .3);
-      border-color: rgba(var(--tag-project-color-rgb), .5);
+      background-color: rgba(var(--tag-project-color-rgb), .1);
+      border-color: rgba(var(--tag-project-color-rgb), .2);
+      color: rgba(var(--tag-project-color-rgb), 0.7);
       
       &:hover {
         background-color: var(--tag-project-color);
@@ -114,8 +116,9 @@
     }
     
     &.tag-style-sidebar {
-      background-color: rgba(var(--tag-deliverable-color-rgb), 0.1);
-      border-color: rgba(var(--tag-deliverable-color-rgb), 0.2);
+      background-color: rgba(var(--tag-deliverable-color-rgb), .1);
+      border-color: rgba(var(--tag-deliverable-color-rgb), .2);
+      color: rgba(var(--tag-deliverable-color-rgb), 0.7);
       
       &:hover {
         background-color: var(--tag-deliverable-color);
@@ -136,8 +139,9 @@
     }
     
     &.tag-style-sidebar {
-      background-color: rgba(var(--tag-technology-color-rgb), 0.1);
-      border-color: rgba(var(--tag-technology-color-rgb), 0.2);
+      background-color: rgba(var(--tag-technology-color-rgb), .1);
+      border-color: rgba(var(--tag-technology-color-rgb), .2);
+      color: rgba(var(--tag-technology-color-rgb), 0.7);
       
       &:hover {
         background-color: var(--tag-technology-color);
@@ -158,13 +162,16 @@
     }
     
     &.tag-style-sidebar {
-      background-color: rgba(var(--tag-skill-color-rgb), 0.1);
-      border-color: rgba(var(--tag-skill-color-rgb), 0.2);
+      background-color: rgba(var(--tag-skill-color-rgb), 0.25);
+      border-color: rgba(var(--tag-skill-color-rgb), 0.75);
+      color: rgba(var(--tag-skill-color-rgb), 1);
+      opacity: 0.55;
       
       &:hover {
         background-color: var(--tag-skill-color);
         border-color: var(--tag-skill-color);
         color: var(--text-primary);
+        opacity: 0.75;
       }
     }
   } @else if $color-type == 'company' {
@@ -180,8 +187,9 @@
     }
     
     &.tag-style-sidebar {
-      background-color: rgba(var(--primary-color-rgb), 0.15);
-      border-color: rgba(var(--primary-color-rgb), 0.3);
+      background-color: rgba(var(--primary-color-rgb), .1);
+      border-color: rgba(var(--primary-color-rgb), .2);
+      color: rgba(var(--primary-color-rgb), 0.7);
       
       &:hover {
         background-color: var(--primary-color);
@@ -364,15 +372,15 @@
 
     // Deliverable-specific styling
     &.tag-deliverable {
-      background: rgba(var(--quaternary-color-rgb), 0.15);
-      border: 1px solid rgba(var(--quaternary-color-rgb), 0.3);
+      background: rgba(var(--quaternary-color-rgb), .3);
+      border: 1px solid rgba(var(--quaternary-color-rgb), .5);
       color: var(--quaternary-color);
     }
 
     // Service Area-specific styling (blog posts)
     &.tag-service-area {
-      background: rgba(var(--tertiary-color-rgb), 0.15);
-      border: 1px solid rgba(var(--tertiary-color-rgb), 0.3);
+      background: rgba(var(--tertiary-color-rgb), .3);
+      border: 1px solid rgba(var(--tertiary-color-rgb), .5);
       color: var(--tertiary-color);
     }
 

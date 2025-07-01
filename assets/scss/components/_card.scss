@@ -431,28 +431,28 @@
 @mixin card-context($context) {
   @if $context == 'archive' {
     .card__image-container {
-      height: 200px;
+      height: 250px;
       
       @media (max-width: 768px) {
-        height: 160px;
+        height: 200px;
       }
     }
     @include card-image-fill;
   } @else if $context == 'single' {
     .card__image-container {
-      height: 200px;
+      height: 250px;
       
       @media (max-width: 768px) {
-        height: 160px;
+        height: 200px;
       }
     }
     @include card-image-fill;
   } @else if $context == 'work' {
     .card__image-container {
-      height: 200px;
+      height: 250px;
       
       @media (max-width: 768px) {
-        height: 160px;
+        height: 200px;
       }
     }
     @include card-image-fill;

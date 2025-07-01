@@ -101,6 +101,19 @@
                 "id": ""
             }
         },
+        {
+            "key": "field_deliverable_excel_embed",
+            "label": "Excel/Spreadsheet Embed",
+            "name": "deliverable_excel_embed",
+            "type": "excel_embed",
+            "instructions": "Embed an interactive Excel spreadsheet or Google Sheets document",
+            "required": 0,
+            "wrapper": {
+                "width": "100",
+                "class": "",
+                "id": ""
+            }
+        },
 
         {
             "key": "field_pdf_title",

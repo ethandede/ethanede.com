@@ -222,6 +222,26 @@ get_header(); ?>
                             </div>
                         </div>
                     <?php endif; ?>
+
+                    <?php
+                    // Display Excel/Spreadsheet embed
+                    $excel_embed = get_field('deliverable_excel_embed');
+                    if ($excel_embed && is_array($excel_embed) && !empty($excel_embed['sheet_url'])): ?>
+                        <div class="deliverable-excel-section">
+                            <?php 
+                            // Get deliverable title for the Excel embed
+                            $excel_title = get_the_title() . ' - Data';
+                            
+                            echo render_excel_embed($excel_embed, [
+                                'title' => $excel_title,
+                                'enable_search' => $excel_embed['enable_search'] ?? true,
+                                'enable_filters' => $excel_embed['enable_filters'] ?? true,
+                                'show_status_indicators' => $excel_embed['show_status_indicators'] ?? true,
+                                'rows_per_page' => $excel_embed['rows_per_page'] ?? 5
+                            ]); 
+                            ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <?php

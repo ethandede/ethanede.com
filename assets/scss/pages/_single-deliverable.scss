@@ -1,8 +1,8 @@
 @use "../abstracts/variables" as vars;
 @use "../abstracts/mixins" as mixins;
+@use "../components/tags" as *;
 
 #deliverable {
-  @include mixins.page-padding;
   overflow-x: hidden; // Prevent horizontal overflow
 
   .container {
@@ -14,7 +14,6 @@
       grid-template-columns: 1fr;
       gap: 0rem;
       overflow-x: hidden;
-      width: 100%;
     }
 
     h1 {
@@ -97,26 +96,18 @@
   }
 
   .deliverable-header {
+    @include mixins.page-padding;
     @include mixins.hero-padding;
     background-color: var(--color-background-alt);
 
     .container {
-      max-width: 1300px;
-      margin: 0 auto;
-      width: 100%;
-      padding: 0 1rem;
+      @include mixins.container;
       display: grid;
       grid-template-columns: 2fr 1fr;
-
-      @media screen and (max-width: 1370px) {
-        max-width: 90vw;
-      }
 
       @media (max-width: 768px) {
         grid-template-columns: 1fr;
         gap: 2rem;
-        max-width: 100%;
-        padding: 0 1rem;
         overflow-x: hidden;
       }
 
@@ -135,16 +126,11 @@
 
         .type-tag,
         .single-page-tag {
-          display: inline-block;
-          padding: 0.5rem 1rem;
+          // Use master single-page-tag system with deliverable color
+          @include tag-style('minimal');
           background: rgba(var(--quaternary-color-rgb), 0.15);
           border: 1px solid rgba(var(--quaternary-color-rgb), 0.3);
           color: var(--quaternary-color);
-          border-radius: 2rem;
-          font-size: 0.875rem;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
         }
       }
 
@@ -251,29 +237,41 @@
   }
 
   .deliverable-content {
-    padding: 0 0 4rem 0;
+    padding: 2rem 0 4rem 0;
     margin-bottom: 4rem;
 
     .container {
-      max-width: 1300px;
-      margin: 0 auto;
-      width: 100%;
-      padding: 0 1rem;
+      @include mixins.container;
       display: grid;
       grid-template-columns: 2fr 1fr;
       gap: 4rem;
-
-      @media screen and (max-width: 1370px) {
-        max-width: 90vw;
-      }
 
       @media (max-width: 768px) {
         grid-template-columns: 1fr;
         gap: 2rem;
       }
+
+      // When deliverable-main has an h2 as first child, adjust sidebar margin
+      .deliverable-main:has(h2:first-child) ~ .deliverable-layout-sidebar,
+      .deliverable-main:has(h2:first-child) ~ .deliverable-sidebar {
+        margin-top: 3.5rem;
+      }
+
+      @media (max-width: 768px) {
+        // Remove margin on mobile
+        .deliverable-main:has(h2:first-child) ~ .deliverable-layout-sidebar,
+        .deliverable-main:has(h2:first-child) ~ .deliverable-sidebar {
+          margin-top: 0;
+        }
+      }
     }
 
     .deliverable-main {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden; // Prevent horizontal overflow
+
+
               // Keyframes for play button animation
         @keyframes playPulse {
           0%, 100% {
@@ -881,8 +879,10 @@
         line-height: 1.7;
         font-size: 1.125rem;
 
+
+
         // Reset any unwanted styling from copied content
-        * {
+        *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
           font-family: inherit !important;
           line-height: inherit !important;
         }
@@ -902,27 +902,23 @@
           }
         }
 
-        // Headings within WYSIWYG
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-          margin-top: 2.5rem;
-          margin-bottom: 1.25rem;
-          color: var(--color-heading);
+        // Headings within WYSIWYG content only
+        .deliverable-description {
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6 {
+            margin-top: 2rem;
+            margin-bottom: 1.25rem;
+            color: var(--color-heading);
+            font-family: var(--font-family-heading, "Merriweather", serif);
+            font-weight: 700;
 
-          &:first-child {
-            margin-top: 0;
-          }
-        }
-
-        h2, h3, h4, h5, h6 {
-          margin-top: 2rem;
-          
-          &:first-child {
-            margin-top: 0;
+            &:first-child {
+              margin-top: 0;
+            }
           }
         }
 
@@ -1055,19 +1051,8 @@
           gap: 0.5rem;
 
           .tag {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: var(--color-background-alt);
-            color: var(--color-text);
-            text-decoration: none;
-            border-radius: 2rem;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-
-            &:hover {
-              background-color: var(--color-primary);
-              color: white;
-            }
+            // Use master tag system - sidebar style for deliverable context
+            @include tag-style('sidebar');
           }
         }
       }
@@ -1223,15 +1208,37 @@
       }
     }
 
+    .deliverable-excel-section {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      
+      .excel-embed-container {
+        margin: 0; // Override default margin since it's in a section
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto; // Ensure horizontal scroll if needed
+      }
+      
+      .excel-table-wrapper {
+        max-width: 100%;
+        overflow-x: auto;
+      }
+    }
+
     .deliverable-sidebar,
     .deliverable-layout-sidebar {
       // Universal styles are now handled by the sidebar component
+      margin-top: 0; // Reset to 0 for deliverable pages
 
       // Deliverable-specific customizations
       .related-section {
         position: sticky;
         top: 100px; // Custom top position for deliverable pages
       }
+
+
+
+
 
       // Hide specific meta items on mobile since they're shown in header
       @media (max-width: 768px) {

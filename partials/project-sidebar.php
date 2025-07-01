@@ -167,9 +167,12 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                         return $b->count - $a->count;
                     });
                     ?>
-                    <div class="tags-sidebar">
-                        <h6>Skills Used</h6>
-                        <div class="tags-cloud">
+                    <div class="tags-sidebar tags-accordion">
+                        <h6 class="accordion-trigger" data-target="skills-accordion">
+                            Skills Used
+                            <span class="accordion-icon">+</span>
+                        </h6>
+                        <div class="tags-cloud accordion-content" id="skills-accordion">
                             <?php foreach ($skills as $skill) : ?>
                                 <span class="tag tag-style-sidebar tag-skill tag-non-clickable">
                                     <?php echo esc_html($skill->name); ?>
@@ -188,9 +191,12 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                         return $b->count - $a->count;
                     });
                     ?>
-                    <div class="tags-sidebar">
-                        <h6>Tools Used</h6>
-                        <div class="tags-cloud">
+                    <div class="tags-sidebar tags-accordion">
+                        <h6 class="accordion-trigger" data-target="tools-accordion">
+                            Tools Used
+                            <span class="accordion-icon">+</span>
+                        </h6>
+                        <div class="tags-cloud accordion-content" id="tools-accordion">
                             <?php foreach ($tools as $tool) : ?>
                                 <span class="tag tag-style-sidebar tag-technology tag-non-clickable">
                                     <?php echo esc_html($tool->name); ?>
@@ -304,9 +310,12 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                     return $b->count - $a->count;
                 });
                 ?>
-                <div class="tags-sidebar">
-                    <h6>Category</h6>
-                    <div class="tags-cloud">
+                <div class="tags-sidebar tags-accordion">
+                    <h6 class="accordion-trigger" data-target="category-accordion">
+                        Category
+                        <span class="accordion-icon">+</span>
+                    </h6>
+                    <div class="tags-cloud accordion-content" id="category-accordion">
                         <?php foreach ($categories as $category) : ?>
                             <span class="tag tag-style-sidebar tag-project-category tag-non-clickable">
                                 <?php echo esc_html($category->name); ?>

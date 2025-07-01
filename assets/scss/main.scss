@@ -11,7 +11,6 @@
 @use 'components/card';
 @use 'components/tags';
 @use 'components/buttons';
-@use 'components/logo-banner';
 @use 'components/color-controls';
 @use 'components/sidebar';
 // Temporarily disabled - uncomment to restore filter functionality
@@ -22,7 +21,6 @@
 @use 'layout/footer';
 @use 'layout/site-nav';
 @use 'layout/mobile-menu';
-@use 'layout/persistent-cta';
 @use 'layout/background-animation';
 
 // Pages
@@ -30,13 +28,10 @@
 @use 'pages/about';
 @use 'pages/portfolio';
 @use 'pages/contact';
-@use 'pages/clients';
 @use 'pages/ai-tools';
-@use 'pages/what-i-do';
 @use 'pages/single';
 @use 'pages/single-project';
 @use 'pages/single-deliverable';
-
 @use 'pages/work-archive';
 
 // Tailwind

@@ -287,11 +287,7 @@
             letter-spacing: 0.5px;
           }
 
-          .tag-project {
-            background: rgba(var(--primary-color-rgb), 0.15);
-            border-color: rgba(var(--primary-color-rgb), 0.3);
-            color: var(--primary-color);
-          }
+
         }
       }
     }
@@ -452,14 +448,5 @@
     }
   }
 
-  // Non-clickable tag styles
-  .tag-non-clickable {
-    cursor: default;
-    opacity: 0.8;
-    
-    &:hover {
-      transform: none;
-      opacity: 0.8;
-    }
-  }
+
 }

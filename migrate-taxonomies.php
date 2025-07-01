@@ -65,7 +65,8 @@ $taxonomy_mapping = [
         'Music Production',
         'Sound Design',
         'Wireframes',
-        'Sitemaps'
+        'Sitemaps',
+        'Excel/Spreadsheet'
     ],
     'technology' => [
         'Creative Software' => [
@@ -180,7 +181,8 @@ $term_descriptions = [
         'Music Production' => 'Original music composition, sound design, and audio production for various media.',
         'Sound Design' => 'Creation and manipulation of audio elements for enhanced user experience and storytelling.',
         'Wireframes' => 'Structural blueprints and layout frameworks defining the skeletal structure of web pages and applications.',
-        'Sitemaps' => 'Information architecture diagrams outlining site structure, navigation paths, and content organization.'
+        'Sitemaps' => 'Information architecture diagrams outlining site structure, navigation paths, and content organization.',
+        'Excel/Spreadsheet' => 'Interactive data tables and spreadsheets with filtering, search, and export capabilities for data analysis and reporting.'
     ],
     'technology' => [
         'Creative Software' => 'Professional software applications for design, video, audio, and visual content creation.',

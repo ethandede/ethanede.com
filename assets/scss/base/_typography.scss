@@ -141,7 +141,7 @@ ul:not(nav ul):not(.menu):not(.nav):not([class*="nav"]):not([class*="menu"]):not
     &::before {
       content: '\f105'; // fa-angle-right
       font-family: 'Font Awesome 6 Pro';
-      font-weight: 300; // Light weight for Pro
+      font-weight: 700; // Light weight for Pro
       position: absolute;
       left: 0.83rem; // Fine-tuned positioning
       top: 0.2em;

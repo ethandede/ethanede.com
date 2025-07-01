@@ -1,5 +1,6 @@
 @use "../abstracts/variables" as vars;
 @use "../abstracts/mixins" as mixins;
+@use "../components/tags" as *;
 
 // =============================================================================
 // PORTFOLIO SECTION STYLES
@@ -66,10 +67,16 @@
 
       img {
         width: 100%;
-        height: auto;
+        height: 250px;
         display: block;
         border-radius: 8px 8px 0 0;
         transition: filter 0.3s ease;
+        object-fit: cover;
+        object-position: center;
+        
+        @media (max-width: 768px) {
+          height: 200px;
+        }
       }
 
       .portfolio-copy {
@@ -162,21 +169,9 @@
         z-index: 20;
 
         .tag {
-          background: rgba(var(--secondary-color-rgb), 0.5);
-          border: 1px solid rgba(255, 255, 255, 0.5);
-          box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-          color: #fff;
-          padding: 4px 10px;
-          font-size: vars.$font-xxs;
-          border-radius: 2rem;
-          text-transform: uppercase;
-          font-weight: bold;
-          letter-spacing: 0.5px;
-          transition: background 0.3s;
-
-          &:hover {
-            background: rgba(var(--secondary-color-rgb), 0.85);
-          }
+          // Use master tag system - homepage/card style with secondary color
+          @include tag-style('homepage');
+          color: #fff; // Override text color for portfolio context
         }
       }
 

@@ -1,9 +1,64 @@
 @use "../abstracts/variables" as vars;
+@use "../abstracts/breakpoints" as breakpoints;
+@use "../abstracts/mixins" as mixins;
+
+// =============================================================================
+// HOMEPAGE STYLES
+// Consolidated styles for all homepage sections
+// =============================================================================
 
 // Remove ReCaptcha badge
 .grecaptcha-badge {
-  display:none;
+  display: none;
 }
+
+// =============================================================================
+// PERSISTENT CTA
+// =============================================================================
+
+.persistent-cta {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  background-color: rgba(var(--black), 0.95);
+  height: 80px; // Fixed height
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 999; // Above .site-nav and .mobile-menu
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  opacity: 0;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 767px) {
+    bottom: 0;
+    transform: translateY(100%);
+  }
+  @media (min-width: 768px) {
+    top: 0;
+    bottom: auto;
+    transform: translateY(-100%);
+  }
+
+  .container {
+    @include mixins.container;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; // CTA button on right
+    height: 100%;
+  }
+
+  .cta-button {
+    @media screen and (max-width: 768px) {
+      font-size: 0.9rem;
+      padding: 8px 16px;
+    }
+  }
+}
+
+// =============================================================================
+// HERO SECTION
+// =============================================================================
 
 .page-template-page-home {
   .site-main {
@@ -17,12 +72,12 @@
     .hero {
       position: relative;
       overflow: hidden;
-              color: var(--text-primary);
+      color: var(--text-primary);
       text-align: left;
       padding: 8rem 0 2rem;
       
       @media screen and (max-width: 768px) {
-        padding:3.5rem 0;
+        padding: 3.5rem 0;
       }
       
       .container {
@@ -52,12 +107,12 @@
 
       h4, h5 {
         font-family: vars.$header-font;
-        font-weight:700;
+        font-weight: 700;
       }
 
       .rotating-word-break {
         @media screen and (min-width: 1024px) {
-          display:none;
+          display: none;
         }
       }
     }
@@ -68,4 +123,132 @@
       width: 100%;
     }
   }
+}
+
+// =============================================================================
+// WHAT I DO SECTION
+// =============================================================================
+
+.what-i-do {
+  padding: 60px 0;
+  background: transparent;
+  color: var(--text-primary);
+  z-index: 1;
+
+  @include breakpoints.md {
+    padding: 25px 0 50px;
+  }
+
+  .container {
+    @include mixins.container;
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .item {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    h4.text-primary {
+      margin-bottom: 10px;
+      font-family: "Roboto", sans-serif !important;
+      text-transform: uppercase;
+      font-size: 1.2rem;
+      color: var(--secondary-color) !important;
+      font-weight: 600;
+    }
+
+    p {
+      color: rgba(var(--white), 0.8);
+      font-size: vars.$font-sm;
+      line-height: 1.5;
+    }
+  }
+}
+
+// Standalone what-i-do page styles
+.what-i-do-page {
+  @include mixins.container;
+}
+
+// =============================================================================
+// CLIENTS SECTION
+// =============================================================================
+
+.clients {
+  padding: 60px 0;
+  
+  .container {
+    @include mixins.container;
+  }
+}
+
+// Standalone clients page styles
+.clients-page {
+  @include mixins.container;
+  
+  &__content {
+    @include mixins.container;
+  }
+}
+
+// =============================================================================
+// LOGO BANNER
+// =============================================================================
+
+.logo-banner {
+  width: 100vw;
+  height: 150px;
+  overflow: hidden;
+  position: relative;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.logo-track {
+  display: flex;
+  align-items: center;
+}
+
+.logo-container {
+  width: 150px;  // or another dimension that fits your design
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.5rem;  // Optional: adjust padding as needed
+}
+
+.logo-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }

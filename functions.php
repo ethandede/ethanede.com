@@ -47,6 +47,15 @@ function ee_enqueue_assets() {
         'all'
     );
 
+    // Enqueue sidebar accordion JS
+    wp_enqueue_script(
+        'ee-sidebar-accordion',
+        get_template_directory_uri() . '/assets/js/sidebar-accordion.js',
+        [],
+        is_development_mode() ? time() : null,
+        true
+    );
+
     // Enqueue Font Awesome Pro
     wp_enqueue_script(
         'font-awesome-pro',
@@ -619,30 +628,30 @@ function register_deliverable_post_type() {
     ]);
 
     // Register Tool Taxonomy
-register_taxonomy('technology', ['project', 'deliverable'], [
-    'labels' => [
-        'name' => 'Tools',
-        'singular_name' => 'Tool',
-        'menu_name' => 'Tools',
-        'all_items' => 'All Tools',
-        'edit_item' => 'Edit Tool',
-        'view_item' => 'View Tool',
-        'update_item' => 'Update Tool',
-        'add_new_item' => 'Add New Tool',
-        'new_item_name' => 'New Tool Name',
-                    'search_items' => 'Search Tools',
-        'popular_items' => 'Popular Tools',
-        'separate_items_with_commas' => 'Separate tools with commas',
-        'add_or_remove_items' => 'Add or remove tools',
-        'choose_from_most_used' => 'Choose from the most used tools',
-        'not_found' => 'No tools found',
-        'no_terms' => 'No tools',
-        'filter_by_item' => 'Filter by tool',
-                    'items_list_navigation' => 'Tools list navigation',
-        'items_list' => 'Tools list',
-        'back_to_items' => '← Go to tools',
-        'item_link' => 'Tool Link',
-        'item_link_description' => 'A link to a tool'
+    register_taxonomy('technology', ['project', 'deliverable'], [
+        'labels' => [
+            'name' => 'Tools',
+            'singular_name' => 'Tool',
+            'menu_name' => 'Tools',
+            'all_items' => 'All Tools',
+            'edit_item' => 'Edit Tool',
+            'view_item' => 'View Tool',
+            'update_item' => 'Update Tool',
+            'add_new_item' => 'Add New Tool',
+            'new_item_name' => 'New Tool Name',
+            'search_items' => 'Search Tools',
+            'popular_items' => 'Popular Tools',
+            'separate_items_with_commas' => 'Separate tools with commas',
+            'add_or_remove_items' => 'Add or remove tools',
+            'choose_from_most_used' => 'Choose from the most used tools',
+            'not_found' => 'No tools found',
+            'no_terms' => 'No tools',
+            'filter_by_item' => 'Filter by tool',
+            'items_list_navigation' => 'Tools list navigation',
+            'items_list' => 'Tools list',
+            'back_to_items' => '← Go to tools',
+            'item_link' => 'Tool Link',
+            'item_link_description' => 'A link to a tool'
         ],
         'hierarchical' => true,
         'show_in_rest' => true,
@@ -709,14 +718,14 @@ function modify_deliverable_archive_query($query) {
             ];
         }
 
-            // Tool filter
-    if (isset($_GET['technology']) && !empty($_GET['technology'])) {
-        $tax_query[] = [
-            'taxonomy' => 'technology',
-            'field' => 'slug',
-            'terms' => $_GET['technology']
-        ];
-    }
+        // Tool filter
+        if (isset($_GET['technology']) && !empty($_GET['technology'])) {
+            $tax_query[] = [
+                'taxonomy' => 'technology',
+                'field' => 'slug',
+                'terms' => $_GET['technology']
+            ];
+        }
 
         // Skill filter
         if (isset($_GET['skill']) && !empty($_GET['skill'])) {
@@ -1675,4 +1684,511 @@ function ee_safari_cache_bust() {
     }
 }
 add_action('wp_footer', 'ee_safari_cache_bust', 999);
+
+// =============================================================================
+// CUSTOM ACF FIELD: EXCEL/GOOGLE SHEETS EMBED
+// =============================================================================
+
+// Register custom ACF field type for Excel embeds
+function register_excel_embed_acf_field() {
+    if (function_exists('acf_register_field_type')) {
+        // Include the custom field class
+        include_once get_template_directory() . '/includes/class-acf-field-excel-embed.php';
+        acf_register_field_type('ACF_Field_Excel_Embed');
+    }
+}
+add_action('acf/include_field_types', 'register_excel_embed_acf_field');
+
+// Enqueue scripts and styles for Excel embed field
+function enqueue_excel_embed_assets() {
+    if (is_admin() || has_acf_field('excel_embed')) {
+        wp_enqueue_script(
+            'excel-embed-admin',
+            get_template_directory_uri() . '/assets/js/excel-embed-admin.js',
+            ['jquery'],
+            is_development_mode() ? time() : '1.0.0',
+            true
+        );
+        
+        // Localize admin script with AJAX data
+        wp_localize_script('excel-embed-admin', 'excelEmbedAjax', [
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('excel_embed_nonce')
+        ]);
+        
+        wp_enqueue_style(
+            'excel-embed-admin',
+            get_template_directory_uri() . '/assets/css/excel-embed-admin.css',
+            [],
+            is_development_mode() ? time() : '1.0.0'
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'enqueue_excel_embed_assets');
+add_action('admin_enqueue_scripts', 'enqueue_excel_embed_assets');
+
+// Frontend Excel embed styles
+function enqueue_excel_embed_frontend() {
+    // Load on single deliverable pages or if Excel embed field is present
+    if (is_singular('deliverable') || has_acf_field('excel_embed')) {
+        wp_enqueue_style(
+            'excel-embed-frontend',
+            get_template_directory_uri() . '/assets/css/excel-embed-frontend.css',
+            [],
+            is_development_mode() ? time() : '1.0.0'
+        );
+        
+        wp_enqueue_script(
+            'excel-embed-frontend',
+            get_template_directory_uri() . '/assets/js/excel-embed-frontend.js',
+            ['jquery'],
+            is_development_mode() ? time() : '1.0.0',
+            true
+        );
+        
+        // Localize script with AJAX URL and nonce
+        wp_localize_script('excel-embed-frontend', 'excelEmbedAjax', [
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('excel_embed_nonce')
+        ]);
+    }
+}
+add_action('wp_enqueue_scripts', 'enqueue_excel_embed_frontend');
+
+// AJAX handler for fetching Google Sheets data
+function fetch_google_sheets_data() {
+    // Verify nonce
+    if (!wp_verify_nonce($_POST['nonce'], 'excel_embed_nonce')) {
+        wp_die('Security check failed');
+    }
+    
+    $sheet_url = sanitize_url($_POST['sheet_url']);
+    $sheet_name = sanitize_text_field($_POST['sheet_name']);
+    
+    // Extract sheet ID from Google Sheets URL
+    $pattern = '/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/';
+    if (!preg_match($pattern, $sheet_url, $matches)) {
+        wp_send_json_error('Invalid Google Sheets URL');
+    }
+    
+    $sheet_id = $matches[1];
+    
+    // Try API method first, then fallback to CSV export
+    $api_key = get_option('google_sheets_api_key', '');
+    
+    if (!empty($api_key)) {
+        // Try API method
+        $result = fetch_via_api($sheet_id, $sheet_name, $api_key);
+        if ($result['success']) {
+            wp_send_json_success($result['data']);
+        }
+        // If API fails, continue to fallback method
+        error_log('API method failed: ' . $result['error']);
+    } else {
+        // No API key configured, try CSV export
+        $result = fetch_via_csv_export($sheet_id, $sheet_name);
+        if ($result['success']) {
+            wp_send_json_success($result['data']);
+        } else {
+            wp_send_json_error($result['error']);
+        }
+        return;
+    }
+    
+    // Fallback: Use CSV export (no API key required)
+    $result = fetch_via_csv_export($sheet_id, $sheet_name);
+    if ($result['success']) {
+        wp_send_json_success($result['data']);
+    } else {
+        wp_send_json_error($result['error']);
+    }
+}
+
+// Fetch data via Google Sheets API
+function fetch_via_api($sheet_id, $sheet_name, $api_key) {
+    // If no sheet name provided, try to get sheet metadata to find the correct sheet
+    if (empty($sheet_name)) {
+        // Get sheet metadata to find the correct sheet name
+        $metadata_url = "https://sheets.googleapis.com/v4/spreadsheets/{$sheet_id}?key=" . $api_key;
+        $metadata_response = wp_remote_get($metadata_url);
+        
+        if (!is_wp_error($metadata_response)) {
+            $metadata_body = wp_remote_retrieve_body($metadata_response);
+            $metadata = json_decode($metadata_body, true);
+            
+            if ($metadata && isset($metadata['sheets'])) {
+                // Use the first sheet name
+                $sheet_name = $metadata['sheets'][0]['properties']['title'];
+            }
+        }
+    }
+    
+    $range = $sheet_name ? $sheet_name . '!A:Z' : 'A:Z';
+    $api_url = "https://sheets.googleapis.com/v4/spreadsheets/{$sheet_id}/values/{$range}?key=" . $api_key;
+    
+    $response = wp_remote_get($api_url);
+    
+    if (is_wp_error($response)) {
+        return ['success' => false, 'error' => 'Failed to fetch data from Google Sheets: ' . $response->get_error_message()];
+    }
+    
+    $response_code = wp_remote_retrieve_response_code($response);
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body, true);
+    
+    if ($response_code !== 200) {
+        return ['success' => false, 'error' => "API Error (Code {$response_code}): " . $body];
+    }
+    
+    if (!$data) {
+        return ['success' => false, 'error' => 'Invalid JSON response from Google Sheets API'];
+    }
+    
+    if (isset($data['error'])) {
+        return ['success' => false, 'error' => 'Google Sheets API Error: ' . $data['error']['message']];
+    }
+    
+    if (!isset($data['values'])) {
+        return ['success' => false, 'error' => 'No data found in sheet via API'];
+    }
+    
+    // Process the data to handle frozen panes and custom headers
+    $processed_data = process_sheet_data($data['values']);
+    
+    return ['success' => true, 'data' => $processed_data];
+}
+
+// Fetch data via CSV export (fallback method)
+function fetch_via_csv_export($sheet_id, $sheet_name) {
+    // Extract gid from the original URL if available
+    $gid = 0; // Default to first sheet
+    
+    // Check if we have the original sheet URL to extract gid
+    if (isset($_POST['sheet_url'])) {
+        $original_url = $_POST['sheet_url'];
+        if (preg_match('/gid=(\d+)/', $original_url, $matches)) {
+            $gid = $matches[1];
+        }
+    }
+    
+    // For sheets with frozen panes, we need to use a different approach
+    // Try to get the full range including frozen columns
+    $csv_url = "https://docs.google.com/spreadsheets/d/{$sheet_id}/export?format=csv&gid={$gid}&range=A:Z";
+    
+    $response = wp_remote_get($csv_url);
+    
+    if (is_wp_error($response)) {
+        return ['success' => false, 'error' => 'Failed to fetch CSV data: ' . $response->get_error_message()];
+    }
+    
+    $response_code = wp_remote_retrieve_response_code($response);
+    $body = wp_remote_retrieve_body($response);
+    
+    if ($response_code !== 200) {
+        return ['success' => false, 'error' => "CSV Export Error (Code {$response_code}): " . $body];
+    }
+    
+    if (empty($body)) {
+        return ['success' => false, 'error' => 'No data found in CSV export'];
+    }
+    
+    // Parse CSV data
+    $rows = array_map('str_getcsv', explode("\n", $body));
+    
+    // Remove empty rows
+    $rows = array_filter($rows, function($row) {
+        return !empty(array_filter($row, function($cell) {
+            return !empty(trim($cell));
+        }));
+    });
+    
+    if (empty($rows)) {
+        return ['success' => false, 'error' => 'No data found in CSV export'];
+    }
+    
+    // Process rows to handle frozen panes and custom headers
+    $processed_rows = process_sheet_data($rows);
+    
+    return ['success' => true, 'data' => $processed_rows];
+}
+add_action('wp_ajax_fetch_google_sheets_data', 'fetch_google_sheets_data');
+add_action('wp_ajax_nopriv_fetch_google_sheets_data', 'fetch_google_sheets_data');
+
+// Process sheet data to handle frozen panes and custom headers
+function process_sheet_data($rows) {
+    if (empty($rows)) {
+        return [];
+    }
+    
+    // Look for the actual header row (usually row 5 in frozen pane sheets)
+    $header_row_index = 0;
+    $data_start_index = 1;
+    
+    // Check if this looks like a frozen pane sheet (first few rows might be empty or have frozen content)
+    $first_few_rows = array_slice($rows, 0, 6);
+    
+    // Look for a row that has meaningful headers (not empty, not just numbers)
+    foreach ($first_few_rows as $index => $row) {
+        if (count($row) > 3) { // At least 4 columns
+            $non_empty_cells = array_filter($row, function($cell) {
+                return !empty(trim($cell)) && !is_numeric(trim($cell));
+            });
+            
+            // If this row has several non-numeric, non-empty cells, it's likely the header
+            if (count($non_empty_cells) >= 3) {
+                $header_row_index = $index;
+                $data_start_index = $index + 1;
+                break;
+            }
+        }
+    }
+    
+    // Extract headers from the identified header row
+    $headers = $rows[$header_row_index];
+    
+    // Clean up headers (remove empty ones and trim)
+    $headers = array_map(function($header) {
+        return trim($header);
+    }, $headers);
+    
+    // Remove completely empty columns
+    $valid_columns = [];
+    foreach ($headers as $index => $header) {
+        if (!empty($header)) {
+            $valid_columns[] = $index;
+        }
+    }
+    
+    // Filter headers to only include non-empty columns
+    $clean_headers = array_values(array_filter($headers));
+    
+    // Process data rows (skip the header row and any empty rows before it)
+    $data_rows = [];
+    for ($i = $data_start_index; $i < count($rows); $i++) {
+        $row = $rows[$i];
+        
+        // Only include rows that have data in the valid columns
+        $has_data = false;
+        foreach ($valid_columns as $col_index) {
+            if (isset($row[$col_index]) && !empty(trim($row[$col_index]))) {
+                $has_data = true;
+                break;
+            }
+        }
+        
+        if ($has_data) {
+            // Extract only the data from valid columns
+            $data_row = [];
+            foreach ($valid_columns as $col_index) {
+                $data_row[] = isset($row[$col_index]) ? trim($row[$col_index]) : '';
+            }
+            $data_rows[] = $data_row;
+        }
+    }
+    
+    // Return processed data with clean headers
+    return array_merge([$clean_headers], $data_rows);
+}
+
+// Helper function to check if page has Excel embed field
+function has_acf_field($field_name) {
+    if (!function_exists('get_field_objects')) {
+        return false;
+    }
+    
+    global $post;
+    if (!$post) {
+        return false;
+    }
+    
+    $fields = get_field_objects($post->ID);
+    if (!$fields) {
+        return false;
+    }
+    
+    foreach ($fields as $field) {
+        if ($field['name'] === $field_name || $field['type'] === $field_name) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+// Template function to render Excel embed
+function render_excel_embed($field_value, $args = []) {
+    if (empty($field_value) || !is_array($field_value)) {
+        return '';
+    }
+    
+    $defaults = [
+        'title' => 'Spreadsheet Data',
+        'enable_search' => true,
+        'enable_filters' => true,
+        'show_status_indicators' => true,
+        'rows_per_page' => 5,
+        'custom_styling' => true
+    ];
+    
+    $args = wp_parse_args($args, $defaults);
+    
+    // Merge field settings with args
+    $settings = array_merge($args, $field_value);
+    
+    $container_class = 'excel-embed-container';
+    if ($settings['custom_styling']) {
+        $container_class .= ' excel-custom-styling';
+    }
+    
+    $data_attrs = [
+        'sheet-url' => esc_attr($settings['sheet_url']),
+        'sheet-name' => esc_attr($settings['sheet_name']),
+        'enable-search' => $settings['enable_search'] ? 'true' : 'false',
+        'enable-filters' => $settings['enable_filters'] ? 'true' : 'false',
+        'show-status-indicators' => $settings['show_status_indicators'] ? 'true' : 'false',
+        'rows-per-page' => intval($settings['rows_per_page'])
+    ];
+    
+    $data_attr_string = '';
+    foreach ($data_attrs as $key => $value) {
+        $data_attr_string .= ' data-' . $key . '="' . $value . '"';
+    }
+    
+    ob_start();
+    ?>
+    <div class="<?php echo esc_attr($container_class); ?>"<?php echo $data_attr_string; ?>>
+        <div class="excel-embed-header">
+            <h3 class="excel-embed-title">
+                <i class="fas fa-file-excel" aria-hidden="true"></i>
+                <?php echo esc_html($settings['title']); ?>
+            </h3>
+            
+            <?php if ($settings['enable_search'] || $settings['enable_filters']): ?>
+                <div class="excel-embed-controls">
+                    <?php if ($settings['enable_search']): ?>
+                        <div class="excel-search-box">
+                            <input type="text" placeholder="Search data..." />
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if ($settings['enable_filters']): ?>
+                        <div class="excel-filter-dropdown">
+                            <select>
+                                <option value="">All Status</option>
+                                <option value="done">Done</option>
+                                <option value="pending">Pending</option>
+                                <option value="verified">Verified</option>
+                                <option value="in progress">In Progress</option>
+                            </select>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        
+        <div class="excel-loading">Loading spreadsheet data...</div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+// Shortcode for Excel embeds
+function excel_embed_shortcode($atts) {
+    $atts = shortcode_atts([
+        'field_name' => '',
+        'post_id' => get_the_ID(),
+        'title' => 'Spreadsheet Data',
+        'enable_search' => 'true',
+        'enable_filters' => 'true',
+        'show_status_indicators' => 'true',
+        'rows_per_page' => '20'
+    ], $atts);
+    
+    if (empty($atts['field_name'])) {
+        return '<p class="excel-error">Field name is required.</p>';
+    }
+    
+    $field_value = get_field($atts['field_name'], $atts['post_id']);
+    
+    if (empty($field_value)) {
+        return '<p class="excel-error">No Excel embed field found.</p>';
+    }
+    
+    $args = [
+        'title' => $atts['title'],
+        'enable_search' => $atts['enable_search'] === 'true',
+        'enable_filters' => $atts['enable_filters'] === 'true',
+        'show_status_indicators' => $atts['show_status_indicators'] === 'true',
+        'rows_per_page' => intval($atts['rows_per_page'])
+    ];
+    
+    return render_excel_embed($field_value, $args);
+}
+add_shortcode('excel_embed', 'excel_embed_shortcode');
+
+// Add admin menu for Google Sheets API configuration
+function add_google_sheets_admin_menu() {
+    add_options_page(
+        'Google Sheets API',
+        'Google Sheets API',
+        'manage_options',
+        'google-sheets-api',
+        'render_google_sheets_admin_page'
+    );
+}
+add_action('admin_menu', 'add_google_sheets_admin_menu');
+
+// Render the admin page
+function render_google_sheets_admin_page() {
+    if (isset($_POST['submit'])) {
+        if (wp_verify_nonce($_POST['google_sheets_nonce'], 'google_sheets_settings')) {
+            $api_key = sanitize_text_field($_POST['google_sheets_api_key']);
+            update_option('google_sheets_api_key', $api_key);
+            echo '<div class="notice notice-success"><p>Google Sheets API key updated successfully!</p></div>';
+        }
+    }
+    
+    $current_api_key = get_option('google_sheets_api_key', '');
+    ?>
+    <div class="wrap">
+        <h1>Google Sheets API Configuration</h1>
+        <p>Configure your Google Sheets API key to enable Excel/Spreadsheet embeds on your website.</p>
+        
+        <form method="post" action="">
+            <?php wp_nonce_field('google_sheets_settings', 'google_sheets_nonce'); ?>
+            <table class="form-table">
+                <tr>
+                    <th scope="row">
+                        <label for="google_sheets_api_key">API Key</label>
+                    </th>
+                    <td>
+                        <input type="text" 
+                               id="google_sheets_api_key" 
+                               name="google_sheets_api_key" 
+                               value="<?php echo esc_attr($current_api_key); ?>" 
+                               class="regular-text" />
+                        <p class="description">
+                            Enter your Google Sheets API key. You can get one from the 
+                            <a href="https://console.developers.google.com/" target="_blank">Google Cloud Console</a>.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+            <?php submit_button('Save API Key'); ?>
+        </form>
+        
+        <div class="card">
+            <h2>Setup Instructions</h2>
+            <ol>
+                <li>Go to the <a href="https://console.developers.google.com/" target="_blank">Google Cloud Console</a></li>
+                <li>Create a new project or select an existing one</li>
+                <li>Enable the Google Sheets API</li>
+                <li>Create credentials (API Key)</li>
+                <li>Copy the API key and paste it above</li>
+                <li>Make sure your Google Sheets are set to "Anyone with the link can view"</li>
+            </ol>
+        </div>
+    </div>
+    <?php
+}
 
