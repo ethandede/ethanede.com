@@ -485,6 +485,16 @@
       display: none !important;
     }
     
+    // Hide overlay in sidebar cards
+    .card__overlay {
+      display: none !important;
+    }
+    
+    // Hide the ::before pseudo-element on the card link for sidebar cards
+    &::before {
+      display: none !important;
+    }
+    
     // Background image container
     .card__image-container {
       display: block; // Show images as backgrounds
@@ -502,12 +512,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 0, 0, 0.8) 0%,
-          rgba(0, 0, 0, 0.6) 50%,
-          rgba(0, 0, 0, 0.9) 100%
-        );
+        background: rgba(0, 0, 0, 0.7); // Dark overlay for better text contrast on sidebar cards
         z-index: 2;
         transition: opacity 0.3s ease;
       }
@@ -750,5 +755,29 @@
     &__content {
       padding: 1.25rem;
     }
+  }
+}
+
+// =============================================================================
+// SIDEBAR CARD SPECIFIC OVERRIDES
+// =============================================================================
+
+// Override the general card overlay for sidebar cards only
+.card--sidebar {
+  &::before {
+    display: none !important; // Remove the top gradient strip
+  }
+  
+  .card__image-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7); // Full card dark overlay for text contrast
+    z-index: 2;
+    transition: opacity 0.3s ease;
+    height: 100%;
   }
 } 

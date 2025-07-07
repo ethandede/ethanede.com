@@ -348,6 +348,7 @@
 // Single Page Tags (above h1s on template pages)
 .single-page-tag-wrapper {
   margin-bottom: 1rem;
+  text-align: left; // Ensure left alignment
 
   .single-page-tag {
     display: inline-block;
@@ -383,6 +384,13 @@
       background: rgba(var(--tertiary-color-rgb), .3);
       border: 1px solid rgba(var(--tertiary-color-rgb), .5);
       color: var(--tertiary-color);
+    }
+
+    // Work Area-specific styling (work archive page)
+    &.tag-work-area {
+      background: rgba(var(--primary-color-rgb), .3);
+      border: 1px solid rgba(var(--primary-color-rgb), .5);
+      color: var(--primary-color);
     }
 
     // Icon styling for tags with icons

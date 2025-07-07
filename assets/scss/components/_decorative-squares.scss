@@ -1,0 +1,376 @@
+// =============================================================================
+// DECORATIVE SQUARES COMPONENT
+// =============================================================================
+// Creates a decorative treatment using random squares similar to the background animation
+// Used to make images stand out from the background, especially darker images
+
+.decorative-squares {
+  position: relative;
+  display: inline-block;
+  
+  // Container for the squares
+  &::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    z-index: -1;
+    pointer-events: none;
+  }
+  
+  // Generate random squares using CSS
+  &::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    z-index: -1;
+    pointer-events: none;
+    background-image: 
+      // Top left area
+      linear-gradient(45deg, transparent 40%, rgba(var(--primary-color-rgb), 0.1) 40%, rgba(var(--primary-color-rgb), 0.1) 45%, transparent 45%),
+      linear-gradient(-45deg, transparent 40%, rgba(var(--primary-color-rgb), 0.08) 40%, rgba(var(--primary-color-rgb), 0.08) 45%, transparent 45%),
+      // Top right area
+      linear-gradient(135deg, transparent 60%, rgba(var(--primary-color-rgb), 0.06) 60%, rgba(var(--primary-color-rgb), 0.06) 65%, transparent 65%),
+      linear-gradient(-135deg, transparent 70%, rgba(var(--primary-color-rgb), 0.12) 70%, rgba(var(--primary-color-rgb), 0.12) 75%, transparent 75%),
+      // Bottom left area
+      linear-gradient(45deg, transparent 30%, rgba(var(--primary-color-rgb), 0.09) 30%, rgba(var(--primary-color-rgb), 0.09) 35%, transparent 35%),
+      linear-gradient(-45deg, transparent 50%, rgba(var(--primary-color-rgb), 0.07) 50%, rgba(var(--primary-color-rgb), 0.07) 55%, transparent 55%),
+      // Bottom right area
+      linear-gradient(135deg, transparent 80%, rgba(var(--primary-color-rgb), 0.11) 80%, rgba(var(--primary-color-rgb), 0.11) 85%, transparent 85%),
+      linear-gradient(-135deg, transparent 20%, rgba(var(--primary-color-rgb), 0.05) 20%, rgba(var(--primary-color-rgb), 0.05) 25%, transparent 25%);
+    background-size: 
+      40px 40px,
+      30px 30px,
+      50px 50px,
+      35px 35px,
+      45px 45px,
+      25px 25px,
+      60px 60px,
+      40px 40px;
+    background-position: 
+      0 0,
+      10px 5px,
+      20px 15px,
+      5px 25px,
+      15px 35px,
+      30px 10px,
+      40px 20px,
+      25px 30px;
+    border-radius: 12px;
+  }
+  
+  // Ensure the main content (image/video) has proper z-index
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// TEST VERSION - More visible for debugging
+.decorative-squares--test {
+  &::after {
+    background-image: 
+      linear-gradient(45deg, transparent 40%, rgba(255, 0, 0, 0.3) 40%, rgba(255, 0, 0, 0.3) 45%, transparent 45%),
+      linear-gradient(-45deg, transparent 40%, rgba(0, 255, 0, 0.3) 40%, rgba(0, 255, 0, 0.3) 45%, transparent 45%),
+      linear-gradient(135deg, transparent 60%, rgba(0, 0, 255, 0.3) 60%, rgba(0, 0, 255, 0.3) 65%, transparent 65%);
+    background-size: 50px 50px, 40px 40px, 60px 60px;
+    background-position: 0 0, 10px 10px, 20px 20px;
+  }
+}
+
+// Wrapper approach with actual square elements
+.decorative-squares-wrapper {
+  position: relative;
+  display: inline-block;
+  padding: 20px;
+  
+  .decorative-squares-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  
+  .square {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+    pointer-events: none;
+    
+    // Brand colors - mix of all brand colors with more variety
+    &.square-1 {
+      background-color: var(--primary-color);
+    }
+    
+    &.square-2 {
+      background-color: var(--secondary-color);
+    }
+    
+    &.square-3 {
+      background-color: var(--tertiary-color);
+    }
+    
+    &.square-4 {
+      background-color: var(--quaternary-color);
+    }
+    
+    &.square-5 {
+      background-color: var(--primary-color-light);
+    }
+    
+    &.square-6 {
+      background-color: var(--secondary-color);
+    }
+    
+    &.square-7 {
+      background-color: var(--tertiary-color);
+    }
+    
+    &.square-8 {
+      background-color: var(--quaternary-color);
+    }
+    
+    &.square-9 {
+      background-color: var(--primary-color);
+    }
+    
+    &.square-10 {
+      background-color: var(--secondary-color);
+    }
+    
+    &.square-11 {
+      background-color: var(--tertiary-color);
+    }
+    
+    &.square-12 {
+      background-color: var(--quaternary-color);
+    }
+    
+    // Randomized squares with 1/3 smaller sizes and 10% closer positioning
+    &.square-1 {
+      width: 93px;
+      height: 93px;
+      top: -42px;
+      left: 108px;
+    }
+    
+    &.square-2 {
+      width: 73px;
+      height: 73px;
+      top: 27px;
+      left: -51px;
+    }
+    
+    &.square-3 {
+      width: 110px;
+      height: 110px;
+      top: -33px;
+      right: 39px;
+    }
+    
+    &.square-4 {
+      width: 83px;
+      height: 83px;
+      top: -9px;
+      right: -27px;
+    }
+    
+    &.square-5 {
+      width: 63px;
+      height: 63px;
+      bottom: -17px;
+      left: 174px;
+    }
+    
+    &.square-6 {
+      width: 100px;
+      height: 100px;
+      bottom: -9px;
+      left: 9px;
+    }
+    
+    &.square-7 {
+      width: 87px;
+      height: 87px;
+      bottom: -15px;
+      right: -18px;
+    }
+    
+    &.square-8 {
+      width: 77px;
+      height: 77px;
+      bottom: -5px;
+      right: 102px;
+    }
+    
+    &.square-9 {
+      width: 97px;
+      height: 97px;
+      top: 18%;
+      left: 15px;
+      transform: translateY(-50%);
+    }
+    
+    &.square-10 {
+      width: 70px;
+      height: 70px;
+      top: 68%;
+      right: -39px;
+      transform: translateY(-50%);
+    }
+    
+    &.square-11 {
+      width: 60px;
+      height: 60px;
+      top: 42%;
+      right: -12px;
+      transform: translateY(-50%);
+    }
+    
+    &.square-12 {
+      width: 50px;
+      height: 50px;
+      bottom: 32%;
+      left: -21px;
+      transform: translateY(-50%);
+    }
+  }
+  
+  .project-featured-image,
+  .project-featured-video {
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+}
+
+// Variant for larger images
+.decorative-squares--large {
+  &::before,
+  &::after {
+    top: -30px;
+    left: -30px;
+    right: -30px;
+    bottom: -30px;
+  }
+  
+  &::after {
+    background-size: 
+      60px 60px,
+      45px 45px,
+      75px 75px,
+      50px 50px,
+      65px 65px,
+      40px 40px,
+      90px 90px,
+      60px 60px;
+    background-position: 
+      0 0,
+      15px 10px,
+      30px 20px,
+      10px 35px,
+      20px 50px,
+      45px 15px,
+      60px 30px,
+      35px 45px;
+  }
+}
+
+// Variant for smaller images
+.decorative-squares--small {
+  &::before,
+  &::after {
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+  }
+  
+  &::after {
+    background-size: 
+      25px 25px,
+      20px 20px,
+      30px 30px,
+      25px 25px,
+      35px 35px,
+      15px 15px,
+      40px 40px,
+      25px 25px;
+    background-position: 
+      0 0,
+      5px 3px,
+      10px 8px,
+      3px 15px,
+      8px 20px,
+      15px 5px,
+      20px 12px,
+      12px 18px;
+  }
+}
+
+// Alternative color schemes
+.decorative-squares--secondary {
+  &::after {
+    background-image: 
+      linear-gradient(45deg, transparent 40%, rgba(var(--secondary-color-rgb), 0.1) 40%, rgba(var(--secondary-color-rgb), 0.1) 45%, transparent 45%),
+      linear-gradient(-45deg, transparent 40%, rgba(var(--secondary-color-rgb), 0.08) 40%, rgba(var(--secondary-color-rgb), 0.08) 45%, transparent 45%),
+      linear-gradient(135deg, transparent 60%, rgba(var(--secondary-color-rgb), 0.06) 60%, rgba(var(--secondary-color-rgb), 0.06) 65%, transparent 65%),
+      linear-gradient(-135deg, transparent 70%, rgba(var(--secondary-color-rgb), 0.12) 70%, rgba(var(--secondary-color-rgb), 0.12) 75%, transparent 75%),
+      linear-gradient(45deg, transparent 30%, rgba(var(--secondary-color-rgb), 0.09) 30%, rgba(var(--secondary-color-rgb), 0.09) 35%, transparent 35%),
+      linear-gradient(-45deg, transparent 50%, rgba(var(--secondary-color-rgb), 0.07) 50%, rgba(var(--secondary-color-rgb), 0.07) 55%, transparent 55%),
+      linear-gradient(135deg, transparent 80%, rgba(var(--secondary-color-rgb), 0.11) 80%, rgba(var(--secondary-color-rgb), 0.11) 85%, transparent 85%),
+      linear-gradient(-135deg, transparent 20%, rgba(var(--secondary-color-rgb), 0.05) 20%, rgba(var(--secondary-color-rgb), 0.05) 25%, transparent 25%);
+  }
+}
+
+// Subtle variant for lighter treatment
+.decorative-squares--subtle {
+  &::after {
+    opacity: 0.5;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .decorative-squares {
+    &::before,
+    &::after {
+      top: -15px;
+      left: -15px;
+      right: -15px;
+      bottom: -15px;
+    }
+    
+    &::after {
+      background-size: 
+        30px 30px,
+        20px 20px,
+        35px 35px,
+        25px 25px,
+        40px 40px,
+        15px 15px,
+        45px 45px,
+        30px 30px;
+    }
+  }
+  
+  .decorative-squares--large {
+    &::before,
+    &::after {
+      top: -20px;
+      left: -20px;
+      right: -20px;
+      bottom: -20px;
+    }
+  }
+} 

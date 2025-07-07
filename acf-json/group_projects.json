@@ -113,6 +113,26 @@
             "delay": 0
         },
         {
+            "key": "field_project_excerpt",
+            "label": "Project Excerpt",
+            "name": "project_excerpt",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "A brief summary of the project (max 180 characters) for use in cards and previews. This will be used instead of the WordPress excerpt field.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 180,
+            "rows": 3,
+            "placeholder": "Enter a brief project summary...",
+            "allow_in_bindings": 0
+        },
+        {
             "key": "field_684b22dd9f49c",
             "label": "Key Responsibilities",
             "name": "key_responsibilities",

@@ -83,9 +83,24 @@ get_header();
                 $role_description = get_field('role_description');
                 $project_title = get_field('project_title');
                 
-                // Prepare description (truncate if needed)
-                $description = wp_strip_all_tags($role_description);
-                $description = strlen($description) > 150 ? substr($description, 0, 150) . '...' : $description;
+                // Prepare description with fallbacks
+                $description = '';
+                if ($role_description) {
+                    $description = wp_strip_all_tags($role_description);
+                } elseif (get_field('project_excerpt')) {
+                    $description = get_field('project_excerpt');
+                } elseif (get_the_excerpt()) {
+                    $description = get_the_excerpt();
+                } else {
+                    // Fallback to project description
+                    $project_description = get_field('project_description');
+                    if ($project_description) {
+                        $description = wp_strip_all_tags($project_description);
+                    }
+                }
+                
+                // Truncate if needed (use mb_strlen for proper UTF-8 character counting)
+                $description = mb_strlen($description, 'UTF-8') > 180 ? mb_substr($description, 0, 180, 'UTF-8') . '...' : $description;
                 
                 // Use master card system for related projects
                 ee_render_project_card(get_the_ID(), 'single', [
@@ -105,7 +120,7 @@ get_header();
         </section>
       </div>
       <aside class="single-sidebar">
-        <h3>How I work</h3>
+        <h3 class="single-sidebar__title">How I work</h3>
         
         <?php
         // Debug: Let's see what categories we're getting

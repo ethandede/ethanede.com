@@ -1,6 +1,6 @@
-@use '../abstracts/variables' as vars;
-@use '../abstracts/breakpoints';
-@use '../abstracts/mixins';
+@use "../abstracts/variables" as vars;
+@use "../abstracts/breakpoints";
+@use "../abstracts/mixins";
 
 // =============================================================================
 // WORK ARCHIVE PAGE STYLES
@@ -8,45 +8,47 @@
 // Cards now use master card system in components/_card.scss
 // =============================================================================
 
-#work-archive {
-  min-height: 100vh;
-  color: var(--text-primary);
-}
-
-// =============================================================================
-// WORK HEADER SECTION
-// =============================================================================
-
-.work-header {
-  @include mixins.standard-header;
-
-  .container {
-    text-align: center;
+.page-template-page-work {
+  @include mixins.page-padding;
+  #work-archive {
+    min-height: 100vh;
+    color: var(--text-primary);
   }
 
-  h1 {
-    // Using base typography - no font-size override needed
-    color: var(--heading-color);
-    margin-bottom: 1.5rem;
-    text-align: left;
-  }
+  // =============================================================================
+  // WORK HEADER SECTION
+  // =============================================================================
 
-  .supporting-text {
-    // Using base typography - inherits font-size, adds layout-specific styling
-    margin-bottom: 0;
-    max-width: 600px;
-    
-    @include breakpoints.md {
-      margin-bottom: 2rem;
+  .work-header {
+    @include mixins.standard-header;
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      // Using base typography - no font-size override needed
+      color: var(--heading-color);
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .supporting-text {
+      // Using base typography - inherits font-size, adds layout-specific styling
+      margin-bottom: 0;
+      max-width: 600px;
+
+      @include breakpoints.md {
+        margin-bottom: 2rem;
+      }
     }
   }
-}
 
-// =============================================================================
-// WORK FILTERS - TEMPORARILY DISABLED
-// =============================================================================
+  // =============================================================================
+  // WORK FILTERS - TEMPORARILY DISABLED
+  // =============================================================================
 
-/*
+  /*
 .work-filters {
   margin-top: 1.5rem;
   margin-bottom: 2rem;
@@ -296,37 +298,38 @@
 }
 */
 
-// =============================================================================
-// WORK GRID SECTION
-// =============================================================================
+  // =============================================================================
+  // WORK GRID SECTION
+  // =============================================================================
 
-.work-grid {
-  padding: 2rem 0 4rem;
+  .work-grid {
+    padding: 2rem 0 4rem;
 
-  @include breakpoints.md {
-    padding: 1.5rem 0 3rem;
+    @include breakpoints.md {
+      padding: 1.5rem 0 3rem;
+    }
+
+    .container {
+      @include mixins.container;
+    }
   }
 
-  .container {
-    @include mixins.container;
+  .work-list {
+    @include mixins.work-grid;
+  }
+
+  // =============================================================================
+  // NO RESULTS MESSAGE
+  // =============================================================================
+
+  .no-work-found {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-secondary);
+    font-size: vars.$font-lg;
+    background: var(--surface-color);
+    border-radius: 12px;
+    margin: 2rem 0;
+    grid-column: 1 / -1;
   }
 }
-
-.work-list {
-  @include mixins.work-grid;
-}
-
-// =============================================================================
-// NO RESULTS MESSAGE
-// =============================================================================
-
-.no-work-found {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: var(--text-secondary);
-  font-size: vars.$font-lg;
-  background: var(--surface-color);
-  border-radius: 12px;
-  margin: 2rem 0;
-  grid-column: 1 / -1;
-} 

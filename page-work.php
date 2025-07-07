@@ -33,6 +33,11 @@ get_header();
     <!-- Work Header Section -->
     <section class="work-header">
         <div class="container">
+            <div class="single-page-tag-wrapper">
+                <span class="single-page-tag tag-work-area tag-with-icon">
+                    <i class="fa-duotone fa-briefcase"></i>Work
+                </span>
+            </div>
             <h1>My Work</h1>
             <p class="supporting-text">Explore a portfolio of select projects and deliverables I've had the pleasure to be involved with - from strategy and design to development and digital solutions.</p>
         </div>
@@ -89,7 +94,7 @@ get_header();
                                     // If no featured_media, check for WordPress featured image
                                     if (!$first_image && has_post_thumbnail($work_item->ID)) {
                                         $first_image = [
-                                            'url' => get_the_post_thumbnail_url($work_item->ID, 'medium'),
+                                            'url' => get_the_post_thumbnail_url($work_item->ID, 'card-thumbnail-small'),
                                             'alt' => get_post_meta(get_post_thumbnail_id($work_item->ID), '_wp_attachment_image_alt', true)
                                         ];
                                     }
@@ -153,7 +158,7 @@ get_header();
                                     // If no image found in deliverable_featured_image or deliverable_media, check for WordPress featured image
                                     if (!$first_image && has_post_thumbnail($work_item->ID)) {
                                         $first_image = [
-                                            'url' => get_the_post_thumbnail_url($work_item->ID, 'medium'),
+                                            'url' => get_the_post_thumbnail_url($work_item->ID, 'card-thumbnail-small'),
                                             'alt' => get_post_meta(get_post_thumbnail_id($work_item->ID), '_wp_attachment_image_alt', true)
                                         ];
                                     }

@@ -266,7 +266,8 @@
 
   .single-project {
     .project-featured-media {
-      margin-bottom: 2rem;
+      margin-bottom: 4rem;
+      text-align: center; // Center the decorative squares container
 
       .project-featured-image {
         width: 100%;
@@ -293,6 +294,9 @@
         object-fit: cover;
         object-position: center;
       }
+      
+      // Decorative squares are now applied via HTML class
+      // The .decorative-squares class is added directly to images/videos
     }
 
     .project-header {

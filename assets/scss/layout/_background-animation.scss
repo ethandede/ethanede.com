@@ -6,6 +6,60 @@
   height: 100vh;
   z-index: -2;
   pointer-events: none;
+  
+  // CSS custom properties for watermark
+  --watermark-opacity: 0.03;
+  --watermark-size: 60vh;
+  --watermark-brightness: 1.2;
+  
+  // Add subtle watermark background
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../img/logo_ethanEde_blue.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: var(--watermark-size);
+    opacity: var(--watermark-opacity);
+    filter: grayscale(100%) brightness(var(--watermark-brightness));
+    z-index: -1;
+    display: none; // Temporarily disabled
+  }
+  
+  // Alternative: Multiple small instances (uncomment to use instead)
+  /*
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      url('../img/logo_ethanEde_blue.svg'),
+      url('../img/logo_ethanEde_blue.svg'),
+      url('../img/logo_ethanEde_blue.svg');
+    background-repeat: 
+      no-repeat,
+      no-repeat,
+      no-repeat;
+    background-position: 
+      10% 20%,
+      80% 60%,
+      50% 80%;
+    background-size: 
+      15vh,
+      12vh,
+      18vh;
+    opacity: 0.02;
+    filter: grayscale(100%) brightness(1.3);
+    z-index: -1;
+  }
+  */
 }
 
 .animated-squares {
@@ -18,6 +72,12 @@
 @media (max-width: 768px) {
   .background-animation {
     z-index: -1;
+    
+    // Adjust watermark for mobile
+    &::before {
+      background-size: 80vw; // Use viewport width instead of height on mobile
+      opacity: 0.02; // Even more subtle on mobile
+    }
   }
   
   .animated-squares {

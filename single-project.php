@@ -35,14 +35,32 @@ get_header();
                                 <?php
                                 $file_type = wp_check_filetype($featured_media);
                                 if (strpos($file_type['type'], 'video') !== false) : ?>
-                                    <video class="project-featured-video" controls>
-                                        <source src="<?php echo esc_url($featured_media); ?>" type="<?php echo esc_attr($file_type['type']); ?>">
-                                        Your browser does not support the video tag.
-                                    </video>
+                                    <div class="decorative-squares-wrapper">
+                                        <video class="project-featured-video" controls>
+                                            <source src="<?php echo esc_url($featured_media); ?>" type="<?php echo esc_attr($file_type['type']); ?>">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
                                 <?php else : ?>
-                                    <img src="<?php echo esc_url($featured_media); ?>" 
-                                         alt="<?php echo esc_attr(get_field('project_title')); ?>" 
-                                         class="project-featured-image">
+                                    <div class="decorative-squares-wrapper">
+                                        <div class="decorative-squares-bg">
+                                            <div class="square square-1"></div>
+                                            <div class="square square-2"></div>
+                                            <div class="square square-3"></div>
+                                            <div class="square square-4"></div>
+                                            <div class="square square-5"></div>
+                                            <div class="square square-6"></div>
+                                            <div class="square square-7"></div>
+                                            <div class="square square-8"></div>
+                                            <div class="square square-9"></div>
+                                            <div class="square square-10"></div>
+                                            <div class="square square-11"></div>
+                                            <div class="square square-12"></div>
+                                        </div>
+                                        <img src="<?php echo esc_url($featured_media); ?>" 
+                                             alt="<?php echo esc_attr(get_field('project_title')); ?>" 
+                                             class="project-featured-image">
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
@@ -66,7 +84,7 @@ get_header();
                                                                 // Get deliverable media for master card system
                         $featured_media = '';
                         if (has_post_thumbnail($deliverable->ID)) {
-                            $featured_media = get_the_post_thumbnail_url($deliverable->ID, 'medium');
+                            $featured_media = get_the_post_thumbnail_url($deliverable->ID, 'card-thumbnail-small');
                         } else {
                             // Check for deliverable featured image field
                             $deliverable_featured = get_field('deliverable_featured_image', $deliverable->ID);

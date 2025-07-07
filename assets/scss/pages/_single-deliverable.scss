@@ -8,6 +8,11 @@
 
 #deliverable {
   overflow-x: hidden; // Prevent horizontal overflow
+  // padding-top: 80px;
+
+  @media (max-width: 1024px) {
+    padding-top: 0;
+  }
 
   .deliverable-header {
     @include mixins.standard-header;

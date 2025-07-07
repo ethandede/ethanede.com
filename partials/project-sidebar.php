@@ -170,7 +170,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                     <div class="tags-sidebar tags-accordion">
                         <h6 class="accordion-trigger" data-target="skills-accordion">
                             Skills Used
-                            <span class="accordion-icon">+</span>
+                            <i class="accordion-icon fa-solid fa-plus"></i>
                         </h6>
                         <div class="tags-cloud accordion-content" id="skills-accordion">
                             <?php foreach ($skills as $skill) : ?>
@@ -194,7 +194,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                     <div class="tags-sidebar tags-accordion">
                         <h6 class="accordion-trigger" data-target="tools-accordion">
                             Tools Used
-                            <span class="accordion-icon">+</span>
+                            <i class="accordion-icon fa-solid fa-plus"></i>
                         </h6>
                         <div class="tags-cloud accordion-content" id="tools-accordion">
                             <?php foreach ($tools as $tool) : ?>
@@ -243,7 +243,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                 <div class="tags-sidebar tags-accordion">
                     <h6 class="accordion-trigger" data-target="deliverable-tools-accordion">
                         Tools Used
-                        <span class="accordion-icon">+</span>
+                        <i class="accordion-icon fa-solid fa-plus"></i>
                     </h6>
                     <div class="tags-cloud accordion-content" id="deliverable-tools-accordion">
                         <?php foreach ($tools as $tool) : ?>
@@ -266,7 +266,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                 <div class="tags-sidebar tags-accordion">
                     <h6 class="accordion-trigger" data-target="deliverable-skills-accordion">
                         Skills Used
-                        <span class="accordion-icon">+</span>
+                        <i class="accordion-icon fa-solid fa-plus"></i>
                     </h6>
                     <div class="tags-cloud accordion-content" id="deliverable-skills-accordion">
                         <?php foreach ($skills as $skill) : ?>
@@ -289,7 +289,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                 <div class="tags-sidebar tags-accordion">
                     <h6 class="accordion-trigger" data-target="deliverable-type-accordion">
                         Type
-                        <span class="accordion-icon">+</span>
+                        <i class="accordion-icon fa-solid fa-plus"></i>
                     </h6>
                     <div class="tags-cloud accordion-content" id="deliverable-type-accordion">
                         <?php foreach ($types as $type) : ?>
@@ -324,7 +324,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                     <div class="tags-sidebar tags-accordion">
                         <h6 class="accordion-trigger" data-target="deliverable-category-accordion">
                             Category
-                            <span class="accordion-icon">+</span>
+                            <i class="accordion-icon fa-solid fa-plus"></i>
                         </h6>
                         <div class="tags-cloud accordion-content" id="deliverable-category-accordion">
                             <?php foreach ($categories as $category) : ?>
@@ -349,7 +349,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                 <div class="tags-sidebar tags-accordion">
                     <h6 class="accordion-trigger" data-target="category-accordion">
                         Category
-                        <span class="accordion-icon">+</span>
+                        <i class="accordion-icon fa-solid fa-plus"></i>
                     </h6>
                     <div class="tags-cloud accordion-content" id="category-accordion">
                         <?php foreach ($categories as $category) : ?>

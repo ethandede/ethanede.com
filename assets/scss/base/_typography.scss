@@ -310,3 +310,114 @@ li .link-inverted {
     border-bottom-color: rgba(255, 255, 255, 0.8);
   }
 }
+
+// =============================================================================
+// WORDPRESS IMAGE ALIGNMENT CLASSES
+// =============================================================================
+
+// WordPress image alignment classes for WYSIWYG content
+.entry-content,
+.deliverable-description,
+.project-description {
+  
+  // Center aligned images
+  .aligncenter,
+  .align-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    
+    img {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+  
+  // Left aligned images
+  .alignleft,
+  .align-left {
+    float: left;
+    margin-right: 1.5rem;
+    margin-bottom: 1rem;
+    max-width: 50%;
+    
+    @media (max-width: 768px) {
+      float: none;
+      margin-right: 0;
+      margin-bottom: 1.5rem;
+      max-width: 100%;
+    }
+  }
+  
+  // Right aligned images
+  .alignright,
+  .align-right {
+    float: right;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    max-width: 50%;
+    
+    @media (max-width: 768px) {
+      float: none;
+      margin-left: 0;
+      margin-bottom: 1.5rem;
+      max-width: 100%;
+    }
+  }
+  
+  // General image styling within WYSIWYG content
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    
+    &.aligncenter,
+    &.align-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    &.alignleft,
+    &.align-left {
+      float: left;
+      margin-right: 1.5rem;
+      margin-bottom: 1rem;
+      max-width: 50%;
+      
+      @media (max-width: 768px) {
+        float: none;
+        margin-right: 0;
+        margin-bottom: 1.5rem;
+        max-width: 100%;
+      }
+    }
+    
+    &.alignright,
+    &.align-right {
+      float: right;
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+      max-width: 50%;
+      
+      @media (max-width: 768px) {
+        float: none;
+        margin-left: 0;
+        margin-bottom: 1.5rem;
+        max-width: 100%;
+      }
+    }
+  }
+  
+  // Clear floats after aligned images
+  .alignleft,
+  .align-left,
+  .alignright,
+  .align-right {
+    & + * {
+      clear: both;
+    }
+  }
+}

@@ -2195,3 +2195,112 @@ function render_google_sheets_admin_page() {
     <?php
 }
 
+// add_filter( 'map_meta_cap', function ( $caps, $cap, $user_id, $args ) {
+// 	if ( $cap === 'delete_post' && empty( $args ) ) {
+// 		error_log( "⚠️ Improper delete_post capability check detected!" );
+// 		error_log( print_r( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ), true ) );
+// 	}
+// 	return $caps;
+// }, 10, 4 );
+
+// add_action( 'admin_menu', function () {
+//     global $menu;
+//     foreach ( $menu as $entry ) {
+//         if ( isset( $entry[1] ) && $entry[1] === 'delete_post' ) {
+//             error_log( '⚠️ Menu item with invalid capability "delete_post": ' . print_r( $entry, true ) );
+//         }
+//     }
+// }, 999 );
+
+/**
+ * Custom Login Page Styles and Logo
+ */
+function ee_custom_login_logo() {
+    $logo_url = get_template_directory_uri() . '/assets/img/logo_ethanEde_blue.svg';
+    ?>
+    <style type="text/css">
+      :root {
+        --surface-dark: #181a1b;
+        --primary-color: #45748C;
+        --text-primary: #f3f3f3;
+        --text-secondary: #b3b3b3;
+      }
+      body.login {
+        background: var(--surface-dark) !important;
+        font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif !important;
+        color: var(--text-primary) !important;
+      }
+      .login h1 a {
+        background-image: url('<?php echo esc_url($logo_url); ?>') !important;
+        background-size: contain !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        width: 180px !important;
+        height: 80px !important;
+        margin-bottom: 10px !important;
+        padding-bottom: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+      }
+      .login form {
+        background: rgba(30,34,36,0.98) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.18) !important;
+        border: 1px solid rgba(255,255,255,0.08) !important;
+      }
+      .login label {
+        color: var(--text-primary) !important;
+        font-weight: 500 !important;
+      }
+      .login #login_error, .login .message, .login .success {
+        border-left: 4px solid var(--primary-color) !important;
+        color: var(--text-primary) !important;
+        background: rgba(69,116,140,0.08) !important;
+      }
+      .login .button-primary {
+        background: var(--primary-color) !important;
+        border: none !important;
+        color: var(--text-primary) !important;
+        text-shadow: none !important;
+        box-shadow: none !important;
+        font-weight: 600 !important;
+        border-radius: 4px !important;
+        transition: background 0.2s !important;
+      }
+      .login .button-primary:hover, .login .button-primary:focus {
+        background: #2d4a5c !important;
+      }
+      .login #backtoblog a, .login #nav a {
+        color: var(--primary-color) !important;
+      }
+      .login #backtoblog a:hover, .login #nav a:hover {
+        color: #2d4a5c !important;
+      }
+      .login form .input, .login input[type="text"], .login input[type="password"], .login input[type="email"] {
+        background: rgba(255,255,255,0.08) !important;
+        color: var(--text-primary) !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+      }
+      .login form .input:focus {
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 1px var(--primary-color) !important;
+      }
+      .login .privacy-policy-page-link {
+        color: var(--text-secondary) !important;
+      }
+    </style>
+    <?php
+}
+add_action('login_enqueue_scripts', 'ee_custom_login_logo');
+
+// Change login logo URL to site home
+function ee_login_logo_url() {
+    return home_url();
+}
+add_filter('login_headerurl', 'ee_login_logo_url');
+
+// Change login logo title to site name
+function ee_login_logo_url_title() {
+    return get_bloginfo('name');
+}
+add_filter('login_headertext', 'ee_login_logo_url_title');

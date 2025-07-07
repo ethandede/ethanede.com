@@ -47,7 +47,7 @@ $original_args = $args;
 $defaults = [
     'context' => 'archive',
     'link_url' => $is_taxonomy_card ? '#' : get_permalink($args['post_id']),
-    'image_url' => $is_taxonomy_card ? '' : get_the_post_thumbnail_url($args['post_id'], 'card-thumbnail'),
+    'image_url' => $is_taxonomy_card ? '' : get_the_post_thumbnail_url($args['post_id'], 'card-thumbnail-small'),
     'image_alt' => $is_taxonomy_card ? '' : get_the_title($args['post_id']),
     'tags' => [],
     'title' => $is_taxonomy_card ? '' : get_the_title($args['post_id']),
@@ -153,7 +153,7 @@ if (!empty($args['data_attributes']) && is_array($args['data_attributes'])) {
     <?php if (!empty($args['image_url'])): ?>
         <div class="card__image-container">
             <img src="<?php echo esc_url($args['image_url']); ?>" 
-                 srcset="<?php echo esc_url($args['image_url']); ?> 1x, <?php echo esc_url(get_the_post_thumbnail_url($args['post_id'], 'card-thumbnail-large')); ?> 2x"
+                 srcset="<?php echo esc_url($args['image_url']); ?> 1x, <?php echo esc_url(get_the_post_thumbnail_url($args['post_id'], 'card-thumbnail')); ?> 2x"
                  alt="<?php echo esc_attr($args['image_alt']); ?>"
                 class="card__image" loading="lazy">
         </div>

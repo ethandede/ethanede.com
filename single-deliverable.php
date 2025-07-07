@@ -46,7 +46,23 @@ get_header(); ?>
                                 <div class="gallery-item" data-index="<?php echo $index; ?>"
                                     data-type="<?php echo esc_attr($item['type']); ?>">
                                     <?php if ($item['type'] === 'image'): ?>
-                                        <img src="<?php echo esc_url($item['url']); ?>" alt="<?php echo esc_attr($item['alt']); ?>"
+                                        <?php
+                                        // Get the attachment ID to generate proper image sizes
+                                        $attachment_id = $item['ID'] ?? 0;
+                                        if ($attachment_id) {
+                                            // Use existing WordPress sizes that are already generated
+                                            $thumbnail_url = wp_get_attachment_image_url($attachment_id, 'medium');
+                                            if (!$thumbnail_url) {
+                                                $thumbnail_url = wp_get_attachment_image_url($attachment_id, 'thumbnail');
+                                            }
+                                            if (!$thumbnail_url) {
+                                                $thumbnail_url = $item['url'];
+                                            }
+                                        } else {
+                                            $thumbnail_url = $item['url'];
+                                        }
+                                        ?>
+                                        <img src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($item['alt']); ?>"
                                             class="gallery-image">
                                     <?php elseif ($item['type'] === 'video'): ?>
                                         <?php if ($deliverable_featured): ?>
@@ -87,7 +103,23 @@ get_header(); ?>
                                     <?php foreach ($media as $item): ?>
                                         <div class="carousel-item" data-type="<?php echo esc_attr($item['type']); ?>">
                                             <?php if ($item['type'] === 'image'): ?>
-                                                <img src="<?php echo esc_url($item['url']); ?>"
+                                                <?php
+                                                // Get the attachment ID to generate proper image sizes for overlay
+                                                $attachment_id = $item['ID'] ?? 0;
+                                                if ($attachment_id) {
+                                                    // Use existing WordPress sizes that are already generated
+                                                    $large_url = wp_get_attachment_image_url($attachment_id, 'large');
+                                                    if (!$large_url) {
+                                                        $large_url = wp_get_attachment_image_url($attachment_id, 'medium');
+                                                    }
+                                                    if (!$large_url) {
+                                                        $large_url = $item['url'];
+                                                    }
+                                                } else {
+                                                    $large_url = $item['url'];
+                                                }
+                                                ?>
+                                                <img src="<?php echo esc_url($large_url); ?>"
                                                     alt="<?php echo esc_attr($item['alt']); ?>">
                                             <?php elseif ($item['type'] === 'video'): ?>
                                                 <video controls <?php echo $deliverable_featured ? 'poster="' . esc_url($deliverable_featured) . '"' : ''; ?>>
