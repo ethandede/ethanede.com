@@ -57,7 +57,7 @@ get_header();
 
         <!-- Associated Projects Section -->
         <section class="related-projects">
-          <h2>Related Projects</h2>
+          <h2>Related Work</h2>
           <div class="deliverables-grid">
             <?php
             // Get the current post's title
