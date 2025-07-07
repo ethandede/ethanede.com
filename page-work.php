@@ -17,7 +17,7 @@ $all_deliverables = get_posts([
 
 // Set custom page title for work archive
 add_filter('wp_title', function($title) {
-    return 'My Work - Projects & Deliverables | ' . get_bloginfo('name');
+    return 'My work - Projects & Deliverables | ' . get_bloginfo('name');
 });
 
 // Set custom meta description
@@ -38,7 +38,7 @@ get_header();
                     <i class="fa-duotone fa-briefcase"></i>Work
                 </span>
             </div>
-            <h1>My Work</h1>
+            <h1>My work</h1>
             <p class="supporting-text">Explore a portfolio of select projects and deliverables I've had the pleasure to be involved with - from strategy and design to development and digital solutions.</p>
         </div>
     </section>

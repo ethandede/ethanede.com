@@ -1019,7 +1019,7 @@ function create_work_page_on_activation() {
     if (!$work_page) {
         // Create the work page
         $page_data = array(
-            'post_title'    => 'My Work',
+            'post_title'    => 'My work',
             'post_content'  => '',
             'post_status'   => 'publish',
             'post_type'     => 'page',
