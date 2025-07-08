@@ -15,6 +15,28 @@ $all_deliverables = get_posts([
     'post_status' => 'publish'
 ]);
 
+// Get all available filter options
+$all_projects_for_filter = get_posts([
+    'post_type' => 'project',
+    'posts_per_page' => -1,
+    'post_status' => 'publish'
+]);
+
+$all_technologies = get_terms([
+    'taxonomy' => 'technology',
+    'hide_empty' => true
+]);
+
+$all_companies = get_terms([
+    'taxonomy' => 'company', 
+    'hide_empty' => true
+]);
+
+$all_deliverable_types = get_terms([
+    'taxonomy' => 'deliverable_type',
+    'hide_empty' => true
+]);
+
 // Set custom page title for work archive
 add_filter('wp_title', function($title) {
     return 'My work - Projects & Deliverables | ' . get_bloginfo('name');
@@ -47,7 +69,147 @@ get_header();
     <section class="work-grid">
         <div class="container">
             <div class="work-layout">
-                <!-- Filter sidebar removed for now. Restore from git history or previous code when needed. -->
+                
+                <!-- Filter Sidebar -->
+                <aside class="work-filters-sidebar">
+                    <div class="filter-header">
+                        <h3>Filters</h3>
+                        <button class="reset-filters" type="button">
+                            <i class="fas fa-undo"></i>
+                            Reset
+                        </button>
+                    </div>
+
+                    <!-- Active Filters Display -->
+                    <div class="active-filters-compact" style="display: none;">
+                        <div class="active-filters-list">
+                            <!-- Active filters will be populated here by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Search Filter -->
+                    <div class="filter-group">
+                        <label for="work-search">Search</label>
+                        <input type="text" id="work-search" class="search-input" placeholder="Search projects and deliverables...">
+                    </div>
+
+                    <!-- Tabbed Filters -->
+                    <div class="filter-tabs">
+                        
+                        <!-- Format Filter (Project vs Deliverable) -->
+                        <div class="filter-tab">
+                            <button class="tab-trigger" data-tab="format" type="button">
+                                <span>Format</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="tab-content" id="format-content">
+                                <div class="checkbox-group">
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="format" value="project">
+                                        <span class="checkmark"></span>
+                                        Project
+                                        <span class="filter-count"></span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="format" value="deliverable">
+                                        <span class="checkmark"></span>
+                                        Deliverable
+                                        <span class="filter-count"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Content Type Filter (Deliverable Types) -->
+                        <?php if (!empty($all_deliverable_types)): ?>
+                        <div class="filter-tab">
+                            <button class="tab-trigger" data-tab="content-type" type="button">
+                                <span>Content Type</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="tab-content" id="content-type-content">
+                                <div class="checkbox-group">
+                                    <?php foreach ($all_deliverable_types as $type): ?>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="content-type" value="<?php echo esc_attr($type->slug); ?>">
+                                        <span class="checkmark"></span>
+                                        <?php echo esc_html($type->name); ?>
+                                        <span class="filter-count"></span>
+                                    </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- Project Filter -->
+                        <?php if (!empty($all_projects_for_filter)): ?>
+                        <div class="filter-tab">
+                            <button class="tab-trigger" data-tab="project" type="button">
+                                <span>Project</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="tab-content" id="project-content">
+                                <div class="checkbox-group">
+                                    <?php foreach ($all_projects_for_filter as $project): ?>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="project" value="<?php echo esc_attr($project->ID); ?>">
+                                        <span class="checkmark"></span>
+                                        <?php echo esc_html($project->post_title); ?>
+                                        <span class="filter-count"></span>
+                                    </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- Technology Filter -->
+                        <?php if (!empty($all_technologies)): ?>
+                        <div class="filter-tab">
+                            <button class="tab-trigger" data-tab="technology" type="button">
+                                <span>Technology</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="tab-content" id="technology-content">
+                                <div class="checkbox-group">
+                                    <?php foreach ($all_technologies as $tech): ?>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="technology" value="<?php echo esc_attr($tech->slug); ?>">
+                                        <span class="checkmark"></span>
+                                        <?php echo esc_html($tech->name); ?>
+                                        <span class="filter-count"></span>
+                                    </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- Company Filter -->
+                        <?php if (!empty($all_companies)): ?>
+                        <div class="filter-tab">
+                            <button class="tab-trigger" data-tab="company" type="button">
+                                <span>Company</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="tab-content" id="company-content">
+                                <div class="checkbox-group">
+                                    <?php foreach ($all_companies as $company): ?>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" name="company" value="<?php echo esc_attr($company->slug); ?>">
+                                        <span class="checkmark"></span>
+                                        <?php echo esc_html($company->name); ?>
+                                        <span class="filter-count"></span>
+                                    </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                    </div>
+                </aside>
 
                 <!-- Work Grid -->
                 <main class="work-content">
@@ -320,4 +482,4 @@ get_header();
 
 </main>
 
-<?php get_footer(); ?> 
+<?php get_footer(); ?>

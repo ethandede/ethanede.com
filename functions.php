@@ -73,44 +73,49 @@ function ee_enqueue_assets() {
         null,
         false
     );
+}
+add_action('wp_enqueue_scripts', 'ee_enqueue_assets');
 
-    // Preload Google Fonts for faster loading
-    add_action('wp_head', 'ee_preload_google_fonts', 1);
+// =============================================================================
+// GOOGLE FONTS WITH FOUC PREVENTION
+// =============================================================================
+
+// Consolidated Google Fonts loading that works with your FOUC prevention
+function ee_enqueue_google_fonts() {
+    // Define font families - keep weights that match your SCSS
+    $font_families = [
+        'Roboto:wght@300,400,500,600,700',
+        'Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900' // Simplified to match your actual usage
+    ];
     
-    // Enqueue Google Fonts with optimized loading (match theme's actual fonts)
+    $font_url = 'https://fonts.googleapis.com/css2?family=' . 
+                implode('&family=', $font_families) . 
+                '&display=swap';
+    
+    // Enqueue the font stylesheet
     wp_enqueue_style(
-        'google-fonts',
-        'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Merriweather:ital,opsz,wght@0,8..144,300..900;1,8..144,300..900&display=optional',
+        'ee-google-fonts',
+        $font_url,
         [],
         null
     );
 }
-add_action('wp_enqueue_scripts', 'ee_enqueue_assets');
+add_action('wp_enqueue_scripts', 'ee_enqueue_google_fonts');
 
-// Preload Google Fonts for faster loading
-function ee_preload_google_fonts() {
-    // Always include the Google Fonts stylesheet links for proper loading
-    echo '<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">' . "\n";
+// Critical font preloading for FOUC prevention
+function ee_preload_critical_fonts_for_hero() {
+    // Always preconnect for faster loading
+    echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>' . "\n";
+    echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
     
-    // Preload critical fonts for better performance
+    // Preload ONLY the fonts used in hero section to prevent FOUC
     if (is_front_page() || is_home()) {
-        // Preload the most critical font files with multiple formats for Safari
-        echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2" crossorigin="anonymous">' . "\n";
-        echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/merriweather/v30/u-4n0qyriQwlOrhSvowK_l52xwNZWMf6hPvhPQ.woff2" crossorigin="anonymous">' . "\n";
-        
-        // Add preconnect for better performance
-        echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="anonymous">' . "\n";
-        echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">' . "\n";
+        // Hero typically uses Merriweather for h1 and Roboto for body
+        echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/Merriweather/v30/u-4n0qyriQwlOrhSvowK_l52xwNZWMf6hPvhPQ.woff2" crossorigin>' . "\n";
+        echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2" crossorigin>' . "\n";
     }
 }
-
-// Add Google Fonts link early for better Safari support
-function ee_add_google_fonts_early() {
-    echo '<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">' . "\n";
-}
-add_action('wp_head', 'ee_add_google_fonts_early', 1);
-
-// Add font loading optimization CSS
+add_action('wp_head', 'ee_preload_critical_fonts_for_hero', 1);
 function ee_font_loading_css() {
     echo '<style>
         /* Font loading optimization */

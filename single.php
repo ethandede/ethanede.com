@@ -57,11 +57,26 @@ get_header();
 
         <!-- Associated Projects Section -->
         <section class="related-projects">
-          <h2>Related Work</h2>
+          <h2>Related work</h2>
           <div class="deliverables-grid">
             <?php
             // Get the current post's title
             $current_title = get_the_title();
+
+            // Get the current post's project_category terms
+            $current_categories = get_the_terms(get_the_ID(), 'project_category');
+            $show_only_projects = false;
+            if ($current_categories && !is_wp_error($current_categories)) {
+              foreach ($current_categories as $cat) {
+                if (
+                  strtolower($cat->name) === 'website management' ||
+                  $cat->slug === 'website-management'
+                ) {
+                  $show_only_projects = true;
+                  break;
+                }
+              }
+            }
 
             // Query projects with the current post's title as a category
             $projects_query = new WP_Query([
@@ -76,45 +91,105 @@ get_header();
               ],
             ]);
 
+            $related_items = [];
+            $deliverable_ids = [];
+
             if ($projects_query->have_posts()) :
               while ($projects_query->have_posts()) : $projects_query->the_post();
-                // Get custom fields for the project
-                $featured_media = get_field('featured_media');
-                $role_description = get_field('role_description');
-                $project_title = get_field('project_title');
-                
-                // Prepare description with fallbacks
-                $description = '';
-                if ($role_description) {
-                    $description = wp_strip_all_tags($role_description);
-                } elseif (get_field('project_excerpt')) {
-                    $description = get_field('project_excerpt');
-                } elseif (get_the_excerpt()) {
-                    $description = get_the_excerpt();
-                } else {
-                    // Fallback to project description
-                    $project_description = get_field('project_description');
-                    if ($project_description) {
-                        $description = wp_strip_all_tags($project_description);
+                $project_id = get_the_ID();
+                // Add project to related items
+                $related_items[] = [
+                  'type' => 'project',
+                  'id' => $project_id
+                ];
+
+                // Only add deliverables if not Website Management
+                if (!$show_only_projects) {
+                  $project_deliverables = get_field('project_deliverables', $project_id);
+                  if ($project_deliverables && is_array($project_deliverables)) {
+                    foreach ($project_deliverables as $deliverable) {
+                      if (is_object($deliverable)) {
+                        $deliverable_id = $deliverable->ID;
+                      } else {
+                        $deliverable_id = $deliverable;
+                      }
+                      // Avoid duplicates
+                      if (!in_array($deliverable_id, $deliverable_ids)) {
+                        $related_items[] = [
+                          'type' => 'deliverable',
+                          'id' => $deliverable_id
+                        ];
+                        $deliverable_ids[] = $deliverable_id;
+                      }
                     }
+                  }
                 }
-                
-                // Truncate if needed (use mb_strlen for proper UTF-8 character counting)
-                $description = mb_strlen($description, 'UTF-8') > 180 ? mb_substr($description, 0, 180, 'UTF-8') . '...' : $description;
-                
-                // Use master card system for related projects
-                ee_render_project_card(get_the_ID(), 'single', [
-                  'image_url' => $featured_media,
-                  'image_alt' => $project_title,
-                  'title' => $project_title,
-                  'description' => $description,
-                  'tags' => [] // No tags for single page project cards
-                ]);
               endwhile;
               wp_reset_postdata();
-            else :
-              ?>
-              <p class="supporting-text">No associated projects found.</p>
+            endif;
+
+            if (!empty($related_items)) :
+              // Optionally shuffle for more mixing
+              // shuffle($related_items);
+              foreach ($related_items as $item) {
+                if ($item['type'] === 'project') {
+                  // Get custom fields for the project
+                  $featured_media = get_field('featured_media', $item['id']);
+                  $role_description = get_field('role_description', $item['id']);
+                  $project_title = get_field('project_title', $item['id']);
+                  // Prepare description with fallbacks
+                  $description = '';
+                  if ($role_description) {
+                      $description = wp_strip_all_tags($role_description);
+                  } elseif (get_field('project_excerpt', $item['id'])) {
+                      $description = get_field('project_excerpt', $item['id']);
+                  } elseif (get_the_excerpt($item['id'])) {
+                      $description = get_the_excerpt($item['id']);
+                  } else {
+                      $project_description = get_field('project_description', $item['id']);
+                      if ($project_description) {
+                          $description = wp_strip_all_tags($project_description);
+                      }
+                  }
+                  $description = mb_strlen($description, 'UTF-8') > 180 ? mb_substr($description, 0, 180, 'UTF-8') . '...' : $description;
+                  ee_render_project_card($item['id'], 'single', [
+                    'image_url' => $featured_media,
+                    'image_alt' => $project_title,
+                    'title' => $project_title,
+                    'description' => $description,
+                    'tags' => [] // No tags for single page project cards
+                  ]);
+                } elseif ($item['type'] === 'deliverable') {
+                  // Get deliverable image: use deliverable_featured_image first, then post thumbnail
+                  $featured_media = get_field('deliverable_featured_image', $item['id']);
+                  if (!$featured_media && has_post_thumbnail($item['id'])) {
+                    $featured_media = get_the_post_thumbnail_url($item['id'], 'card-thumbnail-small');
+                  }
+                  $deliverable_title = get_the_title($item['id']);
+                  $excerpt = get_field('deliverable_excerpt', $item['id']);
+                  $description = $excerpt ?: get_the_excerpt($item['id']);
+                  // Get deliverable type for tags
+                  $tags = [];
+                  $type_terms = get_the_terms($item['id'], 'deliverable_type');
+                  if ($type_terms && !is_wp_error($type_terms)) {
+                    $type_term = $type_terms[0];
+                    if (function_exists('get_singular_term_display_name')) {
+                      $tags[] = get_singular_term_display_name($type_term->name);
+                    } else {
+                      $tags[] = $type_term->name;
+                    }
+                  }
+                  ee_render_deliverable_card($item['id'], 'single', [
+                    'image_url' => $featured_media,
+                    'image_alt' => $deliverable_title,
+                    'title' => $deliverable_title,
+                    'description' => $description,
+                    'tags' => $tags
+                  ]);
+                }
+              }
+            else : ?>
+              <p class="supporting-text">No associated projects<?php echo $show_only_projects ? '' : ' or deliverables'; ?> found.</p>
             <?php endif; ?>
           </div>
         </section>
