@@ -247,8 +247,19 @@ get_header();
                                     // For projects, get featured media (now image-only)
                                     $featured_media = get_field('featured_media', $work_item->ID);
                                     if ($featured_media) {
+                                        // Get properly sized image for card
+                                        $attachment_id = attachment_url_to_postid($featured_media);
+                                        $image_url = '';
+                                        if ($attachment_id) {
+                                            $image_url = wp_get_attachment_image_url($attachment_id, 'card-thumbnail');
+                                        }
+                                        // Fallback to original if no thumbnail available
+                                        if (!$image_url) {
+                                            $image_url = $featured_media;
+                                        }
+                                        
                                         $first_image = [
-                                            'url' => $featured_media,
+                                            'url' => $image_url,
                                             'alt' => esc_attr($work_item->post_title)
                                         ];
                                     }
@@ -256,7 +267,7 @@ get_header();
                                     // If no featured_media, check for WordPress featured image
                                     if (!$first_image && has_post_thumbnail($work_item->ID)) {
                                         $first_image = [
-                                            'url' => get_the_post_thumbnail_url($work_item->ID, 'card-thumbnail-small'),
+                                            'url' => get_the_post_thumbnail_url($work_item->ID, 'card-thumbnail'),
                                             'alt' => get_post_meta(get_post_thumbnail_id($work_item->ID), '_wp_attachment_image_alt', true)
                                         ];
                                     }
@@ -295,8 +306,19 @@ get_header();
                                     // For deliverables, check for deliverable featured image first
                                     $deliverable_featured = get_field('deliverable_featured_image', $work_item->ID);
                                     if ($deliverable_featured) {
+                                        // Get properly sized image for card
+                                        $attachment_id = attachment_url_to_postid($deliverable_featured);
+                                        $image_url = '';
+                                        if ($attachment_id) {
+                                            $image_url = wp_get_attachment_image_url($attachment_id, 'card-thumbnail');
+                                        }
+                                        // Fallback to original if no thumbnail available
+                                        if (!$image_url) {
+                                            $image_url = $deliverable_featured;
+                                        }
+                                        
                                         $first_image = [
-                                            'url' => $deliverable_featured,
+                                            'url' => $image_url,
                                             'alt' => esc_attr($work_item->post_title)
                                         ];
                                     }
@@ -308,7 +330,7 @@ get_header();
                                             foreach ($media as $item) {
                                                 if ($item['type'] === 'image') {
                                                     $first_image = [
-                                                        'url' => $item['sizes']['medium'],
+                                                        'url' => $item['sizes']['content-medium'] ?? $item['sizes']['medium'] ?? $item['sizes']['card-thumbnail'] ?? $item['url'],
                                                         'alt' => $item['alt']
                                                     ];
                                                     break;
@@ -434,12 +456,86 @@ get_header();
                                 
                                 // Use unified master card system with data attributes
                                 $card_extra_classes = ['card--' . $card_type, 'card--work'];
+                                
+                                // Enhanced searchable content for cards
+                                $searchable_content = [];
+                                
+                                if ($is_project) {
+                                    // Project-specific searchable content
+                                    $project_description = get_field('project_description', $work_item->ID);
+                                    if ($project_description) {
+                                        $searchable_content[] = wp_strip_all_tags($project_description);
+                                    }
+                                    
+                                    $project_excerpt = get_field('project_excerpt', $work_item->ID);
+                                    if ($project_excerpt) {
+                                        $searchable_content[] = $project_excerpt;
+                                    }
+                                    
+                                    $project_role = get_field('project_role', $work_item->ID);
+                                    if ($project_role) {
+                                        $searchable_content[] = $project_role;
+                                    }
+                                    
+                                    // Key responsibilities
+                                    $key_responsibilities = get_field('key_responsibilities', $work_item->ID);
+                                    if ($key_responsibilities && is_array($key_responsibilities)) {
+                                        foreach ($key_responsibilities as $responsibility) {
+                                            if (!empty($responsibility['responsibility'])) {
+                                                $searchable_content[] = $responsibility['responsibility'];
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    // Deliverable-specific searchable content
+                                    $deliverable_description = get_field('deliverable_description', $work_item->ID);
+                                    if ($deliverable_description) {
+                                        $searchable_content[] = wp_strip_all_tags($deliverable_description);
+                                    }
+                                    
+                                    $deliverable_excerpt = get_field('deliverable_excerpt', $work_item->ID);
+                                    if ($deliverable_excerpt) {
+                                        $searchable_content[] = $deliverable_excerpt;
+                                    }
+                                    
+                                    $pdf_title = get_field('pdf_title', $work_item->ID);
+                                    if ($pdf_title) {
+                                        $searchable_content[] = $pdf_title;
+                                    }
+                                }
+                                
+                                // Add taxonomy terms to searchable content
+                                if (!empty($tech_slugs)) {
+                                    $tech_names = [];
+                                    foreach ($technologies as $tech) {
+                                        $tech_names[] = $tech->name;
+                                    }
+                                    $searchable_content[] = implode(' ', $tech_names);
+                                }
+                                
+                                if (!empty($company_slugs)) {
+                                    $company_names = [];
+                                    foreach ($companies as $company) {
+                                        $company_names[] = $company->name;
+                                    }
+                                    $searchable_content[] = implode(' ', $company_names);
+                                }
+                                
+                                if (!empty($deliverable_type_slugs)) {
+                                    $type_names = [];
+                                    foreach ($type_terms as $type) {
+                                        $type_names[] = $type->name;
+                                    }
+                                    $searchable_content[] = implode(' ', $type_names);
+                                }
+                                
                                 $card_data_attrs = [
                                     'data-content-type' => implode(',', $deliverable_type_slugs), // Now stores deliverable types
                                     'data-format' => $is_project ? 'project' : 'deliverable', // New attribute for format
                                     'data-projects' => implode(',', $project_ids),
                                     'data-technologies' => implode(',', $tech_slugs),
-                                    'data-companies' => implode(',', $company_slugs)
+                                    'data-companies' => implode(',', $company_slugs),
+                                    'data-searchable-content' => implode(' ', $searchable_content) // New searchable content
                                 ];
                                 
                                 if ($is_project) {

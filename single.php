@@ -152,8 +152,23 @@ get_header();
                       }
                   }
                   $description = mb_strlen($description, 'UTF-8') > 180 ? mb_substr($description, 0, 180, 'UTF-8') . '...' : $description;
+                  
+                  // Get properly sized image for card
+                  $card_image_url = '';
+                  if ($featured_media) {
+                      // Try to get the card-thumbnail size from the featured media
+                      $attachment_id = attachment_url_to_postid($featured_media);
+                      if ($attachment_id) {
+                          $card_image_url = wp_get_attachment_image_url($attachment_id, 'card-thumbnail');
+                      }
+                      // Fallback to original if no thumbnail available
+                      if (!$card_image_url) {
+                          $card_image_url = $featured_media;
+                      }
+                  }
+                  
                   ee_render_project_card($item['id'], 'single', [
-                    'image_url' => $featured_media,
+                    'image_url' => $card_image_url,
                     'image_alt' => $project_title,
                     'title' => $project_title,
                     'description' => $description,
@@ -163,8 +178,23 @@ get_header();
                   // Get deliverable image: use deliverable_featured_image first, then post thumbnail
                   $featured_media = get_field('deliverable_featured_image', $item['id']);
                   if (!$featured_media && has_post_thumbnail($item['id'])) {
-                    $featured_media = get_the_post_thumbnail_url($item['id'], 'card-thumbnail-small');
+                    $featured_media = get_the_post_thumbnail_url($item['id'], 'card-thumbnail');
                   }
+                  
+                  // Get properly sized image for card
+                  $card_image_url = '';
+                  if ($featured_media) {
+                      // Try to get the card-thumbnail size from the featured media
+                      $attachment_id = attachment_url_to_postid($featured_media);
+                      if ($attachment_id) {
+                          $card_image_url = wp_get_attachment_image_url($attachment_id, 'card-thumbnail');
+                      }
+                      // Fallback to original if no thumbnail available
+                      if (!$card_image_url) {
+                          $card_image_url = $featured_media;
+                      }
+                  }
+                  
                   $deliverable_title = get_the_title($item['id']);
                   $excerpt = get_field('deliverable_excerpt', $item['id']);
                   $description = $excerpt ?: get_the_excerpt($item['id']);
@@ -180,7 +210,7 @@ get_header();
                     }
                   }
                   ee_render_deliverable_card($item['id'], 'single', [
-                    'image_url' => $featured_media,
+                    'image_url' => $card_image_url,
                     'image_alt' => $deliverable_title,
                     'title' => $deliverable_title,
                     'description' => $description,

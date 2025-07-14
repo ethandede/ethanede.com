@@ -47,20 +47,23 @@ get_header(); ?>
                                     data-type="<?php echo esc_attr($item['type']); ?>">
                                     <?php if ($item['type'] === 'image'): ?>
                                         <?php
-                                        // Get the attachment ID to generate proper image sizes
-                                        $attachment_id = $item['ID'] ?? 0;
-                                        if ($attachment_id) {
-                                            // Use existing WordPress sizes that are already generated
-                                            $thumbnail_url = wp_get_attachment_image_url($attachment_id, 'medium');
-                                            if (!$thumbnail_url) {
-                                                $thumbnail_url = wp_get_attachment_image_url($attachment_id, 'thumbnail');
-                                            }
-                                            if (!$thumbnail_url) {
-                                                $thumbnail_url = $item['url'];
-                                            }
-                                        } else {
-                                            $thumbnail_url = $item['url'];
-                                        }
+                                                                // Get the attachment ID to generate proper image sizes
+                        $attachment_id = $item['ID'] ?? 0;
+                        if ($attachment_id) {
+                            // Use appropriate sizes for gallery thumbnails
+                            $thumbnail_url = wp_get_attachment_image_url($attachment_id, 'content-medium');
+                            if (!$thumbnail_url) {
+                                $thumbnail_url = wp_get_attachment_image_url($attachment_id, 'medium');
+                            }
+                            if (!$thumbnail_url) {
+                                $thumbnail_url = wp_get_attachment_image_url($attachment_id, 'card-thumbnail');
+                            }
+                            if (!$thumbnail_url) {
+                                $thumbnail_url = $item['url'];
+                            }
+                        } else {
+                            $thumbnail_url = $item['url'];
+                        }
                                         ?>
                                         <img src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($item['alt']); ?>"
                                             class="gallery-image">
@@ -104,20 +107,23 @@ get_header(); ?>
                                         <div class="carousel-item" data-type="<?php echo esc_attr($item['type']); ?>">
                                             <?php if ($item['type'] === 'image'): ?>
                                                 <?php
-                                                // Get the attachment ID to generate proper image sizes for overlay
-                                                $attachment_id = $item['ID'] ?? 0;
-                                                if ($attachment_id) {
-                                                    // Use existing WordPress sizes that are already generated
-                                                    $large_url = wp_get_attachment_image_url($attachment_id, 'large');
-                                                    if (!$large_url) {
-                                                        $large_url = wp_get_attachment_image_url($attachment_id, 'medium');
-                                                    }
-                                                    if (!$large_url) {
-                                                        $large_url = $item['url'];
-                                                    }
-                                                } else {
-                                                    $large_url = $item['url'];
-                                                }
+                                                                                // Get the attachment ID to generate proper image sizes for overlay
+                                $attachment_id = $item['ID'] ?? 0;
+                                if ($attachment_id) {
+                                    // Use optimized sizes for overlay display
+                                    $large_url = wp_get_attachment_image_url($attachment_id, 'content-large');
+                                    if (!$large_url) {
+                                        $large_url = wp_get_attachment_image_url($attachment_id, 'large');
+                                    }
+                                    if (!$large_url) {
+                                        $large_url = wp_get_attachment_image_url($attachment_id, 'full');
+                                    }
+                                    if (!$large_url) {
+                                        $large_url = $item['url'];
+                                    }
+                                } else {
+                                    $large_url = $item['url'];
+                                }
                                                 ?>
                                                 <img src="<?php echo esc_url($large_url); ?>"
                                                     alt="<?php echo esc_attr($item['alt']); ?>">

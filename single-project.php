@@ -84,19 +84,27 @@ get_header();
                                                                 // Get deliverable media for master card system
                         $featured_media = '';
                         if (has_post_thumbnail($deliverable->ID)) {
-                            $featured_media = get_the_post_thumbnail_url($deliverable->ID, 'card-thumbnail-small');
+                            $featured_media = get_the_post_thumbnail_url($deliverable->ID, 'card-thumbnail');
                         } else {
                             // Check for deliverable featured image field
                             $deliverable_featured = get_field('deliverable_featured_image', $deliverable->ID);
                             if ($deliverable_featured) {
-                                $featured_media = $deliverable_featured;
+                                // Get properly sized image for card
+                                $attachment_id = attachment_url_to_postid($deliverable_featured);
+                                if ($attachment_id) {
+                                    $featured_media = wp_get_attachment_image_url($attachment_id, 'card-thumbnail');
+                                }
+                                // Fallback to original if no thumbnail available
+                                if (!$featured_media) {
+                                    $featured_media = $deliverable_featured;
+                                }
                             } else {
                                 // Fallback to first image in media gallery
                                 $media = get_field('deliverable_media', $deliverable->ID);
                                 if ($media && !empty($media)) {
                                     $first_media = $media[0];
                                     if ($first_media['type'] === 'image') {
-                                        $featured_media = $first_media['sizes']['medium'] ?? $first_media['url'];
+                                        $featured_media = $first_media['sizes']['content-medium'] ?? $first_media['sizes']['medium'] ?? $first_media['sizes']['card-thumbnail'] ?? $first_media['url'];
                                     }
                                 }
                             }

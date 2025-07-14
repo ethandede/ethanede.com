@@ -436,11 +436,78 @@ function ethanede_setup() {
     // Enable support for Post Thumbnails on posts and pages.
     add_theme_support('post-thumbnails');
     
-    // Register custom image sizes for better performance
-    add_image_size('card-thumbnail', 400, 300, true); // 4:3 aspect ratio
-    add_image_size('card-thumbnail-large', 600, 450, true); // For retina displays
-    add_image_size('deliverable-hero', 1200, 600, true);
-    add_image_size('project-hero', 1200, 600, true);
+    // Register only the image sizes we actually use
+    add_image_size('card-thumbnail-small', 400, 224, true); // 16:9 aspect ratio for cards (400px max width)
+    add_image_size('card-thumbnail', 800, 448, true); // 16:9 aspect ratio for 2x/retina displays
+    add_image_size('content-medium', 600, 400, true); // For WYSIWYG content and featured images
+    add_image_size('content-large', 1200, 800, false); // For gallery overlays and large displays (soft crop)
+    // 'thumbnail' is a WordPress default (150x150) and will be kept
+    // 'full' is always available for maximum quality when needed
+
+    // Remove only the default image sizes we don't need
+    add_filter('intermediate_image_sizes_advanced', function($sizes) {
+        unset($sizes['medium_large']); // 768x0 - not needed
+        unset($sizes['1536x1536']); // Square format - not needed
+        unset($sizes['2048x2048']); // Square format - not needed
+        // Keep 'medium' and 'large' as they're standard and useful
+        return $sizes;
+    });
+
+    // Disable big image scaling (prevents creation of -scaled images)
+    add_filter('big_image_size_threshold', '__return_false');
+
+    // Improve image quality for WordPress
+    add_filter('jpeg_quality', function($quality) {
+        return 95; // Increase from default 82
+    });
+    
+    add_filter('wp_editor_set_quality', function($quality) {
+        return 95;
+    });
+    
+    // Force better image processing settings
+    add_filter('wp_image_editors', function($editors) {
+        // Try to use ImageMagick if available, otherwise use GD
+        if (extension_loaded('imagick')) {
+            return array('WP_Image_Editor_Imagick', 'WP_Image_Editor_GD');
+        }
+        return $editors;
+    });
+    
+
+    
+
+    
+
+    
+    // Ensure only our registered sizes are created
+    add_filter('intermediate_image_sizes_advanced', function($sizes, $metadata) {
+        // Only allow our registered sizes and WordPress defaults
+        $allowed_sizes = array(
+            'thumbnail',           // 150x150 (WordPress default)
+            'card-thumbnail-small', // 400x224 (our custom)
+            'card-thumbnail',      // 800x448 (our custom)
+            'content-medium',      // 600x400 (our custom)
+            'content-large'        // 1200x800 (our custom)
+        );
+        
+        // Filter out any unwanted sizes
+        return array_intersect_key($sizes, array_flip($allowed_sizes));
+    }, 10, 2);
+    
+    // Improve GD Library image quality
+    add_filter('wp_image_editors', function($editors) {
+        // Ensure GD is configured for better quality
+        if (extension_loaded('gd')) {
+            // Set GD to use better interpolation
+            if (function_exists('imageantialias')) {
+                // Enable antialiasing for better quality
+            }
+        }
+        return $editors;
+    });
+    
+
 
     // Register navigation menus
     register_nav_menus(array(

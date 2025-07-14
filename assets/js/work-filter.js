@@ -56,6 +56,12 @@ document.addEventListener('DOMContentLoaded', function() {
             searchTimeout = setTimeout(() => {
                 filters.search = this.value.toLowerCase().trim();
                 applyFilters();
+                
+                // Debug: Log search term and results count
+                if (filters.search) {
+                    const visibleCards = document.querySelectorAll('.card--work[style*="display: block"]');
+                    console.log(`Search for "${filters.search}" found ${visibleCards.length} results`);
+                }
             }, 300);
         });
     }
@@ -214,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function matchesFiltersWithState(cardData, filterState) {
         // Search filter
         if (filterState.search) {
-            const searchText = cardData.title + ' ' + cardData.excerpt;
+            const searchText = cardData.title + ' ' + cardData.excerpt + ' ' + cardData.searchableContent;
             if (!searchText.includes(filterState.search)) {
                 return false;
             }
@@ -334,6 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return {
             title: card.querySelector('.card__title')?.textContent?.toLowerCase() || '',
             excerpt: card.querySelector('.card__description')?.textContent?.toLowerCase() || '',
+            searchableContent: card.dataset.searchableContent?.toLowerCase() || '',
             format: card.dataset.format || '',
             'content-type': card.dataset.contentType || '',
             project: card.dataset.projects || '',
@@ -346,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function matchesFilters(cardData) {
         // Search filter
         if (filters.search) {
-            const searchText = cardData.title + ' ' + cardData.excerpt;
+            const searchText = cardData.title + ' ' + cardData.excerpt + ' ' + cardData.searchableContent;
             if (!searchText.includes(filters.search)) {
                 return false;
             }
