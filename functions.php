@@ -319,7 +319,7 @@ function ee_add_homepage_menu_items($items, $args) {
         }
         
         // Add Work link (unified projects and deliverables)
-        $items .= '<li class="menu-item"><a href="' . home_url('/work/') . '">Work</a></li>';
+        $items .= '<li class="menu-item"><a href="' . home_url('/work/') . '">My work</a></li>';
     }
     
     return $items;

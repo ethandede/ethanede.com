@@ -66,6 +66,9 @@ get_header();
             // Get the current post's project_category terms
             $current_categories = get_the_terms(get_the_ID(), 'project_category');
             $show_only_projects = false;
+            $video_animation_query = false;
+            $query_terms = $current_title;
+            
             if ($current_categories && !is_wp_error($current_categories)) {
               foreach ($current_categories as $cat) {
                 if (
@@ -78,18 +81,44 @@ get_header();
               }
             }
 
-            // Query projects with the current post's title as a category
-            $projects_query = new WP_Query([
-              'post_type' => 'project',
-              'posts_per_page' => -1,
-              'tax_query' => [
-                [
-                  'taxonomy' => 'project_category',
-                  'field' => 'name',
-                  'terms' => $current_title,
+            // Special handling for Video & Animation posts
+            if (
+              strtolower($current_title) === 'video & animation' ||
+              strtolower($current_title) === 'video and animation' ||
+              strpos(strtolower($current_title), 'video') !== false && strpos(strtolower($current_title), 'animation') !== false
+            ) {
+              $video_animation_query = true;
+              // Query for both video and animation related terms
+              $query_terms = ['Animations', 'Video Production', 'Animation', 'Video'];
+            }
+
+            // Query projects with appropriate terms
+            if ($video_animation_query) {
+              $projects_query = new WP_Query([
+                'post_type' => 'project',
+                'posts_per_page' => -1,
+                'tax_query' => [
+                  [
+                    'taxonomy' => 'project_category',
+                    'field' => 'name',
+                    'terms' => $query_terms,
+                    'operator' => 'IN',
+                  ],
                 ],
-              ],
-            ]);
+              ]);
+            } else {
+              $projects_query = new WP_Query([
+                'post_type' => 'project',
+                'posts_per_page' => -1,
+                'tax_query' => [
+                  [
+                    'taxonomy' => 'project_category',
+                    'field' => 'name',
+                    'terms' => $current_title,
+                  ],
+                ],
+              ]);
+            }
 
             $related_items = [];
             $deliverable_ids = [];
@@ -127,6 +156,37 @@ get_header();
               endwhile;
               wp_reset_postdata();
             endif;
+
+            // For Video & Animation posts, also query deliverables directly
+            if ($video_animation_query && !$show_only_projects) {
+              $deliverables_query = new WP_Query([
+                'post_type' => 'deliverable',
+                'posts_per_page' => -1,
+                'tax_query' => [
+                  [
+                    'taxonomy' => 'deliverable_type',
+                    'field' => 'name',
+                    'terms' => ['Animations', 'Video Production', 'Animation', 'Video'],
+                    'operator' => 'IN',
+                  ],
+                ],
+              ]);
+
+              if ($deliverables_query->have_posts()) :
+                while ($deliverables_query->have_posts()) : $deliverables_query->the_post();
+                  $deliverable_id = get_the_ID();
+                  // Avoid duplicates
+                  if (!in_array($deliverable_id, $deliverable_ids)) {
+                    $related_items[] = [
+                      'type' => 'deliverable',
+                      'id' => $deliverable_id
+                    ];
+                    $deliverable_ids[] = $deliverable_id;
+                  }
+                endwhile;
+                wp_reset_postdata();
+              endif;
+            }
 
             if (!empty($related_items)) :
               // Optionally shuffle for more mixing
