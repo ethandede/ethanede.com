@@ -27,7 +27,7 @@ get_header();
         <span class="rotating-word-break"><br></span>
         <span class="rotating-word"></span>
       </h1>
-                      <p class="supporting-text">I'm a digital strategist with over 20 years of experience blending tools, creativity, and marketing to build web experiences that deliver results.</p>
+                      <p class="supporting-text">I'm a creative technologist with over 20 years of experience blending tech, creativity, and marketing savvy to build web experiences that deliver results.</p>
       <a href="#contact" class="home-header__button cta-button text-semibold">Let's work together <i class="fa fa-arrow-right"></i></a>
     </div>
   </section>
