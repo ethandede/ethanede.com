@@ -96,7 +96,7 @@ get_header();
   <section class="portfolio" id="skills">
     <div class="container">
       <h2>What I do</h2>
-      <p class="supporting-text">My approach is rooted in collaboration, communication, and a commitment to shared success. I thrive in team environments, bringing clarity, creativity, and technical expertise to every project. Below are examples of how I've worked with teams to solve real-world challenges and deliver results.</p>
+      <p class="supporting-text">My approach is rooted in collaboration, communication, and a commitment to shared success. I thrive in team environments, bringing clarity, creativity, and technical expertise to every project. Below are areas of expertise and skills I use to solve real-world challenges and deliver results.</p>
       <div class="portfolio-grid">
         <?php
         // Get all project categories ordered by ACF field_display_order field
