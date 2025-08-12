@@ -4,6 +4,10 @@
  *
  * @package ethanede
  */
+
+// Include the deliverable query helper
+require_once get_template_directory() . '/includes/class-deliverable-query-helper.php';
+
 get_header();
 ?>
 
@@ -62,131 +66,21 @@ get_header();
             <?php
             // Get the current post's title
             $current_title = get_the_title();
-
-            // Get the current post's project_category terms
-            $current_categories = get_the_terms(get_the_ID(), 'project_category');
-            $show_only_projects = false;
-            $video_animation_query = false;
-            $query_terms = $current_title;
+            $current_post_id = get_the_ID();
             
-            if ($current_categories && !is_wp_error($current_categories)) {
-              foreach ($current_categories as $cat) {
-                if (
-                  strtolower($cat->name) === 'website management' ||
-                  $cat->slug === 'website-management'
-                ) {
-                  $show_only_projects = true;
-                  break;
-                }
-              }
-            }
-
-            // Special handling for Video & Animation posts
-            if (
-              strtolower($current_title) === 'video & animation' ||
-              strtolower($current_title) === 'video and animation' ||
-              strpos(strtolower($current_title), 'video') !== false && strpos(strtolower($current_title), 'animation') !== false
-            ) {
-              $video_animation_query = true;
-              // Query for both video and animation related terms
-              $query_terms = ['Animations', 'Video Production', 'Animation', 'Video'];
-            }
-
-            // Query projects with appropriate terms
-            if ($video_animation_query) {
-              $projects_query = new WP_Query([
-                'post_type' => 'project',
-                'posts_per_page' => -1,
-                'tax_query' => [
-                  [
-                    'taxonomy' => 'project_category',
-                    'field' => 'name',
-                    'terms' => $query_terms,
-                    'operator' => 'IN',
-                  ],
-                ],
-              ]);
-            } else {
-              $projects_query = new WP_Query([
-                'post_type' => 'project',
-                'posts_per_page' => -1,
-                'tax_query' => [
-                  [
-                    'taxonomy' => 'project_category',
-                    'field' => 'name',
-                    'terms' => $current_title,
-                  ],
-                ],
-              ]);
-            }
-
-            $related_items = [];
-            $deliverable_ids = [];
-
-            if ($projects_query->have_posts()) :
-              while ($projects_query->have_posts()) : $projects_query->the_post();
-                $project_id = get_the_ID();
-                // Add project to related items
-                $related_items[] = [
-                  'type' => 'project',
-                  'id' => $project_id
-                ];
-
-                // Only add deliverables if not Website Management
-                if (!$show_only_projects) {
-                  $project_deliverables = get_field('project_deliverables', $project_id);
-                  if ($project_deliverables && is_array($project_deliverables)) {
-                    foreach ($project_deliverables as $deliverable) {
-                      if (is_object($deliverable)) {
-                        $deliverable_id = $deliverable->ID;
-                      } else {
-                        $deliverable_id = $deliverable;
-                      }
-                      // Avoid duplicates
-                      if (!in_array($deliverable_id, $deliverable_ids)) {
-                        $related_items[] = [
-                          'type' => 'deliverable',
-                          'id' => $deliverable_id
-                        ];
-                        $deliverable_ids[] = $deliverable_id;
-                      }
-                    }
-                  }
-                }
-              endwhile;
-              wp_reset_postdata();
-            endif;
-
-            // For Video & Animation posts, also query deliverables directly
-            if ($video_animation_query && !$show_only_projects) {
-              $deliverables_query = new WP_Query([
-                'post_type' => 'deliverable',
-                'posts_per_page' => -1,
-                'tax_query' => [
-                  [
-                    'taxonomy' => 'deliverable_type',
-                    'field' => 'name',
-                    'terms' => ['Animations', 'Video Production', 'Animation', 'Video'],
-                    'operator' => 'IN',
-                  ],
-                ],
-              ]);
-
-              if ($deliverables_query->have_posts()) :
-                while ($deliverables_query->have_posts()) : $deliverables_query->the_post();
-                  $deliverable_id = get_the_ID();
-                  // Avoid duplicates
-                  if (!in_array($deliverable_id, $deliverable_ids)) {
-                    $related_items[] = [
-                      'type' => 'deliverable',
-                      'id' => $deliverable_id
-                    ];
-                    $deliverable_ids[] = $deliverable_id;
-                  }
-                endwhile;
-                wp_reset_postdata();
-              endif;
-            }
+            // Check if we should show only projects (e.g., Website Management)
+            $show_only_projects = Deliverable_Query_Helper::should_show_only_projects($current_post_id);
+            
+            // Get related items using the helper class
+            $related_items = Deliverable_Query_Helper::get_related_items_for_post(
+              $current_title,
+              [
+                'include_projects' => true,
+                'include_deliverables' => !$show_only_projects,
+                'match_deliverable_types' => true,
+                'fuzzy_match' => true
+              ]
+            );
 
             if (!empty($related_items)) :
               // Optionally shuffle for more mixing
