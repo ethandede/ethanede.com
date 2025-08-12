@@ -32,7 +32,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                 <?php
                 // Get related project for deliverables
                 $related_project = get_field('related_project');
-                if ($related_project && is_array($related_project) && !empty($related_project)) :
+                if ($related_project && is_array($related_project) && !empty($related_project) && !empty($related_project[0])) :
                     $project_id = $related_project[0];
                     $project = get_post($project_id);
                     if ($project && !is_wp_error($project)) :
@@ -76,7 +76,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                         } else {
                             // Fallback: Get company from related project
                             $related_project = get_field('related_project');
-                            if ($related_project && is_array($related_project) && !empty($related_project)) {
+                            if ($related_project && is_array($related_project) && !empty($related_project) && !empty($related_project[0])) {
                                 $project_id = $related_project[0];
                                 $project_companies = get_the_terms($project_id, 'company');
                                 if ($project_companies && !is_wp_error($project_companies)) {
@@ -312,7 +312,7 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
 
             // Get deliverable categories from related project
             $related_project = get_field('related_project');
-            if ($related_project && is_array($related_project) && !empty($related_project)) {
+            if ($related_project && is_array($related_project) && !empty($related_project) && !empty($related_project[0])) {
                 $project_id = $related_project[0];
                 $categories = get_the_terms($project_id, 'project_category');
                 if ($categories && !is_wp_error($categories)) : 

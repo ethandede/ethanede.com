@@ -37,18 +37,37 @@ class Deliverable_Query_Helper {
                     'id' => $project_id
                 ];
                 
-                // Get deliverables attached to this project
-                if ($options['include_deliverables']) {
+                // Get deliverables attached to this project that match the target deliverable types
+                if ($options['include_deliverables'] && $options['match_deliverable_types']) {
                     $project_deliverables = get_field('project_deliverables', $project_id);
                     if ($project_deliverables && is_array($project_deliverables)) {
+                        // Get the target deliverable types we're looking for
+                        $target_deliverable_types = self::find_matching_deliverable_types($post_title, $options['fuzzy_match']);
+                        
                         foreach ($project_deliverables as $deliverable) {
                             $deliverable_id = is_object($deliverable) ? $deliverable->ID : $deliverable;
                             if (!in_array($deliverable_id, $deliverable_ids)) {
-                                $related_items[] = [
-                                    'type' => 'deliverable',
-                                    'id' => $deliverable_id
-                                ];
-                                $deliverable_ids[] = $deliverable_id;
+                                // Check if this deliverable has matching deliverable_type
+                                $deliverable_types = wp_get_post_terms($deliverable_id, 'deliverable_type', ['fields' => 'slugs']);
+                                $has_matching_type = false;
+                                
+                                if (!empty($deliverable_types) && !is_wp_error($deliverable_types)) {
+                                    foreach ($deliverable_types as $type_slug) {
+                                        if (in_array($type_slug, $target_deliverable_types)) {
+                                            $has_matching_type = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                
+                                // Only add if it has a matching deliverable type
+                                if ($has_matching_type) {
+                                    $related_items[] = [
+                                        'type' => 'deliverable',
+                                        'id' => $deliverable_id
+                                    ];
+                                    $deliverable_ids[] = $deliverable_id;
+                                }
                             }
                         }
                     }
@@ -99,6 +118,7 @@ class Deliverable_Query_Helper {
         ];
         
         $query = new WP_Query($args);
+        
         return $query->posts;
     }
     
@@ -172,16 +192,24 @@ class Deliverable_Query_Helper {
                 // Check if any significant words from the title appear in the term name
                 $word_match = false;
                 foreach ($title_words as $word) {
-                    if (strlen($word) > 3 && stripos($term_name_lower, $word) !== false) {
+                    if (strlen($word) > 4 && stripos($term_name_lower, $word) !== false) {
+                        // Avoid false matches: "action" should not match "animation"
+                        if ($word === 'action' && stripos($term_name_lower, 'animation') !== false) {
+                            continue;
+                        }
                         $word_match = true;
                         break;
                     }
                 }
                 
-                // Check if any significant words from the term appear in the title
+                // Check if any significant words from the term appear in the title  
                 if (!$word_match) {
                     foreach ($term_words as $word) {
-                        if (strlen($word) > 3 && stripos($title_lower, $word) !== false) {
+                        if (strlen($word) > 4 && stripos($title_lower, $word) !== false) {
+                            // Avoid false matches: "action" should not match "animation"
+                            if ($word === 'action' && stripos($title_lower, 'animation') !== false) {
+                                continue;
+                            }
                             $word_match = true;
                             break;
                         }
@@ -205,6 +233,8 @@ class Deliverable_Query_Helper {
      * @return array Array of term variations
      */
     private static function generate_term_variations($title, $fuzzy_match = true) {
+        // Decode HTML entities first to handle &amp; properly
+        $title = html_entity_decode($title, ENT_QUOTES, 'UTF-8');
         $variations = [$title];
         
         if ($fuzzy_match) {
@@ -218,6 +248,12 @@ class Deliverable_Query_Helper {
             if (stripos($title, ' and ') !== false) {
                 $variations[] = str_ireplace(' and ', ' & ', $title);
                 $variations[] = str_ireplace(' and ', '&', $title);
+            }
+            
+            // Also add the HTML encoded version for database matching
+            $variations[] = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+            if (strpos($title, '&') !== false) {
+                $variations[] = str_replace('&', '&amp;', $title);
             }
             
             // Extract significant words for broader matching

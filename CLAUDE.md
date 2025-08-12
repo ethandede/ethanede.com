@@ -71,6 +71,27 @@ npm run watch
 - Asset enqueuing: `functions.php:27-77`
 - ACF customizations: `functions.php:639-1372`
 
+## Development Environment
+
+### Local by Flywheel
+This site runs on Local by Flywheel. For complete setup instructions, WP-CLI access, and debugging configuration, see [LOCAL-FLYWHEEL-SETUP.md](./LOCAL-FLYWHEEL-SETUP.md).
+
+Key details:
+- **Site Path**: `/Users/edede/Local Sites/ethanede/app/public/`
+- **WordPress Debug Log**: `/wp-content/debug.log`
+- **Database**: local/root/root (check Local app for port)
+- **WP-CLI**: Available through Local's shell environment
+
+### Quick WP-CLI Access
+```bash
+# In VS Code terminal, source Local's environment:
+source ~/Library/Application\ Support/Local/ssh-entry/[site-id].sh
+
+# Then run WP-CLI commands:
+wp core version
+wp term list project_category
+```
+
 ## Testing Approach
 
 The theme doesn't have automated tests. Manual testing should include:
