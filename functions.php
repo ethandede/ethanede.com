@@ -80,104 +80,83 @@ add_action('wp_enqueue_scripts', 'ee_enqueue_assets');
 // GOOGLE FONTS WITH FOUC PREVENTION
 // =============================================================================
 
-// Consolidated Google Fonts loading that works with your FOUC prevention
+// Google Fonts loading following best practices
 function ee_enqueue_google_fonts() {
-    // Define font families - keep weights that match your SCSS
+    // Remove Google Fonts if user prefers reduced motion (accessibility)
+    if (isset($_SERVER['HTTP_SEC_CH_PREFERS_REDUCED_MOTION']) && $_SERVER['HTTP_SEC_CH_PREFERS_REDUCED_MOTION'] === '"reduce"') {
+        return;
+    }
+    
+    // Define font families with only necessary weights
     $font_families = [
-        'Roboto:wght@300,400,500,600,700',
-        'Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900' // Simplified to match your actual usage
+        'Roboto:wght@400;500;700',  // Only weights actually used
+        'Merriweather:wght@400;700'  // Simplified for better performance
     ];
     
+    // Use display=swap for better performance
     $font_url = 'https://fonts.googleapis.com/css2?family=' . 
                 implode('&family=', $font_families) . 
                 '&display=swap';
     
-    // Enqueue the font stylesheet
+    // Enqueue with media='print' and onload swap for non-blocking load
     wp_enqueue_style(
         'ee-google-fonts',
         $font_url,
         [],
-        null
+        null,
+        'print' // Non-blocking
     );
+    
+    // Add onload handler to apply fonts after load
+    add_filter('style_loader_tag', 'ee_make_google_fonts_async', 10, 4);
 }
 add_action('wp_enqueue_scripts', 'ee_enqueue_google_fonts');
 
-// Critical font preloading for FOUC prevention
-function ee_preload_critical_fonts_for_hero() {
-    // Always preconnect for faster loading
-    echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>' . "\n";
-    echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-    
-    // Preload ONLY the fonts used in hero section to prevent FOUC
-    if (is_front_page() || is_home()) {
-        // Hero typically uses Merriweather for h1 and Roboto for body
-        echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/Merriweather/v30/u-4n0qyriQwlOrhSvowK_l52xwNZWMf6hPvhPQ.woff2" crossorigin>' . "\n";
-        echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2" crossorigin>' . "\n";
+// Make Google Fonts load asynchronously
+function ee_make_google_fonts_async($html, $handle, $href, $media) {
+    if ('ee-google-fonts' === $handle) {
+        $html = '<link rel="stylesheet" href="' . esc_url($href) . '" media="print" onload="this.media=\'all\'" />';
+        $html .= '<noscript><link rel="stylesheet" href="' . esc_url($href) . '" /></noscript>';
     }
+    return $html;
 }
-add_action('wp_head', 'ee_preload_critical_fonts_for_hero', 1);
+
+// Optimize font loading with preconnect
+function ee_optimize_font_loading() {
+    // Preconnect to Google Fonts domains
+    echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
+    echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+}
+add_action('wp_head', 'ee_optimize_font_loading', 1);
 function ee_font_loading_css() {
     echo '<style>
-        /* Font loading optimization */
+        /* Best practice: Define font stacks with system fonts as immediate fallback */
         body {
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: "Roboto", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-display: swap;
         }
         
-        /* Hide main content until fonts are loaded to prevent FOUT, but keep contact form visible */
-        .fonts-loading body > *:not(.contact-section) {
-            visibility: hidden;
-        }
-        
-        /* Always keep contact form visible */
-        .fonts-loading .contact-section,
-        .fonts-loading .contact-section * {
-            visibility: visible !important;
-        }
-        
-        /* Show text when fonts are loaded */
-        .fonts-loaded body,
-        .fonts-failed body {
-            visibility: visible;
-        }
-        
-        .fonts-loaded body > *,
-        .fonts-failed body > * {
-            visibility: visible;
-        }
-        
-        /* Apply Google fonts after they load - match SCSS variables */
-        .fonts-loaded body,
-        .fonts-loaded p {
-            font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
-        }
-        
-        .fonts-loaded h1, 
-        .fonts-loaded h2, 
-        .fonts-loaded h3, 
-        .fonts-loaded h4 {
+        h1, h2, h3, h4 {
             font-family: "Merriweather", Georgia, "Times New Roman", serif;
+            font-display: swap;
         }
         
-        /* h5 and h6 use Roboto in the SCSS */
-        .fonts-loaded h5,
-        .fonts-loaded h6 {
-            font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+        h5, h6 {
+            font-family: "Roboto", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-display: swap;
         }
         
-        /* Safari-specific font loading improvements */
-        @supports (-webkit-appearance: none) {
-            .fonts-loaded h1, 
-            .fonts-loaded h2, 
-            .fonts-loaded h3, 
-            .fonts-loaded h4 {
-                font-family: "Merriweather", "Georgia", "Times New Roman", serif !important;
-                font-display: swap;
-            }
-            
-            .fonts-loaded body,
-            .fonts-loaded p {
-                font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif !important;
-                font-display: swap;
+        /* Optimize font rendering */
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        
+        /* iOS-specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            body, h1, h2, h3, h4, h5, h6 {
+                -webkit-text-size-adjust: 100%;
             }
         }
         
@@ -237,58 +216,16 @@ function ee_add_favicon() {
 }
 add_action('wp_head', 'ee_add_favicon', 1);
 
-// Add font loading detection script
+// Optional: Simple font loading detection using Font Loading API
 function ee_font_loading_script() {
     echo '<script>
         (function() {
-            // Add loading class initially
-            document.documentElement.classList.add("fonts-loading");
-            
-            // Function to mark fonts as loaded
-            function markFontsLoaded() {
-                document.documentElement.classList.remove("fonts-loading");
-                document.documentElement.classList.add("fonts-loaded");
-            }
-            
-            // Function to mark fonts as failed
-            function markFontsFailed() {
-                document.documentElement.classList.remove("fonts-loading");
-                document.documentElement.classList.add("fonts-failed");
-            }
-            
-            // Check if fonts are already loaded (cached)
-            if (document.fonts && document.fonts.ready) {
+            // Only use Font Loading API if available, no fallbacks needed with display=swap
+            if ("fonts" in document) {
                 document.fonts.ready.then(function() {
-                    markFontsLoaded();
-                }).catch(function() {
-                    markFontsFailed();
+                    document.documentElement.classList.add("fonts-loaded");
                 });
-            } else {
-                // Fallback for browsers without Font Loading API
-                setTimeout(function() {
-                    markFontsLoaded();
-                }, 1500); // Reduced timeout to 1.5 seconds
             }
-            
-            // Safari-specific font loading detection
-            var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-            var isMobile = /iPad|iPhone|iPod|Android/.test(navigator.userAgent);
-            
-            // Shorter timeout for Safari mobile
-            var timeout = (isSafari && isMobile) ? 1500 : 2000;
-            
-            setTimeout(function() {
-                if (document.documentElement.classList.contains("fonts-loading")) {
-                    markFontsFailed();
-                }
-            }, timeout);
-            
-            // Force show content after 3 seconds as ultimate fallback
-            setTimeout(function() {
-                if (document.documentElement.classList.contains("fonts-loading")) {
-                    markFontsFailed();
-                }
-            }, 3000);
         })();
     </script>' . "\n";
 }
