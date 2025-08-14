@@ -185,11 +185,9 @@ get_header(); ?>
                                             <span class="pdf-type">PDF</span>
                                         </p>
                                     </div>
-                                    <?php if ($pdf_title): ?>
-                                        <div class="pdf-title">
-                                            <h4><?php echo esc_html($pdf_title); ?></h4>
-                                        </div>
-                                    <?php endif; ?>
+                                    <div class="pdf-title">
+                                        <h4><?php echo esc_html($pdf_title ?: get_the_title()); ?></h4>
+                                    </div>
                                 </div>
                                 <div class="pdf-actions">
                                     <a href="<?php echo esc_url($pdf_file['url']); ?>" target="_blank" class="pdf-view-btn" rel="noopener noreferrer">

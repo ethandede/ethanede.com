@@ -247,8 +247,6 @@ function ee_add_homepage_menu_items($items, $args) {
         
         // Add homepage-specific items
         if (is_front_page()) {
-            $items .= '<li class="menu-item"><a href="#about">About</a></li>';
-            $items .= '<li class="menu-item"><a href="#skills">Skills</a></li>';
             $items .= '<li class="menu-item"><a href="#contact" class="contact-trigger">Contact</a></li>';
         } else {
             // Add Contact link to non-homepage menus
@@ -257,6 +255,9 @@ function ee_add_homepage_menu_items($items, $args) {
         
         // Add Work link (unified projects and deliverables)
         $items .= '<li class="menu-item"><a href="' . home_url('/work/') . '">My work</a></li>';
+        
+        // Add Articles link
+        $items .= '<li class="menu-item"><a href="' . get_post_type_archive_link('article') . '">Articles</a></li>';
     }
     
     return $items;
@@ -707,6 +708,123 @@ function register_deliverable_post_type() {
     ]);
 }
 add_action('init', 'register_deliverable_post_type');
+
+// Register Article (Blog) Post Type
+function register_article_post_type() {
+    register_post_type('article', [
+        'labels' => [
+            'name' => 'Articles',
+            'singular_name' => 'Article',
+            'menu_name' => 'Articles',
+            'name_admin_bar' => 'Article',
+            'archives' => 'Article Archives',
+            'attributes' => 'Article Attributes',
+            'parent_item_colon' => 'Parent Article:',
+            'all_items' => 'All Articles',
+            'add_new_item' => 'Add New Article',
+            'add_new' => 'Add New',
+            'new_item' => 'New Article',
+            'edit_item' => 'Edit Article',
+            'update_item' => 'Update Article',
+            'view_item' => 'View Article',
+            'view_items' => 'View Articles',
+            'search_items' => 'Search Articles',
+            'not_found' => 'Not found',
+            'not_found_in_trash' => 'Not found in Trash',
+            'featured_image' => 'Featured Image',
+            'set_featured_image' => 'Set featured image',
+            'remove_featured_image' => 'Remove featured image',
+            'use_featured_image' => 'Use as featured image',
+            'insert_into_item' => 'Insert into article',
+            'uploaded_to_this_item' => 'Uploaded to this article',
+            'items_list' => 'Articles list',
+            'items_list_navigation' => 'Articles list navigation',
+            'filter_items_list' => 'Filter articles list',
+        ],
+        'supports' => ['title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'revisions', 'custom-fields'],
+        'taxonomies' => ['article_category', 'article_tag'],
+        'public' => true,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'menu_position' => 5,
+        'menu_icon' => 'dashicons-admin-post',
+        'show_in_admin_bar' => true,
+        'show_in_nav_menus' => true,
+        'can_export' => true,
+        'has_archive' => true,
+        'hierarchical' => false,
+        'exclude_from_search' => false,
+        'show_in_rest' => true,
+        'publicly_queryable' => true,
+        'capability_type' => 'post',
+        'rewrite' => ['slug' => 'blog', 'with_front' => false],
+    ]);
+
+    // Register Article Category Taxonomy
+    register_taxonomy('article_category', ['article'], [
+        'labels' => [
+            'name' => 'Article Categories',
+            'singular_name' => 'Article Category',
+            'menu_name' => 'Categories',
+            'all_items' => 'All Categories',
+            'edit_item' => 'Edit Category',
+            'view_item' => 'View Category',
+            'update_item' => 'Update Category',
+            'add_new_item' => 'Add New Category',
+            'new_item_name' => 'New Category Name',
+            'search_items' => 'Search Categories',
+            'popular_items' => 'Popular Categories',
+            'separate_items_with_commas' => 'Separate categories with commas',
+            'add_or_remove_items' => 'Add or remove categories',
+            'choose_from_most_used' => 'Choose from the most used categories',
+            'not_found' => 'No categories found',
+            'no_terms' => 'No categories',
+            'filter_by_item' => 'Filter by category',
+            'items_list_navigation' => 'Categories list navigation',
+            'items_list' => 'Categories list',
+            'back_to_items' => '← Go to categories',
+            'item_link' => 'Category Link',
+            'item_link_description' => 'A link to a category'
+        ],
+        'hierarchical' => true,
+        'show_in_rest' => true,
+        'show_admin_column' => true,
+        'rewrite' => ['slug' => 'blog/category'],
+    ]);
+
+    // Register Article Tag Taxonomy
+    register_taxonomy('article_tag', ['article'], [
+        'labels' => [
+            'name' => 'Article Tags',
+            'singular_name' => 'Article Tag',
+            'menu_name' => 'Tags',
+            'all_items' => 'All Tags',
+            'edit_item' => 'Edit Tag',
+            'view_item' => 'View Tag',
+            'update_item' => 'Update Tag',
+            'add_new_item' => 'Add New Tag',
+            'new_item_name' => 'New Tag Name',
+            'search_items' => 'Search Tags',
+            'popular_items' => 'Popular Tags',
+            'separate_items_with_commas' => 'Separate tags with commas',
+            'add_or_remove_items' => 'Add or remove tags',
+            'choose_from_most_used' => 'Choose from the most used tags',
+            'not_found' => 'No tags found',
+            'no_terms' => 'No tags',
+            'filter_by_item' => 'Filter by tag',
+            'items_list_navigation' => 'Tags list navigation',
+            'items_list' => 'Tags list',
+            'back_to_items' => '← Go to tags',
+            'item_link' => 'Tag Link',
+            'item_link_description' => 'A link to a tag'
+        ],
+        'hierarchical' => false,
+        'show_in_rest' => true,
+        'show_admin_column' => true,
+        'rewrite' => ['slug' => 'blog/tag'],
+    ]);
+}
+add_action('init', 'register_article_post_type');
 
 // Modify deliverable archive query based on filters
 function modify_deliverable_archive_query($query) {

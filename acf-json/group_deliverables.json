@@ -120,7 +120,7 @@
             "label": "PDF Title",
             "name": "pdf_title",
             "type": "text",
-            "instructions": "Optional: Custom title for the PDF document (if not provided, the filename will be used)",
+            "instructions": "Optional: Custom title for the PDF document (if not provided, the post title will be used)",
             "required": 0,
             "wrapper": {
                 "width": "50",
