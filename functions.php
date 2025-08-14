@@ -256,8 +256,8 @@ function ee_add_homepage_menu_items($items, $args) {
         // Add Work link (unified projects and deliverables)
         $items .= '<li class="menu-item"><a href="' . home_url('/work/') . '">My work</a></li>';
         
-        // Add Articles link
-        $items .= '<li class="menu-item"><a href="' . get_post_type_archive_link('article') . '">Articles</a></li>';
+        // Articles link removed for now
+        // $items .= '<li class="menu-item"><a href="' . get_post_type_archive_link('article') . '">Articles</a></li>';
     }
     
     return $items;
