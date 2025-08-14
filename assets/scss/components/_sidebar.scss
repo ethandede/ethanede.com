@@ -265,16 +265,28 @@
     justify-content: space-between;
     cursor: pointer;
     user-select: none;
-    transition: color 0.2s;
+    transition: all 0.2s ease;
     font-size: 0.95em;
     font-weight: 600;
     margin-bottom: 0.5rem;
-    padding: 0.5rem 0 0.5rem 1rem;
-    padding-top: 0.5rem;
+    padding: 0.75rem 1rem 0.75rem 1rem;
     position: relative;
+    border-radius: 4px;
 
     &:hover {
-        background-color: rgba(255, 255, 255, 0.05);
+        background-color: rgba(255, 255, 255, 0.08);
+        color: var(--color-primary, var(--primary-color));
+        transform: translateX(2px);
+        
+        .accordion-icon {
+          color: var(--color-primary, var(--primary-color));
+          transform: scale(1.1);
+        }
+    }
+
+    &:active {
+        transform: translateX(1px);
+        background-color: rgba(255, 255, 255, 0.12);
     }        
     // Subtle gradient border on left and top (similar to PDF title)
     &::before {
@@ -308,10 +320,12 @@
     .accordion-icon {
       margin-right: 0.5em;
       font-size: 1.1em;
-      transition: transform 0.2s;
+      transition: all 0.2s ease;
+      opacity: 0.8;
     }
     &.is-open .accordion-icon {
       transform: rotate(45deg);
+      opacity: 1;
     }
   }
 
