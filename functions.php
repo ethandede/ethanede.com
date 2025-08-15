@@ -256,8 +256,8 @@ function ee_add_homepage_menu_items($items, $args) {
         // Add Work link (unified projects and deliverables)
         $items .= '<li class="menu-item"><a href="' . home_url('/work/') . '">My work</a></li>';
         
-        // Articles link removed for now
-        // $items .= '<li class="menu-item"><a href="' . get_post_type_archive_link('article') . '">Articles</a></li>';
+        // Add Articles link
+        $items .= '<li class="menu-item"><a href="' . get_post_type_archive_link('article') . '">Articles</a></li>';
     }
     
     return $items;
@@ -825,6 +825,29 @@ function register_article_post_type() {
     ]);
 }
 add_action('init', 'register_article_post_type');
+
+// Flush rewrite rules when theme is activated or when visiting admin
+function ee_flush_rewrite_rules() {
+    // Only flush if we haven't done it recently (to avoid performance issues)
+    $last_flush = get_option('ee_last_rewrite_flush');
+    if (!$last_flush || (time() - $last_flush) > 86400) { // 24 hours
+        flush_rewrite_rules();
+        update_option('ee_last_rewrite_flush', time());
+    }
+}
+add_action('after_switch_theme', 'ee_flush_rewrite_rules');
+
+// Also flush on admin_init but only once per day
+function ee_maybe_flush_rewrite_rules() {
+    if (is_admin()) {
+        $last_flush = get_option('ee_last_rewrite_flush');
+        if (!$last_flush || (time() - $last_flush) > 86400) {
+            flush_rewrite_rules();
+            update_option('ee_last_rewrite_flush', time());
+        }
+    }
+}
+add_action('admin_init', 'ee_maybe_flush_rewrite_rules');
 
 // Modify deliverable archive query based on filters
 function modify_deliverable_archive_query($query) {
