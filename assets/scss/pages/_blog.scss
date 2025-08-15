@@ -10,7 +10,7 @@
   
   &__content {
     max-width: 800px;
-    margin: 0 auto;
+    margin: 0;
   }
   
   .page-tag {
@@ -482,6 +482,20 @@
   top: 100px;
   max-height: calc(100vh - 120px);
   overflow-y: auto;
+  
+  // Section titles with gradient underline
+  .single-sidebar__title {
+    margin: 0 0 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(to right, var(--accent-color), transparent) 1;
+    
+    &:not(:first-child) {
+      margin-top: 2rem;
+    }
+  }
   
   @include sm {
     position: static;

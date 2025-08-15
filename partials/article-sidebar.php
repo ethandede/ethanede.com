@@ -12,9 +12,9 @@ $current_article_id = get_the_ID();
 
 <aside class="article-sidebar">
     <!-- Related Articles Section -->
+    <h3 class="single-sidebar__title">Related Articles</h3>
     <div class="meta-sidebar">
         <div class="meta-item related-articles-sidebar">
-            <h6>Related Articles</h6>
             <div class="meta-content">
                 <?php
                 // Get related articles based on categories
@@ -80,9 +80,9 @@ $current_article_id = get_the_ID();
     </div>
 
     <!-- Latest Work Section -->
+    <h3 class="single-sidebar__title">Latest Work</h3>
     <div class="meta-sidebar">
         <div class="meta-item latest-work-sidebar">
-            <h6>Latest Work</h6>
             <div class="meta-content">
                 <?php
                 // Get latest deliverables
@@ -134,12 +134,9 @@ $current_article_id = get_the_ID();
     </div>
 
     <!-- Categories Section -->
-    <div class="tags-sidebar tags-accordion">
-        <h6 class="accordion-trigger" data-target="categories-accordion">
-            Categories
-            <i class="accordion-icon fa-solid fa-plus"></i>
-        </h6>
-        <div class="accordion-content" id="categories-accordion">
+    <h3 class="single-sidebar__title">Categories</h3>
+    <div class="tags-sidebar">
+        <div class="tags-cloud">
             <?php
             $categories = get_terms([
                 'taxonomy' => 'article_category',
@@ -149,26 +146,20 @@ $current_article_id = get_the_ID();
             ]);
             
             if (!empty($categories) && !is_wp_error($categories)) :
-                ?>
-                <div class="tags-cloud">
-                    <?php foreach ($categories as $category) : ?>
-                        <a href="<?php echo get_term_link($category); ?>" class="tag tag-style-sidebar tag-article-category">
-                            <?php echo esc_html($category->name); ?>
-                            <span class="tag-count">(<?php echo $category->count; ?>)</span>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+                foreach ($categories as $category) : ?>
+                    <a href="<?php echo get_term_link($category); ?>" class="tag tag-style-sidebar tag-article-category">
+                        <?php echo esc_html($category->name); ?>
+                        <span class="tag-count">(<?php echo $category->count; ?>)</span>
+                    </a>
+                <?php endforeach;
+            endif; ?>
         </div>
     </div>
 
     <!-- Tags Section -->
-    <div class="tags-sidebar tags-accordion">
-        <h6 class="accordion-trigger" data-target="tags-accordion">
-            Popular Tags
-            <i class="accordion-icon fa-solid fa-plus"></i>
-        </h6>
-        <div class="accordion-content" id="tags-accordion">
+    <h3 class="single-sidebar__title">Popular Tags</h3>
+    <div class="tags-sidebar">
+        <div class="tags-cloud">
             <?php
             $tags = get_terms([
                 'taxonomy' => 'article_tag',
@@ -179,15 +170,12 @@ $current_article_id = get_the_ID();
             ]);
             
             if (!empty($tags) && !is_wp_error($tags)) :
-                ?>
-                <div class="tags-cloud">
-                    <?php foreach ($tags as $tag) : ?>
-                        <a href="<?php echo get_term_link($tag); ?>" class="tag tag-style-sidebar tag-article-tag">
-                            <?php echo esc_html($tag->name); ?>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+                foreach ($tags as $tag) : ?>
+                    <a href="<?php echo get_term_link($tag); ?>" class="tag tag-style-sidebar tag-article-tag">
+                        <?php echo esc_html($tag->name); ?>
+                    </a>
+                <?php endforeach;
+            endif; ?>
         </div>
     </div>
 

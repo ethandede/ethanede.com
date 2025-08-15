@@ -751,13 +751,13 @@ function register_article_post_type() {
         'show_in_admin_bar' => true,
         'show_in_nav_menus' => true,
         'can_export' => true,
-        'has_archive' => true,
+        'has_archive' => 'articles',
         'hierarchical' => false,
         'exclude_from_search' => false,
         'show_in_rest' => true,
         'publicly_queryable' => true,
         'capability_type' => 'post',
-        'rewrite' => ['slug' => 'blog', 'with_front' => false],
+        'rewrite' => ['slug' => 'articles', 'with_front' => false],
     ]);
 
     // Register Article Category Taxonomy
@@ -789,7 +789,7 @@ function register_article_post_type() {
         'hierarchical' => true,
         'show_in_rest' => true,
         'show_admin_column' => true,
-        'rewrite' => ['slug' => 'blog/category'],
+        'rewrite' => ['slug' => 'articles/category'],
     ]);
 
     // Register Article Tag Taxonomy
@@ -821,7 +821,7 @@ function register_article_post_type() {
         'hierarchical' => false,
         'show_in_rest' => true,
         'show_admin_column' => true,
-        'rewrite' => ['slug' => 'blog/tag'],
+        'rewrite' => ['slug' => 'articles/tag'],
     ]);
 }
 add_action('init', 'register_article_post_type');
