@@ -5,8 +5,8 @@
 
 .blog-header,
 .article-header {
-  padding: 120px 0 80px;
-  text-align: center;
+  padding: 160px 0 60px;
+  text-align: left;
   
   &__content {
     max-width: 800px;
@@ -26,8 +26,10 @@
     margin-bottom: 16px;
   }
   
-  h1 {
-    margin-bottom: 16px;
+  h1,
+  .article-title {
+    margin-bottom: 24px;
+    text-align: left;
   }
   
   .supporting-text,
@@ -39,12 +41,34 @@
 }
 
 .article-header {
+  .single-page-tag-wrapper {
+    margin-bottom: 20px;
+    
+    .single-page-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-color);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      
+      i {
+        opacity: 0.8;
+      }
+    }
+  }
+  
   .article-meta {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 16px;
-    margin-bottom: 24px;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-top: 8px;
     font-size: 0.9rem;
     
     .article-date {
@@ -67,8 +91,8 @@
   padding: 0 0 80px;
 }
 
-.blog-layout,
-.article-layout {
+// Remove article-layout, we're using single-layout from _single.scss
+.blog-layout {
   display: grid;
   grid-template-columns: 1fr 300px;
   gap: 60px;
@@ -185,8 +209,11 @@
   }
 }
 
-.article-content {
-  max-width: none;
+// Article content now inherits from .single-main in _single.scss
+.article-main {
+  .article-content {
+    max-width: none;
+  }
   
   .article-featured-image {
     margin-bottom: 40px;
@@ -430,8 +457,207 @@
   }
 }
 
-.blog-sidebar,
+// Article page layout with sidebar (uses single-layout from _single.scss)
+.single-layout {
+  .single-content-wrapper {
+    // Grid layout matching project pages
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 3rem;
+    align-items: start;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+}
+
+// Article sidebar with project-sidebar styling
 .article-sidebar {
+  background: var(--card-background);
+  border-radius: 12px;
+  padding: 32px;
+  position: sticky;
+  top: 100px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  
+  @include sm {
+    position: static;
+    max-height: none;
+  }
+  
+  // Sidebar sections matching project sidebar structure
+  .meta-sidebar {
+    margin-bottom: 32px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    .meta-item {
+      h6 {
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-muted);
+        margin-bottom: 16px;
+      }
+      
+      .meta-content {
+        .related-articles-list,
+        .latest-work-list {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+        
+        .related-article-item,
+        .latest-work-item {
+          display: flex;
+          gap: 12px;
+          
+          .related-article-thumbnail,
+          .latest-work-thumbnail {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+          
+          .related-article-info,
+          .latest-work-info {
+            flex: 1;
+            min-width: 0;
+            
+            h4 {
+              margin: 0 0 4px;
+              font-size: 0.95rem;
+              line-height: 1.3;
+              
+              a {
+                color: var(--text-color);
+                text-decoration: none;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                
+                &:hover {
+                  color: var(--accent-color);
+                }
+              }
+            }
+            
+            .related-article-date,
+            .latest-work-type {
+              font-size: 0.8rem;
+              color: var(--text-muted);
+            }
+          }
+        }
+        
+        .no-related,
+        .no-work {
+          font-size: 0.9rem;
+          color: var(--text-muted);
+          font-style: italic;
+        }
+      }
+    }
+  }
+  
+  // Tags sections with accordion
+  .tags-sidebar {
+    margin-bottom: 24px;
+    
+    .accordion-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      cursor: pointer;
+      user-select: none;
+      
+      .accordion-icon {
+        transition: transform 0.3s ease;
+      }
+      
+      &.active .accordion-icon {
+        transform: rotate(45deg);
+      }
+    }
+    
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      
+      &.active {
+        max-height: 500px;
+      }
+    }
+    
+    .tags-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        background: rgba(0, 0, 0, 0.05);
+        color: var(--text-color);
+        border-radius: 16px;
+        font-size: 0.8rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background: var(--accent-color);
+          color: white;
+        }
+        
+        .tag-count {
+          font-size: 0.75rem;
+          opacity: 0.7;
+        }
+      }
+    }
+  }
+  
+  .back-to-blog-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      gap: 12px;
+    }
+  }
+}
+
+.blog-sidebar {
   .sidebar-widget {
     background: var(--card-background);
     padding: 24px;

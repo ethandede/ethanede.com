@@ -23,6 +23,15 @@ get_header();
       if (have_posts()) :
         while (have_posts()) : the_post();
           ?>
+          <!-- Article Label - placeholder for future icon -->
+          <div class="single-page-tag-wrapper">
+            <span class="single-page-tag tag-article">
+              <i class="fa-duotone fa-newspaper"></i> Article
+            </span>
+          </div>
+          
+          <h1 class="article-title"><?php the_title(); ?></h1>
+          
           <div class="article-meta">
             <time datetime="<?php echo get_the_date('c'); ?>" class="article-date">
               <?php echo get_the_date('F j, Y'); ?>
@@ -33,14 +42,12 @@ get_header();
             if ($categories && !is_wp_error($categories)) :
               ?>
               <span class="article-category">
-                <a href="<?php echo get_term_link($categories[0]); ?>">
+                in <a href="<?php echo get_term_link($categories[0]); ?>">
                   <?php echo esc_html($categories[0]->name); ?>
                 </a>
               </span>
             <?php endif; ?>
           </div>
-          
-          <h1><?php the_title(); ?></h1>
           
           <?php if (has_excerpt()) : ?>
             <p class="article-excerpt"><?php echo get_the_excerpt(); ?></p>
@@ -56,9 +63,10 @@ get_header();
 </section>
 
 <!-- Article Content Section -->
-<section class="article-layout">
+<section class="single-layout">
   <div class="container">
-    <div class="article-main">
+    <div class="single-content-wrapper">
+      <article class="single-main article-main">
       <?php
       if (have_posts()) :
         while (have_posts()) : the_post();
@@ -138,172 +146,10 @@ get_header();
           </div>
         <?php endif; ?>
       </nav>
+      </article>
       
-      <!-- Related Articles -->
-      <section class="related-articles">
-        <h2>Related Articles</h2>
-        <div class="related-articles-grid">
-          <?php
-          // Get related articles based on categories
-          $current_categories = wp_get_post_terms(get_the_ID(), 'article_category', ['fields' => 'ids']);
-          
-          if (!empty($current_categories)) {
-            $related_articles = new WP_Query([
-              'post_type' => 'article',
-              'posts_per_page' => 3,
-              'post_status' => 'publish',
-              'post__not_in' => [get_the_ID()],
-              'tax_query' => [
-                [
-                  'taxonomy' => 'article_category',
-                  'field' => 'term_id',
-                  'terms' => $current_categories,
-                  'operator' => 'IN'
-                ]
-              ]
-            ]);
-            
-            if ($related_articles->have_posts()) :
-              while ($related_articles->have_posts()) : $related_articles->the_post();
-                ?>
-                <article class="related-article-card">
-                  <?php if (has_post_thumbnail()) : ?>
-                    <div class="related-article__image">
-                      <a href="<?php the_permalink(); ?>">
-                        <?php the_post_thumbnail('card-thumbnail', ['alt' => get_the_title()]); ?>
-                      </a>
-                    </div>
-                  <?php endif; ?>
-                  
-                  <div class="related-article__content">
-                    <time datetime="<?php echo get_the_date('c'); ?>" class="related-article__date">
-                      <?php echo get_the_date('M j, Y'); ?>
-                    </time>
-                    
-                    <h3 class="related-article__title">
-                      <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                    </h3>
-                    
-                    <?php if (has_excerpt()) : ?>
-                      <p class="related-article__excerpt"><?php echo wp_trim_words(get_the_excerpt(), 15); ?></p>
-                    <?php endif; ?>
-                  </div>
-                </article>
-                <?php
-              endwhile;
-              wp_reset_postdata();
-            else :
-              ?>
-              <p class="supporting-text">No related articles found.</p>
-            <?php endif;
-          } else {
-            // Fallback to recent articles if no categories
-            $recent_articles = new WP_Query([
-              'post_type' => 'article',
-              'posts_per_page' => 3,
-              'post_status' => 'publish',
-              'post__not_in' => [get_the_ID()]
-            ]);
-            
-            if ($recent_articles->have_posts()) :
-              while ($recent_articles->have_posts()) : $recent_articles->the_post();
-                ?>
-                <article class="related-article-card">
-                  <?php if (has_post_thumbnail()) : ?>
-                    <div class="related-article__image">
-                      <a href="<?php the_permalink(); ?>">
-                        <?php the_post_thumbnail('card-thumbnail', ['alt' => get_the_title()]); ?>
-                      </a>
-                    </div>
-                  <?php endif; ?>
-                  
-                  <div class="related-article__content">
-                    <time datetime="<?php echo get_the_date('c'); ?>" class="related-article__date">
-                      <?php echo get_the_date('M j, Y'); ?>
-                    </time>
-                    
-                    <h3 class="related-article__title">
-                      <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                    </h3>
-                    
-                    <?php if (has_excerpt()) : ?>
-                      <p class="related-article__excerpt"><?php echo wp_trim_words(get_the_excerpt(), 15); ?></p>
-                    <?php endif; ?>
-                  </div>
-                </article>
-                <?php
-              endwhile;
-              wp_reset_postdata();
-            endif;
-          }
-          ?>
-        </div>
-      </section>
+      <?php get_template_part('partials/article-sidebar'); ?>
     </div>
-    
-    <aside class="article-sidebar">
-      <div class="sidebar-widget">
-        <h3>Categories</h3>
-        <?php
-        $categories = get_terms([
-          'taxonomy' => 'article_category',
-          'hide_empty' => true,
-          'orderby' => 'name',
-          'order' => 'ASC'
-        ]);
-        
-        if (!empty($categories) && !is_wp_error($categories)) :
-          ?>
-          <ul class="category-list">
-            <?php foreach ($categories as $category) : ?>
-              <li>
-                <a href="<?php echo get_term_link($category); ?>">
-                  <?php echo esc_html($category->name); ?>
-                  <span class="count">(<?php echo $category->count; ?>)</span>
-                </a>
-              </li>
-            <?php endforeach; ?>
-          </ul>
-        <?php endif; ?>
-      </div>
-      
-      <div class="sidebar-widget">
-        <h3>Recent Articles</h3>
-        <?php
-        $recent_articles = new WP_Query([
-          'post_type' => 'article',
-          'posts_per_page' => 5,
-          'post_status' => 'publish',
-          'post__not_in' => [get_the_ID()]
-        ]);
-        
-        if ($recent_articles->have_posts()) :
-          ?>
-          <ul class="recent-articles">
-            <?php while ($recent_articles->have_posts()) : $recent_articles->the_post(); ?>
-              <li>
-                <a href="<?php the_permalink(); ?>">
-                  <time datetime="<?php echo get_the_date('c'); ?>">
-                    <?php echo get_the_date('M j'); ?>
-                  </time>
-                  <?php the_title(); ?>
-                </a>
-              </li>
-            <?php endwhile; ?>
-          </ul>
-          <?php
-          wp_reset_postdata();
-        endif;
-        ?>
-      </div>
-      
-      <div class="sidebar-widget">
-        <h3>Back to Blog</h3>
-        <a href="<?php echo get_post_type_archive_link('article'); ?>" class="back-to-blog">
-          <i class="fa fa-arrow-left"></i> All Articles
-        </a>
-      </div>
-    </aside>
   </div>
 </section>
 
