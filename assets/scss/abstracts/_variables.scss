@@ -15,6 +15,13 @@ $tag-skill-color: $tertiary-color;          // Teal-green for skills
 $tag-deliverable-color: $quaternary-color;  // Amber for deliverables (swapped)
 $tag-project-color: $secondary-color;       // Magenta for projects (swapped)
 
+// Accessible/lightened tag colors for better contrast
+$tag-technology-color-light: color.adjust($tag-technology-color, $lightness: 15%);
+$tag-skill-color-light: color.adjust($tag-skill-color, $lightness: 12%);
+$tag-deliverable-color-light: color.adjust($tag-deliverable-color, $lightness: 8%);
+$tag-project-color-light: color.adjust($tag-project-color, $lightness: 18%);
+$tag-article-color: color.adjust($tertiary-color, $hue: 30deg, $lightness: 10%); // Distinct color for articles
+
 // Output as CSS variables for runtime use
 :root {
   // Base RGB channels for flexible gray system
@@ -58,14 +65,16 @@ $tag-project-color: $secondary-color;       // Magenta for projects (swapped)
   --initial-color-rgb: #{color.channel($initial-color, "red", $space: rgb)}, #{color.channel($initial-color, "green", $space: rgb)}, #{color.channel($initial-color, "blue", $space: rgb)};
   
   // Tag-specific color variables (using brand system)
-  --tag-technology-color: #{$tag-technology-color};
-  --tag-technology-color-rgb: #{color.channel($tag-technology-color, "red", $space: rgb)}, #{color.channel($tag-technology-color, "green", $space: rgb)}, #{color.channel($tag-technology-color, "blue", $space: rgb)};
-  --tag-skill-color: #{$tag-skill-color};
-  --tag-skill-color-rgb: #{color.channel($tag-skill-color, "red", $space: rgb)}, #{color.channel($tag-skill-color, "green", $space: rgb)}, #{color.channel($tag-skill-color, "blue", $space: rgb)};
-  --tag-deliverable-color: #{$tag-deliverable-color};
-  --tag-deliverable-color-rgb: #{color.channel($tag-deliverable-color, "red", $space: rgb)}, #{color.channel($tag-deliverable-color, "green", $space: rgb)}, #{color.channel($tag-deliverable-color, "blue", $space: rgb)};
-  --tag-project-color: #{$tag-project-color};
-  --tag-project-color-rgb: #{color.channel($tag-project-color, "red", $space: rgb)}, #{color.channel($tag-project-color, "green", $space: rgb)}, #{color.channel($tag-project-color, "blue", $space: rgb)};
+  --tag-technology-color: #{$tag-technology-color-light};
+  --tag-technology-color-rgb: #{color.channel($tag-technology-color-light, "red", $space: rgb)}, #{color.channel($tag-technology-color-light, "green", $space: rgb)}, #{color.channel($tag-technology-color-light, "blue", $space: rgb)};
+  --tag-skill-color: #{$tag-skill-color-light};
+  --tag-skill-color-rgb: #{color.channel($tag-skill-color-light, "red", $space: rgb)}, #{color.channel($tag-skill-color-light, "green", $space: rgb)}, #{color.channel($tag-skill-color-light, "blue", $space: rgb)};
+  --tag-deliverable-color: #{$tag-deliverable-color-light};
+  --tag-deliverable-color-rgb: #{color.channel($tag-deliverable-color-light, "red", $space: rgb)}, #{color.channel($tag-deliverable-color-light, "green", $space: rgb)}, #{color.channel($tag-deliverable-color-light, "blue", $space: rgb)};
+  --tag-project-color: #{$tag-project-color-light};
+  --tag-project-color-rgb: #{color.channel($tag-project-color-light, "red", $space: rgb)}, #{color.channel($tag-project-color-light, "green", $space: rgb)}, #{color.channel($tag-project-color-light, "blue", $space: rgb)};
+  --tag-article-color: #{$tag-article-color};
+  --tag-article-color-rgb: #{color.channel($tag-article-color, "red", $space: rgb)}, #{color.channel($tag-article-color, "green", $space: rgb)}, #{color.channel($tag-article-color, "blue", $space: rgb)};
 }
 
 // Typography Variables & Global Settings

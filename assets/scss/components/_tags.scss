@@ -197,6 +197,29 @@
         color: var(--text-primary);
       }
     }
+  } @else if $color-type == 'article' or $color-type == 'article-category' {
+    // Distinct color for articles using tag-article-color
+    &.tag-style-homepage,
+    &.tag-style-card {
+      background: rgba(var(--tag-article-color-rgb), 0.5);
+      border-color: rgba(var(--tag-article-color-rgb), 0.7);
+      
+      &:hover {
+        background: rgba(var(--tag-article-color-rgb), 0.85);
+      }
+    }
+    
+    &.tag-style-sidebar {
+      background-color: rgba(var(--tag-article-color-rgb), .1);
+      border-color: rgba(var(--tag-article-color-rgb), .2);
+      color: rgba(var(--tag-article-color-rgb), 0.7);
+      
+      &:hover {
+        background-color: var(--tag-article-color);
+        border-color: var(--tag-article-color);
+        color: var(--text-primary);
+      }
+    }
   }
 }
 
@@ -267,6 +290,11 @@
 
   &.tag-company {
     @include tag-color('company');
+  }
+
+  &.tag-article,
+  &.tag-article-category {
+    @include tag-color('article');
   }
 
   // State modifiers

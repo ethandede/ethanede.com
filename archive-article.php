@@ -76,48 +76,14 @@ get_header();
       <main class="blog-main">
         <?php if (have_posts()) : ?>
           <div class="articles-grid">
-            <?php while (have_posts()) : the_post(); ?>
-              <article class="article-card">
-                <?php if (has_post_thumbnail()) : ?>
-                  <div class="article-card__image">
-                    <a href="<?php the_permalink(); ?>">
-                      <?php the_post_thumbnail('card-thumbnail', ['alt' => get_the_title()]); ?>
-                    </a>
-                  </div>
-                <?php endif; ?>
-                
-                <div class="article-card__content">
-                  <div class="article-card__meta">
-                    <time datetime="<?php echo get_the_date('c'); ?>" class="article-date">
-                      <?php echo get_the_date('F j, Y'); ?>
-                    </time>
-                    
-                    <?php
-                    $categories = get_the_terms(get_the_ID(), 'article_category');
-                    if ($categories && !is_wp_error($categories)) :
-                      ?>
-                      <span class="article-category">
-                        <a href="<?php echo get_term_link($categories[0]); ?>">
-                          <?php echo esc_html($categories[0]->name); ?>
-                        </a>
-                      </span>
-                    <?php endif; ?>
-                  </div>
-                  
-                  <h2 class="article-card__title">
-                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                  </h2>
-                  
-                  <?php if (has_excerpt()) : ?>
-                    <p class="article-card__excerpt"><?php echo get_the_excerpt(); ?></p>
-                  <?php endif; ?>
-                  
-                  <a href="<?php the_permalink(); ?>" class="article-card__link">
-                    Read more <i class="fa fa-arrow-right"></i>
-                  </a>
-                </div>
-              </article>
-            <?php endwhile; ?>
+            <?php while (have_posts()) : the_post();
+              get_template_part('partials/card', null, [
+                'type' => 'article',
+                'context' => 'archive',
+                'post_id' => get_the_ID(),
+                'extra_classes' => ['card--archive']
+              ]);
+            endwhile; ?>
           </div>
           
           <?php
@@ -148,62 +114,7 @@ get_header();
         <?php endif; ?>
       </main>
       
-      <aside class="blog-sidebar">
-        <div class="sidebar-widget">
-          <h3>Categories</h3>
-          <?php
-          $categories = get_terms([
-            'taxonomy' => 'article_category',
-            'hide_empty' => true,
-            'orderby' => 'name',
-            'order' => 'ASC'
-          ]);
-          
-          if (!empty($categories) && !is_wp_error($categories)) :
-            ?>
-            <ul class="category-list">
-              <?php foreach ($categories as $category) : ?>
-                <li>
-                  <a href="<?php echo get_term_link($category); ?>">
-                    <?php echo esc_html($category->name); ?>
-                    <span class="count">(<?php echo $category->count; ?>)</span>
-                  </a>
-                </li>
-              <?php endforeach; ?>
-            </ul>
-          <?php endif; ?>
-        </div>
-        
-        <div class="sidebar-widget">
-          <h3>Recent Articles</h3>
-          <?php
-          $recent_articles = new WP_Query([
-            'post_type' => 'article',
-            'posts_per_page' => 5,
-            'post_status' => 'publish',
-            'post__not_in' => [get_the_ID()]
-          ]);
-          
-          if ($recent_articles->have_posts()) :
-            ?>
-            <ul class="recent-articles">
-              <?php while ($recent_articles->have_posts()) : $recent_articles->the_post(); ?>
-                <li>
-                  <a href="<?php the_permalink(); ?>">
-                    <time datetime="<?php echo get_the_date('c'); ?>">
-                      <?php echo get_the_date('M j'); ?>
-                    </time>
-                    <?php the_title(); ?>
-                  </a>
-                </li>
-              <?php endwhile; ?>
-            </ul>
-            <?php
-            wp_reset_postdata();
-          endif;
-          ?>
-        </div>
-      </aside>
+      <?php get_template_part('partials/blog-archive-sidebar'); ?>
     </div>
   </div>
 </section>

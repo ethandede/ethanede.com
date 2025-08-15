@@ -47,27 +47,15 @@ $current_article_id = get_the_ID();
                 
                 if ($related_articles->have_posts()) :
                     ?>
-                    <div class="related-articles-list">
-                        <?php while ($related_articles->have_posts()) : $related_articles->the_post(); ?>
-                            <article class="related-article-item">
-                                <?php if (has_post_thumbnail()) : ?>
-                                    <div class="related-article-thumbnail">
-                                        <a href="<?php the_permalink(); ?>">
-                                            <?php the_post_thumbnail('thumbnail', ['alt' => get_the_title()]); ?>
-                                        </a>
-                                    </div>
-                                <?php endif; ?>
-                                
-                                <div class="related-article-info">
-                                    <h4 class="related-article-title">
-                                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                    </h4>
-                                    <time datetime="<?php echo get_the_date('c'); ?>" class="related-article-date">
-                                        <?php echo get_the_date('M j, Y'); ?>
-                                    </time>
-                                </div>
-                            </article>
-                        <?php endwhile; ?>
+                    <div class="related-articles-grid">
+                        <?php while ($related_articles->have_posts()) : $related_articles->the_post();
+                            get_template_part('partials/card', null, [
+                                'type' => 'article',
+                                'context' => 'sidebar',
+                                'post_id' => get_the_ID(),
+                                'extra_classes' => ['card--sidebar']
+                            ]);
+                        endwhile; ?>
                     </div>
                     <?php
                     wp_reset_postdata();
@@ -96,32 +84,15 @@ $current_article_id = get_the_ID();
                 
                 if ($latest_work->have_posts()) :
                     ?>
-                    <div class="latest-work-list">
-                        <?php while ($latest_work->have_posts()) : $latest_work->the_post(); ?>
-                            <article class="latest-work-item">
-                                <?php if (has_post_thumbnail()) : ?>
-                                    <div class="latest-work-thumbnail">
-                                        <a href="<?php the_permalink(); ?>">
-                                            <?php the_post_thumbnail('thumbnail', ['alt' => get_the_title()]); ?>
-                                        </a>
-                                    </div>
-                                <?php endif; ?>
-                                
-                                <div class="latest-work-info">
-                                    <h4 class="latest-work-title">
-                                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                    </h4>
-                                    <?php
-                                    // Get deliverable type
-                                    $types = get_the_terms(get_the_ID(), 'deliverable_type');
-                                    if ($types && !is_wp_error($types)) :
-                                        $type = $types[0];
-                                        ?>
-                                        <span class="latest-work-type"><?php echo esc_html(get_singular_term_display_name($type->name)); ?></span>
-                                    <?php endif; ?>
-                                </div>
-                            </article>
-                        <?php endwhile; ?>
+                    <div class="latest-work-grid">
+                        <?php while ($latest_work->have_posts()) : $latest_work->the_post();
+                            get_template_part('partials/card', null, [
+                                'type' => 'deliverable',
+                                'context' => 'sidebar',
+                                'post_id' => get_the_ID(),
+                                'extra_classes' => ['card--sidebar']
+                            ]);
+                        endwhile; ?>
                     </div>
                     <?php
                     wp_reset_postdata();

@@ -473,7 +473,8 @@
   }
 }
 
-// Article sidebar with project-sidebar styling
+// Blog archive and article sidebars with project-sidebar styling
+.blog-sidebar,
 .article-sidebar {
   background: var(--card-background);
   border-radius: 12px;
@@ -490,7 +491,7 @@
     font-weight: 600;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid transparent;
-    border-image: linear-gradient(to right, var(--accent-color), transparent) 1;
+    border-image: linear-gradient(to right, rgba(var(--primary-color-rgb), 0.4), rgba(var(--primary-color-rgb), 0.05)) 1;
     
     &:not(:first-child) {
       margin-top: 2rem;
@@ -516,74 +517,91 @@
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        color: var(--text-muted);
+        color: var(--text-secondary);
         margin-bottom: 16px;
       }
       
       .meta-content {
-        .related-articles-list,
-        .latest-work-list {
+        .related-articles-grid,
+        .latest-work-grid,
+        .recent-articles-grid {
           display: flex;
           flex-direction: column;
           gap: 16px;
-        }
-        
-        .related-article-item,
-        .latest-work-item {
-          display: flex;
-          gap: 12px;
           
-          .related-article-thumbnail,
-          .latest-work-thumbnail {
-            flex-shrink: 0;
-            width: 60px;
-            height: 60px;
-            border-radius: 6px;
-            overflow: hidden;
+          // Sidebar card styles
+          .card--sidebar {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.2s ease;
             
-            img {
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
+            &:hover {
+              background: var(--bg-lighter);
+              transform: translateY(-1px);
             }
-          }
-          
-          .related-article-info,
-          .latest-work-info {
-            flex: 1;
-            min-width: 0;
             
-            h4 {
-              margin: 0 0 4px;
-              font-size: 0.95rem;
-              line-height: 1.3;
+            .card__image-container {
+              width: 60px;
+              height: 60px;
+              border-radius: 6px;
+              overflow: hidden;
+              margin: 0 12px 0 0;
+              flex-shrink: 0;
+            }
+            
+            .card__content {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
               
-              a {
-                color: var(--text-color);
-                text-decoration: none;
+              .card__title {
+                font-size: 0.9rem;
+                line-height: 1.3;
+                margin: 0 0 4px;
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
+              }
+              
+              .card__description {
+                font-size: 0.8rem;
+                color: var(--text-secondary);
+                margin: 0;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+              }
+              
+              .card__tags {
+                margin: 4px 0 0;
                 
-                &:hover {
-                  color: var(--accent-color);
+                .tag {
+                  font-size: 0.7rem;
+                  padding: 2px 6px;
+                  margin: 0 4px 0 0;
                 }
+              }
+              
+              .card__arrow {
+                display: none; // Hide for compact sidebar layout
               }
             }
             
-            .related-article-date,
-            .latest-work-type {
-              font-size: 0.8rem;
-              color: var(--text-muted);
-            }
+            // Horizontal layout for sidebar
+            display: flex;
+            align-items: flex-start;
           }
         }
         
         .no-related,
-        .no-work {
+        .no-work,
+        .no-recent {
           font-size: 0.9rem;
-          color: var(--text-muted);
+          color: var(--text-secondary);
           font-style: italic;
         }
       }
@@ -602,7 +620,7 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       margin-bottom: 16px;
       cursor: pointer;
       user-select: none;

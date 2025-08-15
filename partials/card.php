@@ -29,7 +29,7 @@ if (empty($args) || !is_array($args)) {
     return;
 }
 
-if (empty($args['type']) || !in_array($args['type'], ['project', 'deliverable'])) {
+if (empty($args['type']) || !in_array($args['type'], ['project', 'deliverable', 'article'])) {
     return;
 }
 
@@ -72,12 +72,21 @@ if (!empty($args['extra_classes']) && is_array($args['extra_classes'])) {
 // Get tags if not provided (skip for taxonomy cards)
 // Only auto-populate if tags weren't explicitly set in original args
 if (!array_key_exists('tags', $original_args) && !$is_taxonomy_card) {
-    $taxonomy = ($args['type'] === 'project') ? 'project_category' : 'technology';
-    $terms = get_the_terms($args['post_id'], $taxonomy);
-    if ($terms && !is_wp_error($terms)) {
-        $args['tags'] = array_map(function ($term) {
-            return $term->name;
-        }, $terms);
+    if ($args['type'] === 'project') {
+        $taxonomy = 'project_category';
+    } elseif ($args['type'] === 'deliverable') {
+        $taxonomy = 'technology';
+    } elseif ($args['type'] === 'article') {
+        $taxonomy = 'article_category';
+    }
+    
+    if (isset($taxonomy)) {
+        $terms = get_the_terms($args['post_id'], $taxonomy);
+        if ($terms && !is_wp_error($terms)) {
+            $args['tags'] = array_map(function ($term) {
+                return $term->name;
+            }, $terms);
+        }
     }
 }
 
@@ -133,6 +142,8 @@ if (!empty($args['data_attributes']) && is_array($args['data_attributes'])) {
                     $tag_classes[] = 'tag-project';
                 } elseif ($args['type'] === 'deliverable') {
                     $tag_classes[] = 'tag-deliverable';
+                } elseif ($args['type'] === 'article') {
+                    $tag_classes[] = 'tag-article';
                 }
 
                 // Additional semantic classes based on tag content
