@@ -313,7 +313,16 @@ function ee_enqueue_scripts() {
         $file_path = get_template_directory() . $path;
         if (file_exists($file_path)) {
             $version = filemtime($file_path);
-            wp_enqueue_script($handle, get_template_directory_uri() . $path, array(), $version, true);
+            
+            // Set dependencies for scripts that need them
+            $dependencies = array();
+            if ($handle === 'portfolio-hover') {
+                $dependencies = array('gsap');
+            } elseif ($handle === 'hero-animation') {
+                $dependencies = array('gsap', 'typed-js');
+            }
+            
+            wp_enqueue_script($handle, get_template_directory_uri() . $path, $dependencies, $version, true);
         }
     }
     

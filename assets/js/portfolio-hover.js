@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", function() {
+  // Check if GSAP is loaded
+  if (typeof gsap === 'undefined') {
+    console.log('GSAP not loaded');
+    return;
+  }
+  
+  console.log('Portfolio hover script loaded');
+  
   // Handle main portfolio/project/deliverable cards (35px movement)
   // Support both old classes and new master card system
   // Prioritize wrapper elements (.deliverable-card) over inner elements (.card)
@@ -8,17 +16,22 @@ document.addEventListener("DOMContentLoaded", function() {
     .deliverable-card
   `);
   
-  // Add standalone cards that aren't wrapped
-  const standaloneCards = document.querySelectorAll('.card:not(.single-sidebar .card)');
+  // Add standalone cards that aren't wrapped and aren't sidebar cards
+  const standaloneCards = document.querySelectorAll('.card:not(.single-sidebar .card):not(.card--sidebar):not(.blog-sidebar .card):not(.article-sidebar .card)');
   const standaloneCardsFiltered = Array.from(standaloneCards).filter(card => {
     // Only include if it's not inside a wrapper we already selected
-    return !card.closest('.deliverable-card, .project-card, .portfolio-item');
+    // Also exclude any cards that have the sidebar class or are in sidebar containers
+    return !card.closest('.deliverable-card, .project-card, .portfolio-item') && 
+           !card.classList.contains('card--sidebar') &&
+           !card.closest('.blog-sidebar, .article-sidebar, .single-sidebar');
   });
   
   // Combine both arrays
   const portfolioItems = [...Array.from(wrapperItems), ...standaloneCardsFiltered];
   
-  portfolioItems.forEach(function(item) {
+  console.log('Main portfolio items found:', portfolioItems.length);
+  portfolioItems.forEach(function(item, index) {
+    console.log(`Main portfolio item ${index}:`, item.className);
     // Support both old and new arrow selectors
     const arrow = item.querySelector(`
       .portfolio-arrow i, 
@@ -220,10 +233,15 @@ document.addEventListener("DOMContentLoaded", function() {
   // Support both old classes and new master card system
   const sidebarItems = document.querySelectorAll(`
     .single-sidebar .portfolio-item,
-    .single-sidebar .card
+    .single-sidebar .card,
+    .blog-sidebar .card--sidebar,
+    .article-sidebar .card--sidebar,
+    .card--sidebar
   `);
   
-  sidebarItems.forEach(function(item) {
+  console.log('Sidebar items found:', sidebarItems.length);
+  sidebarItems.forEach(function(item, index) {
+    console.log(`Sidebar item ${index}:`, item.className);
     // Support both old and new arrow selectors
     const arrow = item.querySelector(`
       .portfolio-arrow i,
@@ -233,19 +251,41 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (arrow) {
       item.addEventListener('mouseenter', function() {
+        // Animate card hover effects for sidebar cards - subtle for small size
+        gsap.to(item, {
+          duration: 0.25,
+          y: -2, // Very subtle lift for small cards
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+          ease: "power2.out"
+        });
+        
+        // Animate arrow movement
         gsap.to(arrow, {
           duration: 0.5,
           x: 8,
           ease: "power1.out"
         });
+        
+        // No image zoom for sidebar cards - keep clean and simple
       });
       
       item.addEventListener('mouseleave', function() {
+        // Reset card hover effects - faster for small cards
+        gsap.to(item, {
+          duration: 0.25,
+          y: 0,
+          boxShadow: "0 2px 6px rgba(0, 0, 0, 0.06)", // Lighter default shadow
+          ease: "power2.out"
+        });
+        
+        // Reset arrow position
         gsap.to(arrow, {
           duration: 0.3,
           x: 0,
           ease: "bounce.out"
         });
+        
+        // No image reset needed for sidebar cards
       });
     }
   });

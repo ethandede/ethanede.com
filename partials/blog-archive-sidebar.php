@@ -8,28 +8,6 @@
 ?>
 
 <aside class="blog-sidebar">
-    <!-- Categories Section -->
-    <h3 class="single-sidebar__title">Categories</h3>
-    <div class="tags-sidebar">
-        <div class="tags-cloud">
-            <?php
-            $categories = get_terms([
-                'taxonomy' => 'article_category',
-                'hide_empty' => true,
-                'orderby' => 'count',
-                'order' => 'DESC'
-            ]);
-            
-            if (!empty($categories) && !is_wp_error($categories)) :
-                foreach ($categories as $category) : ?>
-                    <a href="<?php echo get_term_link($category); ?>" class="tag tag-style-sidebar tag-article-category">
-                        <?php echo esc_html($category->name); ?>
-                        <span class="tag-count">(<?php echo $category->count; ?>)</span>
-                    </a>
-                <?php endforeach;
-            endif; ?>
-        </div>
-    </div>
 
     <!-- Recent Articles Section -->
     <h3 class="single-sidebar__title">Recent Articles</h3>
@@ -103,26 +81,4 @@
         </div>
     </div>
 
-    <!-- Popular Tags Section -->
-    <h3 class="single-sidebar__title">Popular Tags</h3>
-    <div class="tags-sidebar">
-        <div class="tags-cloud">
-            <?php
-            $tags = get_terms([
-                'taxonomy' => 'article_tag',
-                'hide_empty' => true,
-                'orderby' => 'count',
-                'order' => 'DESC',
-                'number' => 15
-            ]);
-            
-            if (!empty($tags) && !is_wp_error($tags)) :
-                foreach ($tags as $tag) : ?>
-                    <a href="<?php echo get_term_link($tag); ?>" class="tag tag-style-sidebar tag-article-tag">
-                        <?php echo esc_html($tag->name); ?>
-                    </a>
-                <?php endforeach;
-            endif; ?>
-        </div>
-    </div>
 </aside>

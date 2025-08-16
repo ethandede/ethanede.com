@@ -43,11 +43,88 @@ $is_taxonomy_card = ($args['post_id'] === 0);
 // Store original args to check what was explicitly set
 $original_args = $args;
 
+// Get the image URL with proper checks
+$image_url = '';
+if (!$is_taxonomy_card) {
+    // For deliverables, check ACF fields first
+    if ($args['type'] === 'deliverable') {
+        // First try deliverable_featured_image
+        $deliverable_featured = get_field('deliverable_featured_image', $args['post_id']);
+        if ($deliverable_featured) {
+            // Since ACF file field returns URL, convert to attachment ID for proper sizing
+            $attachment_id = attachment_url_to_postid($deliverable_featured);
+            if ($attachment_id) {
+                // Try to get card-thumbnail size first
+                $sized_url = wp_get_attachment_image_url($attachment_id, 'card-thumbnail');
+                if (!$sized_url) {
+                    // Fallback to medium size
+                    $sized_url = wp_get_attachment_image_url($attachment_id, 'medium');
+                }
+                $image_url = $sized_url ? $sized_url : $deliverable_featured;
+            } else {
+                // If we can't get attachment ID, use the URL directly
+                $image_url = $deliverable_featured;
+            }
+        } else {
+            // Try deliverable_media gallery
+            $deliverable_media = get_field('deliverable_media', $args['post_id']);
+            if ($deliverable_media && is_array($deliverable_media) && !empty($deliverable_media)) {
+                // Get first image from media gallery
+                $first_media = $deliverable_media[0];
+                if (isset($first_media['sizes']['card-thumbnail'])) {
+                    $image_url = $first_media['sizes']['card-thumbnail'];
+                } elseif (isset($first_media['sizes']['medium'])) {
+                    $image_url = $first_media['sizes']['medium'];
+                } elseif (isset($first_media['url'])) {
+                    $image_url = $first_media['url'];
+                }
+            }
+        }
+    }
+    
+    // For projects, check ACF gallery_images field
+    if ($args['type'] === 'project') {
+        $gallery_images = get_field('gallery_images', $args['post_id']);
+        if ($gallery_images && is_array($gallery_images) && !empty($gallery_images)) {
+            // Get first image from gallery
+            $first_image = $gallery_images[0];
+            if (isset($first_image['sizes']['card-thumbnail'])) {
+                $image_url = $first_image['sizes']['card-thumbnail'];
+            } elseif (isset($first_image['sizes']['medium'])) {
+                $image_url = $first_image['sizes']['medium'];
+            } elseif (isset($first_image['url'])) {
+                $image_url = $first_image['url'];
+            }
+        }
+    }
+    
+    // If no ACF image found (or for articles), try featured image
+    if (empty($image_url) && has_post_thumbnail($args['post_id'])) {
+        $image_url = get_the_post_thumbnail_url($args['post_id'], 'card-thumbnail');
+        if (!$image_url) {
+            // Fallback to full size if card-thumbnail doesn't exist
+            $image_url = get_the_post_thumbnail_url($args['post_id'], 'full');
+        }
+    }
+    
+    // For articles without featured image, try to get first image from content
+    if (empty($image_url) && $args['type'] === 'article') {
+        $post = get_post($args['post_id']);
+        if ($post && $post->post_content) {
+            // Try to extract first image from content
+            preg_match('/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $post->post_content, $matches);
+            if (!empty($matches[1])) {
+                $image_url = $matches[1];
+            }
+        }
+    }
+}
+
 // Set defaults - handle taxonomy cards (post_id = 0) differently
 $defaults = [
     'context' => 'archive',
     'link_url' => $is_taxonomy_card ? '#' : get_permalink($args['post_id']),
-    'image_url' => $is_taxonomy_card ? '' : get_the_post_thumbnail_url($args['post_id'], 'card-thumbnail'),
+    'image_url' => $image_url,
     'image_alt' => $is_taxonomy_card ? '' : get_the_title($args['post_id']),
     'tags' => [],
     'title' => $is_taxonomy_card ? '' : get_the_title($args['post_id']),
@@ -176,7 +253,11 @@ if (!empty($args['data_attributes']) && is_array($args['data_attributes'])) {
         </div>
     <?php else: ?>
         <div class="card__image-container card__placeholder">
-            <i class="fas fa-image" aria-hidden="true"></i>
+            <?php if ($args['type'] === 'article'): ?>
+                <i class="fas fa-newspaper" aria-hidden="true"></i>
+            <?php else: ?>
+                <i class="fas fa-image" aria-hidden="true"></i>
+            <?php endif; ?>
         </div>
     <?php endif; ?>
 

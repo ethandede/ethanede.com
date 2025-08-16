@@ -64,6 +64,37 @@ $tag-article-color: color.adjust($tertiary-color, $hue: 30deg, $lightness: 10%);
   --initial-color: #{$initial-color}; // New variable for initial numbers
   --initial-color-rgb: #{color.channel($initial-color, "red", $space: rgb)}, #{color.channel($initial-color, "green", $space: rgb)}, #{color.channel($initial-color, "blue", $space: rgb)};
   
+  // Legacy/alias variables for backward compatibility
+  --accent-color: var(--primary-color);         // Alias for primary color
+  --text-color: var(--text-primary);            // Alias for primary text
+  --card-background: rgba(var(--white), 0.08);  // Card background
+  --card-bg: var(--card-background);            // Card background alias
+  --heading-color: var(--text-primary);         // Heading color
+  --border-color: rgba(var(--white), 0.2);      // Border color
+  --secondary-color-light: #{color.adjust($secondary-color, $lightness: 15%)}; // Lighter secondary color
+  --text-light: var(--text-secondary);          // Alias for secondary text
+  --primary-color-dark: #{color.adjust($primary-color, $lightness: -15%)}; // Darker primary color
+  
+  // Additional legacy variables
+  --background-color: rgba(var(--black), 0.95); // Main background
+  --background-secondary: rgba(var(--black), 0.9); // Secondary background
+  --color-accent: var(--primary-color);         // Color accent alias
+  --color-background-alt: var(--surface-dark);  // Alt background
+  --color-heading: var(--text-primary);         // Heading color alias
+  --color-primary: var(--primary-color);        // Primary color alias
+  --color-text: var(--text-primary);            // Text color alias
+  --dark-bg: rgba(var(--black), 0.95);          // Dark background
+  --dark-bg-secondary: rgba(var(--black), 0.9); // Secondary dark background
+  --surface-color: var(--surface-light);        // Surface color alias
+  
+  // Typography variables
+  --font-family-heading: "Merriweather", serif; // Heading font family
+  
+  // Watermark variables (if used for overlays/watermarks)
+  --watermark-opacity: 0.1;                     // Watermark opacity
+  --watermark-brightness: 0.3;                  // Watermark brightness
+  --watermark-size: 200px;                      // Watermark size
+  
   // Tag-specific color variables (using brand system)
   --tag-technology-color: #{$tag-technology-color-light};
   --tag-technology-color-rgb: #{color.channel($tag-technology-color-light, "red", $space: rgb)}, #{color.channel($tag-technology-color-light, "green", $space: rgb)}, #{color.channel($tag-technology-color-light, "blue", $space: rgb)};

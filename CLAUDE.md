@@ -45,6 +45,7 @@ npm run watch
 - **ACF (Advanced Custom Fields)**: Heavy use for custom fields, JSON configs in `/acf-json/`
 - **Font Awesome**: Pro icons loaded via CDN
 - **Google Fonts**: Roboto and Merriweather loaded with FOUC prevention
+- **GSAP (GreenSock)**: JavaScript animation library for card hover effects and arrow animations
 
 ## Development Guidelines
 
@@ -70,6 +71,18 @@ npm run watch
 - Taxonomy registration: `functions.php:696-1033`
 - Asset enqueuing: `functions.php:27-77`
 - ACF customizations: `functions.php:639-1372`
+
+### Card System & Animations
+- **Master Card System**: `assets/scss/components/_card.scss` - Unified card styling with context variants
+- **Card Animations**: `assets/js/portfolio-hover.js` - GSAP-powered hover animations for cards
+- **Blog Sidebar Styling**: `assets/scss/pages/_blog.scss` - Blog-specific sidebar with gradient borders
+- **Animation Dependencies**: GSAP loaded as dependency for portfolio-hover script in `functions.php`
+
+### Blog & Sidebar Implementation
+- **Unified Sidebar Design**: Blog sidebars use deliverable sidebar treatment (gradient left border, no background containers)
+- **Card Context Variants**: `.card--sidebar` for compact 2-row sidebar cards with full-color images
+- **Animation Conflict Resolution**: CSS transforms removed to prevent conflicts with GSAP animations
+- **CSS Variables**: 21+ custom properties in `_variables.scss` for consistent theming
 
 ## Development Environment
 
@@ -100,3 +113,6 @@ The theme doesn't have automated tests. Manual testing should include:
 - WordPress admin functionality
 - ACF field validation
 - Asset compilation verification
+- Card hover animations (GSAP-powered)
+- Sidebar card display and animations
+- Featured image display in blog sidebar cards
