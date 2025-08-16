@@ -126,6 +126,7 @@ $defaults = [
     'link_url' => $is_taxonomy_card ? '#' : get_permalink($args['post_id']),
     'image_url' => $image_url,
     'image_alt' => $is_taxonomy_card ? '' : get_the_title($args['post_id']),
+    'hover_gif' => '', // Default empty hover GIF
     'tags' => [],
     'title' => $is_taxonomy_card ? '' : get_the_title($args['post_id']),
     'description' => $is_taxonomy_card ? '' : get_the_excerpt($args['post_id']),
@@ -250,6 +251,15 @@ if (!empty($args['data_attributes']) && is_array($args['data_attributes'])) {
                  srcset="<?php echo esc_url($image_url); ?> 1x, <?php echo esc_url($image_url); ?> 2x"
                  alt="<?php echo esc_attr($args['image_alt']); ?>"
                 class="card__image" loading="lazy">
+            
+            <?php // Add hover GIF overlay for home context portfolio cards only
+            if (!empty($args['hover_gif']) && $args['context'] === 'home' && $args['type'] === 'project'): ?>
+                <div class="card__gif-overlay">
+                    <img src="<?php echo esc_url($args['hover_gif']); ?>" 
+                         alt="<?php echo esc_attr($args['image_alt']); ?> animated"
+                         class="card__gif" loading="lazy">
+                </div>
+            <?php endif; ?>
         </div>
     <?php else: ?>
         <div class="card__image-container card__placeholder">

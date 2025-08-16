@@ -53,9 +53,10 @@ document.addEventListener("DOMContentLoaded", function() {
     item.addEventListener('mouseenter', function() {
       // Find overlay and image elements for additional effects
       const overlay = item.querySelector('.card__overlay, .deliverable-card__overlay');
-      const image = item.querySelector('img');
+      const image = item.querySelector('.card__image'); // Be more specific
       const thumbnail = item.querySelector('.deliverable-card__thumbnail');
       const cardArrow = item.querySelector('.deliverable-card__arrow');
+      const gifOverlay = item.querySelector('.card__gif-overlay'); // Find GIF overlay
       
       // Determine box-shadow values based on current styling
       let hoverShadow = "0 6px 12px rgba(0, 0, 0, 0.3)";
@@ -85,8 +86,17 @@ document.addEventListener("DOMContentLoaded", function() {
         });
       }
       
-      // Animate image filter if it exists (work-archive style)
-      if (image && !thumbnail) {
+      // Animate GIF overlay if it exists (for home portfolio cards)
+      if (gifOverlay) {
+        gsap.to(gifOverlay, {
+          duration: 0.3,
+          opacity: 1,
+          ease: "power2.out"
+        });
+      }
+      
+      // Animate image filter if it exists (work-archive style) - but not if there's a GIF
+      if (image && !thumbnail && !gifOverlay) {
         gsap.to(image, {
           duration: 0.3,
           filter: "grayscale(100%)",
@@ -143,9 +153,10 @@ document.addEventListener("DOMContentLoaded", function() {
     item.addEventListener('mouseleave', function() {
       // Find overlay and image elements for reset
       const overlay = item.querySelector('.card__overlay, .deliverable-card__overlay');
-      const image = item.querySelector('img');
+      const image = item.querySelector('.card__image'); // Be more specific
       const thumbnail = item.querySelector('.deliverable-card__thumbnail');
       const cardArrow = item.querySelector('.deliverable-card__arrow');
+      const gifOverlay = item.querySelector('.card__gif-overlay'); // Find GIF overlay
       
       // Determine default box-shadow values
       let defaultShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
@@ -173,8 +184,17 @@ document.addEventListener("DOMContentLoaded", function() {
         });
       }
       
-      // Reset image filter if it exists (work-archive style)
-      if (image && !thumbnail) {
+      // Reset GIF overlay if it exists (for home portfolio cards)
+      if (gifOverlay) {
+        gsap.to(gifOverlay, {
+          duration: 0.3,
+          opacity: 0,
+          ease: "power2.out"
+        });
+      }
+      
+      // Reset image filter if it exists (work-archive style) - but not if there's a GIF
+      if (image && !thumbnail && !gifOverlay) {
         gsap.to(image, {
           duration: 0.3,
           filter: "grayscale(0%)",

@@ -127,6 +127,9 @@ get_header();
             // Get the category image from ACF field on the taxonomy term
             $category_image = get_field('category_image', 'project_category_' . $category->term_id);
             
+            // Get the hover GIF from ACF field on the taxonomy term
+            $hover_gif = get_field('hover_gif', 'project_category_' . $category->term_id);
+            
             // Find the corresponding regular post for linking by slug
             // Try multiple slug variations to find matching post
             $slug_variations = [];
@@ -180,6 +183,7 @@ get_header();
               'link_url' => $link,
               'image_url' => $category_image,
               'image_alt' => $category->name,
+              'hover_gif' => $hover_gif, // Pass the hover GIF URL
               'tags' => [$category->name],
               'title' => $category->name,
               'description' => $category->description,

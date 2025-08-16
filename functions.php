@@ -1401,6 +1401,71 @@ function validate_video_selection($valid, $value, $field, $input) {
 }
 add_filter('acf/validate_value/name=video_selection', 'validate_video_selection', 10, 4);
 
+// =============================================================================
+// PROJECT CATEGORY ADMIN COLUMNS
+// =============================================================================
+
+// Add custom columns to project_category taxonomy
+add_filter('manage_edit-project_category_columns', 'add_project_category_admin_columns');
+function add_project_category_admin_columns($columns) {
+    $new_columns = array();
+    
+    // Add columns in the desired order
+    $new_columns['cb'] = $columns['cb'];
+    $new_columns['name'] = $columns['name'];
+    $new_columns['category_image'] = 'Image';
+    $new_columns['hover_gif'] = 'Hover GIF';
+    $new_columns['field_display_order'] = 'Display Order';
+    $new_columns['description'] = $columns['description'];
+    $new_columns['slug'] = $columns['slug'];
+    $new_columns['posts'] = $columns['posts'];
+    
+    return $new_columns;
+}
+
+// Populate custom columns
+add_filter('manage_project_category_custom_column', 'populate_project_category_admin_columns', 10, 3);
+function populate_project_category_admin_columns($content, $column_name, $term_id) {
+    switch ($column_name) {
+        case 'category_image':
+            $image = get_field('category_image', 'project_category_' . $term_id);
+            if ($image) {
+                echo '<img src="' . esc_url($image) . '" alt="Category Image" style="max-width: 50px; max-height: 50px; object-fit: cover; border-radius: 4px;">';
+            } else {
+                echo '<span style="color: #999; font-style: italic;">No image</span>';
+            }
+            break;
+            
+        case 'hover_gif':
+            $gif = get_field('hover_gif', 'project_category_' . $term_id);
+            if ($gif) {
+                echo '<img src="' . esc_url($gif) . '" alt="Hover GIF" style="max-width: 50px; max-height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">';
+                echo '<br><small style="color: #666;">GIF</small>';
+            } else {
+                echo '<span style="color: #999; font-style: italic;">No GIF</span>';
+            }
+            break;
+            
+        case 'field_display_order':
+            $order = get_field('field_display_order', 'project_category_' . $term_id);
+            if ($order) {
+                echo '<strong>' . esc_html($order) . '</strong>';
+            } else {
+                echo '<span style="color: #999;">—</span>';
+            }
+            break;
+    }
+    
+    return $content;
+}
+
+// Make columns sortable
+add_filter('manage_edit-project_category_sortable_columns', 'make_project_category_columns_sortable');
+function make_project_category_columns_sortable($columns) {
+    $columns['field_display_order'] = 'field_display_order';
+    return $columns;
+}
+
 // Allow GIF uploads in Media Library
 function allow_gif_uploads($mimes) {
     // Explicitly add GIF support
@@ -1458,9 +1523,6 @@ function acf_svg_support() {
 }
 add_action('acf/init', 'acf_svg_support');
 
-// Add custom columns to project_category taxonomy
-add_filter('manage_edit-project_category_columns', 'add_project_category_taxonomy_columns');
-
 // Clean deliverable content from unwanted CSS classes
 function clean_deliverable_content($content) {
     if (!$content) return '';
@@ -1500,96 +1562,6 @@ function clean_deliverable_content($content) {
     $clean_content = preg_replace('/<span[^>]*>(.*?)<\/span>/', '$1', $clean_content);
     
     return $clean_content;
-}
-function add_project_category_taxonomy_columns($columns) {
-    unset($columns['posts']);
-    $columns['image'] = __('Image', 'ethanede');
-    $columns['display_order'] = __('Display Order', 'ethanede');
-    $columns['posts'] = __('Projects', 'ethanede');
-    return $columns;
-}
-
-add_action('manage_project_category_custom_column', 'manage_project_category_taxonomy_columns', 10, 3);
-function manage_project_category_taxonomy_columns($content, $column_name, $term_id) {
-    switch ($column_name) {
-        case 'image':
-            $image = get_field('category_image', 'project_category_' . $term_id);
-            if ($image) {
-                $content = '<img src="' . esc_url($image) . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" />';
-            } else {
-                $content = '—';
-            }
-            break;
-        case 'display_order':
-            $order = get_field('field_display_order', 'project_category_' . $term_id);
-            $content = $order ? $order : '—';
-            break;
-    }
-    return $content;
-}
-
-// Make order column sortable
-add_filter('manage_edit-project_category_sortable_columns', 'make_project_category_columns_sortable');
-function make_project_category_columns_sortable($columns) {
-    $columns['order'] = 'order';
-    return $columns;
-}
-
-// Add order field to Quick Edit
-add_action('quick_edit_custom_box', 'project_category_quick_edit_fields', 10, 3);
-function project_category_quick_edit_fields($column_name, $screen, $taxonomy) {
-    if ($taxonomy !== 'project_category' || $column_name !== 'order') {
-        return;
-    }
-    ?>
-    <fieldset>
-        <div class="inline-edit-col">
-            <label>
-                <span class="title">Display Order</span>
-                <span class="input-text-wrap">
-                    <input type="number" name="display_order" class="ptitle" value="" min="0" step="1">
-                </span>
-            </label>
-        </div>
-    </fieldset>
-    <?php
-}
-
-// Save Quick Edit data
-add_action('edited_project_category', 'save_project_category_quick_edit');
-function save_project_category_quick_edit($term_id) {
-    if (isset($_POST['display_order'])) {
-        update_field('field_display_order', $_POST['display_order'], 'project_category_' . $term_id);
-    }
-}
-
-// Add JavaScript to populate Quick Edit field with current value
-add_action('admin_footer', 'project_category_quick_edit_javascript');
-function project_category_quick_edit_javascript() {
-    global $current_screen;
-    if ($current_screen->id !== 'edit-project_category') {
-        return;
-    }
-    ?>
-    <script type="text/javascript">
-    jQuery(document).ready(function($) {
-        // Populate quick edit field with current order value
-        $('.editinline').on('click', function() {
-            var $row = $(this).closest('tr');
-            var order = $row.find('.column-order').text().trim();
-            
-            // Handle empty/dash values
-            if (order === '—' || order === '') {
-                order = '';
-            }
-            
-            setTimeout(function() {
-                $('input[name="display_order"]').val(order);
-            }, 100);
-        });
-    });
-    </script>
-    <?php
 }
 
 /**
