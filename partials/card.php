@@ -254,10 +254,8 @@ if (!empty($args['data_attributes']) && is_array($args['data_attributes'])) {
             
             <?php // Add hover GIF overlay for home context portfolio cards only
             if (!empty($args['hover_gif']) && $args['context'] === 'home' && $args['type'] === 'project'): ?>
-                <div class="card__gif-overlay">
-                    <img src="<?php echo esc_url($args['hover_gif']); ?>" 
-                         alt="<?php echo esc_attr($args['image_alt']); ?> animated"
-                         class="card__gif" loading="lazy">
+                <div class="card__gif-overlay" data-gif-src="<?php echo esc_url($args['hover_gif']); ?>">
+                    <div class="card__gif-placeholder" aria-hidden="true"></div>
                 </div>
             <?php endif; ?>
         </div>

@@ -169,6 +169,85 @@
       filter: grayscale(100%) contrast(1.1);
       position: relative;
       z-index: 0;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      
+      &.loaded {
+        opacity: 1;
+      }
+    }
+    
+    .card__gif-placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(106, 119, 154, 0.1);
+      z-index: 0;
+      
+      // Subtle loading animation
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        margin: -10px 0 0 -10px;
+        border: 2px solid rgba(106, 119, 154, 0.3);
+        border-top-color: rgba(106, 119, 154, 0.6);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+    }
+    
+    &.loading .card__gif-placeholder::before {
+      opacity: 1;
+    }
+    
+    &.loaded .card__gif-placeholder {
+      display: none;
+    }
+  }
+  
+  // Keyframe for loading spinner
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  // Mobile-specific GIF overlay improvements
+  @media (max-width: 768px) {
+    .card__gif-overlay {
+      // Slightly longer transition for mobile
+      transition: opacity 0.4s ease;
+      
+      // Touch feedback
+      &.loading {
+        background: rgba(106, 119, 154, 0.05);
+      }
+      
+      .card__gif-placeholder::before {
+        // Larger loading spinner on mobile
+        width: 24px;
+        height: 24px;
+        margin: -12px 0 0 -12px;
+        border-width: 3px;
+      }
+    }
+  }
+  
+  // Touch device optimizations
+  @media (pointer: coarse) {
+    .card__gif-overlay {
+      // Ensure touch targets are accessible
+      &.loaded {
+        touch-action: manipulation;
+      }
     }
   }
 }

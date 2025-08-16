@@ -88,11 +88,14 @@ document.addEventListener("DOMContentLoaded", function() {
       
       // Animate GIF overlay if it exists (for home portfolio cards)
       if (gifOverlay) {
-        gsap.to(gifOverlay, {
-          duration: 0.3,
-          opacity: 1,
-          ease: "power2.out"
-        });
+        // Only animate if the GIF is loaded or loading
+        if (gifOverlay.classList.contains('loaded') || gifOverlay.classList.contains('loading')) {
+          gsap.to(gifOverlay, {
+            duration: 0.3,
+            opacity: 1,
+            ease: "power2.out"
+          });
+        }
       }
       
       // Animate image filter if it exists (work-archive style) - but not if there's a GIF
@@ -186,11 +189,14 @@ document.addEventListener("DOMContentLoaded", function() {
       
       // Reset GIF overlay if it exists (for home portfolio cards)
       if (gifOverlay) {
-        gsap.to(gifOverlay, {
-          duration: 0.3,
-          opacity: 0,
-          ease: "power2.out"
-        });
+        // Only animate if the GIF is loaded or loading
+        if (gifOverlay.classList.contains('loaded') || gifOverlay.classList.contains('loading')) {
+          gsap.to(gifOverlay, {
+            duration: 0.3,
+            opacity: 0,
+            ease: "power2.out"
+          });
+        }
       }
       
       // Reset image filter if it exists (work-archive style) - but not if there's a GIF

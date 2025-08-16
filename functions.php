@@ -73,6 +73,15 @@ function ee_enqueue_assets() {
         null,
         false
     );
+    
+    // Enqueue GIF lazy loader for performance optimization
+    wp_enqueue_script(
+        'gif-lazy-loader',
+        get_theme_file_uri('/assets/js/gif-lazy-loader.js'),
+        [],
+        wp_get_theme()->get('Version'),
+        true // Load in footer for better performance
+    );
 }
 add_action('wp_enqueue_scripts', 'ee_enqueue_assets');
 
@@ -1400,6 +1409,42 @@ function validate_video_selection($valid, $value, $field, $input) {
     return $valid;
 }
 add_filter('acf/validate_value/name=video_selection', 'validate_video_selection', 10, 4);
+
+// =============================================================================
+// PERFORMANCE OPTIMIZATIONS FOR GIF LOADING
+// =============================================================================
+
+// Add resource hints for better performance
+add_action('wp_head', 'add_gif_performance_hints');
+function add_gif_performance_hints() {
+    // Only add hints on pages with portfolio cards
+    if (is_front_page() || is_page_template('templates/page-home.php')) {
+        echo '<link rel="preconnect" href="' . esc_url(wp_upload_dir()['baseurl']) . '" crossorigin>' . "\n";
+        echo '<link rel="dns-prefetch" href="' . esc_url(wp_upload_dir()['baseurl']) . '">' . "\n";
+    }
+}
+
+// Add performance monitoring for GIF loading
+add_action('wp_footer', 'add_gif_performance_monitoring');
+function add_gif_performance_monitoring() {
+    if (is_front_page() && WP_DEBUG) {
+        ?>
+        <script>
+        // Performance monitoring for GIF loading
+        if ('PerformanceObserver' in window) {
+            const observer = new PerformanceObserver((list) => {
+                list.getEntries().forEach((entry) => {
+                    if (entry.name.includes('.gif')) {
+                        console.log(`🎬 GIF Performance: ${entry.name.split('/').pop()} - ${Math.round(entry.duration)}ms`);
+                    }
+                });
+            });
+            observer.observe({entryTypes: ['resource']});
+        }
+        </script>
+        <?php
+    }
+}
 
 // =============================================================================
 // PROJECT CATEGORY ADMIN COLUMNS
