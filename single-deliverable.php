@@ -79,6 +79,7 @@ get_header(); ?>
                                                     </div>
                                                 </div>
                                                 <video class="gallery-video" style="display: none;" 
+                                                       src="<?php echo esc_url($item['url']); ?>"
                                                        data-src="<?php echo esc_url($item['url']); ?>"
                                                        data-type="<?php echo esc_attr($item['mime_type']); ?>"
                                                        playsinline
@@ -92,6 +93,7 @@ get_header(); ?>
                                             </div>
                                         <?php else: ?>
                                             <video controls class="gallery-video"
+                                                   src="<?php echo esc_url($item['url']); ?>"
                                                    playsinline
                                                    webkit-playsinline
                                                    preload="metadata">

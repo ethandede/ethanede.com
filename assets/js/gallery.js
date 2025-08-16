@@ -43,9 +43,19 @@ document.addEventListener('DOMContentLoaded', function() {
                                    /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
                     
                     if (isMobile) {
-                        // Mobile: Simple inline video playback, no overlay
-                        e.stopPropagation(); // Prevent any gallery interactions
-                        e.preventDefault(); // Prevent any default actions
+                        // Mobile: iOS-specific handling
+                        e.stopPropagation();
+                        e.preventDefault();
+                        
+                        console.log('📱 iOS VIDEO CLICK DETECTED');
+                        console.log('User agent:', navigator.userAgent);
+                        console.log('Video element:', video);
+                        
+                        const videoSource = video.querySelector('source');
+                        if (videoSource) {
+                            console.log('Video src:', videoSource.src);
+                            console.log('Video type:', videoSource.type);
+                        }
                         
                         // Force hide poster and play button immediately
                         poster.style.display = 'none';
@@ -100,7 +110,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         setTimeout(forceHideOverlay, 100);
                         setTimeout(forceHideOverlay, 200);
                         
-                        // Show and play video inline with iOS compatibility
+                        // Show video with iOS compatibility
+                        console.log('🎬 Setting up video for mobile...');
                         video.style.display = 'block';
                         video.style.visibility = 'visible';
                         video.controls = true;
@@ -110,16 +121,63 @@ document.addEventListener('DOMContentLoaded', function() {
                         video.setAttribute('webkit-playsinline', '');
                         video.setAttribute('preload', 'metadata');
                         
+                        // Ensure video has src attribute (iOS sometimes needs this)
+                        if (videoSource && !video.src) {
+                            video.src = videoSource.src;
+                            console.log('📼 Set video.src to:', video.src);
+                        }
+                        
+                        console.log('📼 Video setup complete:');
+                        console.log('- src:', video.src);
+                        console.log('- controls:', video.controls);
+                        console.log('- playsinline:', video.hasAttribute('playsinline'));
+                        console.log('- webkit-playsinline:', video.hasAttribute('webkit-playsinline'));
+                        
                         // Optional control restrictions
                         video.setAttribute('controlsList', 'nodownload nofullscreen noremoteplayback');
                         video.setAttribute('disablePictureInPicture', '');
                         
-                        // Load and play video
+                        // Load and play video with comprehensive error handling
+                        console.log('🎬 Loading video...');
                         video.load(); // Ensure video is loaded with new attributes
-                        video.play().catch(e => {
-                            console.log('Video play failed:', e);
-                            // Fallback: just show controls and let user manually play
-                        });
+                        
+                        // Wait for video to be ready and then attempt play
+                        const attemptPlay = () => {
+                            console.log('🎬 Attempting to play video...');
+                            console.log('Video readyState:', video.readyState);
+                            console.log('Video networkState:', video.networkState);
+                            console.log('Video canPlayType for this format:', video.canPlayType(video.querySelector('source')?.type || ''));
+                            
+                            video.play().then(() => {
+                                console.log('✅ Video play SUCCESS');
+                            }).catch(e => {
+                                console.error('❌ Video play FAILED:', e);
+                                console.log('Error name:', e.name);
+                                console.log('Error message:', e.message);
+                                console.log('Video error state:', video.error);
+                                console.log('🔍 Video can play?', video.canPlayType(videoSource?.type || ''));
+                                
+                                // For iOS, this is expected - just show the video with controls
+                            });
+                        };
+                        
+                        // iOS Strategy: Show video with controls, let user play manually
+                        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                            console.log('🍎 iOS detected - showing video with controls for manual play');
+                            // For iOS, just show the video and let user tap to play
+                            // iOS is very restrictive about autoplay
+                        } else {
+                            // Try autoplay for other mobile devices
+                            attemptPlay();
+                            
+                            // Fallback: try again when video can play
+                            video.addEventListener('canplay', () => {
+                                console.log('🎬 Video canplay event fired');
+                                if (video.paused) {
+                                    attemptPlay();
+                                }
+                            }, { once: true });
+                        }
                         
                         // Add event listeners to force hide overlay during video events
                         video.addEventListener('play', () => {

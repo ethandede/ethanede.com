@@ -37,6 +37,7 @@ get_header();
                                 if (strpos($file_type['type'], 'video') !== false) : ?>
                                     <div class="decorative-squares-wrapper">
                                         <video class="project-featured-video" controls
+                                               src="<?php echo esc_url($featured_media); ?>"
                                                playsinline
                                                webkit-playsinline
                                                preload="metadata">
