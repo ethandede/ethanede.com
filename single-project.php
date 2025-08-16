@@ -36,7 +36,10 @@ get_header();
                                 $file_type = wp_check_filetype($featured_media);
                                 if (strpos($file_type['type'], 'video') !== false) : ?>
                                     <div class="decorative-squares-wrapper">
-                                        <video class="project-featured-video" controls>
+                                        <video class="project-featured-video" controls
+                                               playsinline
+                                               webkit-playsinline
+                                               preload="metadata">
                                             <source src="<?php echo esc_url($featured_media); ?>" type="<?php echo esc_attr($file_type['type']); ?>">
                                             Your browser does not support the video tag.
                                         </video>

@@ -80,15 +80,24 @@ get_header(); ?>
                                                 </div>
                                                 <video class="gallery-video" style="display: none;" 
                                                        data-src="<?php echo esc_url($item['url']); ?>"
-                                                       data-type="<?php echo esc_attr($item['mime_type']); ?>">
+                                                       data-type="<?php echo esc_attr($item['mime_type']); ?>"
+                                                       playsinline
+                                                       webkit-playsinline
+                                                       preload="metadata"
+                                                       controls>
                                                     <source src="<?php echo esc_url($item['url']); ?>"
                                                             type="<?php echo esc_attr($item['mime_type']); ?>">
+                                                    Your browser does not support the video tag.
                                                 </video>
                                             </div>
                                         <?php else: ?>
-                                            <video controls class="gallery-video">
+                                            <video controls class="gallery-video"
+                                                   playsinline
+                                                   webkit-playsinline
+                                                   preload="metadata">
                                                 <source src="<?php echo esc_url($item['url']); ?>"
                                                         type="<?php echo esc_attr($item['mime_type']); ?>">
+                                                Your browser does not support the video tag.
                                             </video>
                                         <?php endif; ?>
                                     <?php endif; ?>

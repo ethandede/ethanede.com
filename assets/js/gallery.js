@@ -100,13 +100,26 @@ document.addEventListener('DOMContentLoaded', function() {
                         setTimeout(forceHideOverlay, 100);
                         setTimeout(forceHideOverlay, 200);
                         
-                        // Show and play video inline
+                        // Show and play video inline with iOS compatibility
                         video.style.display = 'block';
                         video.style.visibility = 'visible';
                         video.controls = true;
+                        
+                        // Essential iOS attributes
+                        video.setAttribute('playsinline', '');
+                        video.setAttribute('webkit-playsinline', '');
+                        video.setAttribute('preload', 'metadata');
+                        
+                        // Optional control restrictions
                         video.setAttribute('controlsList', 'nodownload nofullscreen noremoteplayback');
                         video.setAttribute('disablePictureInPicture', '');
-                        video.play();
+                        
+                        // Load and play video
+                        video.load(); // Ensure video is loaded with new attributes
+                        video.play().catch(e => {
+                            console.log('Video play failed:', e);
+                            // Fallback: just show controls and let user manually play
+                        });
                         
                         // Add event listeners to force hide overlay during video events
                         video.addEventListener('play', () => {
@@ -211,6 +224,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Check for video in the overlay carousel (simple video element)
                     const carouselVideo = activeCarouselItem.querySelector('video');
                     if (carouselVideo) {
+                        // Ensure iOS compatibility attributes
+                        carouselVideo.setAttribute('playsinline', '');
+                        carouselVideo.setAttribute('webkit-playsinline', '');
+                        carouselVideo.setAttribute('preload', 'metadata');
+                        
                         // Auto-play video in carousel
                         carouselVideo.play().catch(e => {
                             console.log('Auto-play failed:', e);
@@ -321,6 +339,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Check for video in the overlay carousel (simple video element)
                 const carouselVideo = activeItem.querySelector('video');
                 if (carouselVideo) {
+                    // Ensure iOS compatibility attributes
+                    carouselVideo.setAttribute('playsinline', '');
+                    carouselVideo.setAttribute('webkit-playsinline', '');
+                    carouselVideo.setAttribute('preload', 'metadata');
+                    
                     // Auto-play video in carousel
                     carouselVideo.play().catch(e => {
                         console.log('Auto-play failed:', e);
