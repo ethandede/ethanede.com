@@ -1646,22 +1646,28 @@ add_action('rest_api_init', function () {
             $post_type = $request->get_param('post_type') ?: 'post';
             $modified_after = $request->get_param('modified_after');
             
-            // Clear any object cache to ensure fresh data
+            // Clear all caches to ensure fresh data
             wp_cache_flush();
+            if (function_exists('wp_cache_delete')) {
+                wp_cache_delete('posts', 'posts');
+            }
             
-            $args = array(
+            // Use WP_Query instead of get_posts for better cache control
+            $query_args = array(
                 'post_type' => $post_type,
                 'posts_per_page' => -1,
                 'post_status' => array('publish', 'draft', 'private'),
                 'orderby' => 'modified',
                 'order' => 'DESC',
-                'cache_results' => false,        // Disable caching
-                'update_post_meta_cache' => false, // Don't cache meta
-                'update_post_term_cache' => false  // Don't cache terms
+                'cache_results' => false,
+                'update_post_meta_cache' => false,
+                'update_post_term_cache' => false,
+                'no_found_rows' => true,
+                'suppress_filters' => false
             );
             
             if ($modified_after) {
-                $args['date_query'] = array(
+                $query_args['date_query'] = array(
                     array(
                         'column' => 'post_modified',
                         'after' => $modified_after
@@ -1669,7 +1675,8 @@ add_action('rest_api_init', function () {
                 );
             }
             
-            $posts = get_posts($args);
+            $query = new WP_Query($query_args);
+            $posts = $query->posts;
             $data = array();
             
             foreach ($posts as $post) {
