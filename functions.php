@@ -1199,9 +1199,6 @@ function create_work_page_on_activation() {
         
         $page_id = wp_insert_post($page_data);
         
-        if ($page_id) {
-            error_log('Work page created with ID: ' . $page_id);
-        }
     }
 }
 add_action('after_switch_theme', 'create_work_page_on_activation');
@@ -1556,6 +1553,212 @@ function ensure_svg_upload_for_acf($file) {
 }
 add_filter('wp_handle_upload_prefilter', 'ensure_svg_upload_for_acf');
 
+// n8n Integration REST API Endpoints
+add_action('rest_api_init', function () {
+    // Basic health check endpoint
+    register_rest_route('n8n/v1', '/health', array(
+        'methods' => 'GET',
+        'callback' => function () {
+            return new WP_REST_Response(array(
+                'status' => 'ok',
+                'message' => 'n8n integration is active',
+                'site' => get_bloginfo('name'),
+                'timestamp' => current_time('c')
+            ), 200);
+        },
+        'permission_callback' => '__return_true' // Public endpoint
+    ));
+
+    // Get recent projects
+    register_rest_route('n8n/v1', '/projects', array(
+        'methods' => 'GET',
+        'callback' => function ($request) {
+            $per_page = $request->get_param('per_page') ?: 10;
+            $page = $request->get_param('page') ?: 1;
+            
+            $args = array(
+                'post_type' => 'project',
+                'posts_per_page' => $per_page,
+                'paged' => $page,
+                'post_status' => 'publish'
+            );
+            
+            $projects = get_posts($args);
+            $data = array();
+            
+            foreach ($projects as $project) {
+                $categories = wp_get_post_terms($project->ID, 'project_category');
+                $data[] = array(
+                    'id' => $project->ID,
+                    'title' => $project->post_title,
+                    'slug' => $project->post_name,
+                    'date' => $project->post_date,
+                    'categories' => wp_list_pluck($categories, 'name'),
+                    'url' => get_permalink($project->ID)
+                );
+            }
+            
+            return new WP_REST_Response($data, 200);
+        },
+        'permission_callback' => '__return_true'
+    ));
+
+    // Create a new deliverable (requires authentication)
+    register_rest_route('n8n/v1', '/deliverables', array(
+        'methods' => 'POST',
+        'callback' => function ($request) {
+            $title = sanitize_text_field($request->get_param('title'));
+            $content = wp_kses_post($request->get_param('content'));
+            $status = $request->get_param('status') ?: 'draft';
+            
+            if (empty($title)) {
+                return new WP_Error('missing_title', 'Title is required', array('status' => 400));
+            }
+            
+            $post_data = array(
+                'post_title' => $title,
+                'post_content' => $content,
+                'post_type' => 'deliverable',
+                'post_status' => $status
+            );
+            
+            $post_id = wp_insert_post($post_data);
+            
+            if (is_wp_error($post_id)) {
+                return $post_id;
+            }
+            
+            return new WP_REST_Response(array(
+                'id' => $post_id,
+                'message' => 'Deliverable created successfully',
+                'url' => get_permalink($post_id)
+            ), 201);
+        },
+        'permission_callback' => function () {
+            return current_user_can('edit_posts');
+        }
+    ));
+
+    // Get all content with modification dates for syncing
+    register_rest_route('n8n/v1', '/sync/content', array(
+        'methods' => 'GET',
+        'callback' => function ($request) {
+            $post_type = $request->get_param('post_type') ?: 'post';
+            $modified_after = $request->get_param('modified_after');
+            
+            $args = array(
+                'post_type' => $post_type,
+                'posts_per_page' => -1,
+                'post_status' => array('publish', 'draft', 'private'),
+                'orderby' => 'modified',
+                'order' => 'DESC'
+            );
+            
+            if ($modified_after) {
+                $args['date_query'] = array(
+                    array(
+                        'column' => 'post_modified',
+                        'after' => $modified_after
+                    )
+                );
+            }
+            
+            $posts = get_posts($args);
+            $data = array();
+            
+            foreach ($posts as $post) {
+                $meta = get_post_meta($post->ID);
+                $data[] = array(
+                    'id' => $post->ID,
+                    'title' => $post->post_title,
+                    'content' => $post->post_content,
+                    'excerpt' => $post->post_excerpt,
+                    'slug' => $post->post_name,
+                    'status' => $post->post_status,
+                    'type' => $post->post_type,
+                    'date' => $post->post_date,
+                    'modified' => $post->post_modified,
+                    'meta' => $meta,
+                    'featured_image' => get_the_post_thumbnail_url($post->ID, 'full')
+                );
+            }
+            
+            return new WP_REST_Response(array(
+                'posts' => $data,
+                'count' => count($data),
+                'site' => get_bloginfo('name'),
+                'timestamp' => current_time('c')
+            ), 200);
+        },
+        'permission_callback' => function () {
+            // Require authentication for sync endpoint
+            $api_key = isset($_SERVER['HTTP_X_API_KEY']) ? $_SERVER['HTTP_X_API_KEY'] : '';
+            $valid_key = defined('N8N_API_KEY') ? N8N_API_KEY : 'your-secure-api-key-here';
+            
+            // Check for API key or WordPress authentication
+            return $api_key === $valid_key || current_user_can('edit_posts');
+        }
+    ));
+
+    // Import/update content from sync
+    register_rest_route('n8n/v1', '/sync/import', array(
+        'methods' => 'POST',
+        'callback' => function ($request) {
+            $posts = $request->get_param('posts');
+            $results = array();
+            
+            if (!is_array($posts)) {
+                return new WP_Error('invalid_data', 'Posts must be an array', array('status' => 400));
+            }
+            
+            foreach ($posts as $post_data) {
+                // Check if post exists by slug
+                $existing = get_page_by_path($post_data['slug'], OBJECT, $post_data['type']);
+                
+                $post_array = array(
+                    'post_title' => $post_data['title'],
+                    'post_content' => $post_data['content'],
+                    'post_excerpt' => $post_data['excerpt'],
+                    'post_name' => $post_data['slug'],
+                    'post_status' => $post_data['status'],
+                    'post_type' => $post_data['type']
+                );
+                
+                if ($existing) {
+                    $post_array['ID'] = $existing->ID;
+                    $post_id = wp_update_post($post_array);
+                    $action = 'updated';
+                } else {
+                    $post_id = wp_insert_post($post_array);
+                    $action = 'created';
+                }
+                
+                if (!is_wp_error($post_id) && !empty($post_data['meta'])) {
+                    foreach ($post_data['meta'] as $key => $value) {
+                        update_post_meta($post_id, $key, maybe_unserialize($value[0]));
+                    }
+                }
+                
+                $results[] = array(
+                    'id' => $post_id,
+                    'title' => $post_data['title'],
+                    'action' => $action,
+                    'success' => !is_wp_error($post_id)
+                );
+            }
+            
+            return new WP_REST_Response(array(
+                'results' => $results,
+                'total' => count($results),
+                'timestamp' => current_time('c')
+            ), 200);
+        },
+        'permission_callback' => function () {
+            return current_user_can('edit_posts');
+        }
+    ));
+});
+
 // Additional SVG support for ACF specifically
 function acf_svg_support() {
     // Allow SVG in ACF image fields
@@ -1675,9 +1878,6 @@ function ee_customize_cf7_mail($contact_form) {
         // integrate with CRM, add additional notifications, etc.
         
         // Log the submission for debugging (only if WP_DEBUG is enabled)
-        if (WP_DEBUG) {
-            error_log('Contact form submission received from form ID: ' . $contact_form->id());
-        }
     }
 }
 
@@ -1965,7 +2165,6 @@ function fetch_google_sheets_data() {
             wp_send_json_success($result['data']);
         }
         // If API fails, continue to fallback method
-        error_log('API method failed: ' . $result['error']);
     } else {
         // No API key configured, try CSV export
         $result = fetch_via_csv_export($sheet_id, $sheet_name);
