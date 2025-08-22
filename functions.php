@@ -1646,43 +1646,28 @@ add_action('rest_api_init', function () {
             $post_type = $request->get_param('post_type') ?: 'post';
             $modified_after = $request->get_param('modified_after');
             
-            // Clear all caches to ensure fresh data
-            wp_cache_flush();
-            if (function_exists('wp_cache_delete')) {
-                wp_cache_delete('posts', 'posts');
-            }
+            // Use direct database query to bypass ALL WordPress caching
+            global $wpdb;
             
-            // Use WP_Query instead of get_posts for better cache control
-            $query_args = array(
-                'post_type' => $post_type,
-                'posts_per_page' => -1,
-                'post_status' => array('publish', 'draft', 'private'),
-                'orderby' => 'modified',
-                'order' => 'DESC',
-                'cache_results' => false,
-                'update_post_meta_cache' => false,
-                'update_post_term_cache' => false,
-                'no_found_rows' => true,
-                'suppress_filters' => false
+            $where_conditions = array(
+                $wpdb->prepare("post_type = %s", $post_type),
+                "post_status IN ('publish', 'draft', 'private')"
             );
             
             if ($modified_after) {
-                $query_args['date_query'] = array(
-                    array(
-                        'column' => 'post_modified',
-                        'after' => $modified_after
-                    )
-                );
+                $where_conditions[] = $wpdb->prepare("post_modified > %s", $modified_after);
             }
             
-            $query = new WP_Query($query_args);
-            $posts = $query->posts;
+            $where_clause = implode(' AND ', $where_conditions);
+            
+            $sql = "SELECT * FROM {$wpdb->posts} WHERE {$where_clause} ORDER BY post_modified DESC";
+            $posts = $wpdb->get_results($sql);
             $data = array();
             
             foreach ($posts as $post) {
                 $meta = get_post_meta($post->ID);
                 $data[] = array(
-                    'id' => $post->ID,
+                    'id' => (int) $post->ID,
                     'title' => $post->post_title,
                     'content' => $post->post_content,
                     'excerpt' => $post->post_excerpt,
