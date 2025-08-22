@@ -1646,12 +1646,18 @@ add_action('rest_api_init', function () {
             $post_type = $request->get_param('post_type') ?: 'post';
             $modified_after = $request->get_param('modified_after');
             
+            // Clear any object cache to ensure fresh data
+            wp_cache_flush();
+            
             $args = array(
                 'post_type' => $post_type,
                 'posts_per_page' => -1,
                 'post_status' => array('publish', 'draft', 'private'),
                 'orderby' => 'modified',
-                'order' => 'DESC'
+                'order' => 'DESC',
+                'cache_results' => false,        // Disable caching
+                'update_post_meta_cache' => false, // Don't cache meta
+                'update_post_term_cache' => false  // Don't cache terms
             );
             
             if ($modified_after) {
