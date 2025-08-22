@@ -49,18 +49,30 @@ get_header();
       <?php
       if (is_tax('article_category')) {
         $term = get_queried_object();
-        echo '<span class="page-tag">Category</span>';
+        echo '<div class="single-page-tag-wrapper">';
+        echo '<span class="single-page-tag tag-category">';
+        echo '<i class="fa-duotone fa-folder"></i> Category';
+        echo '</span>';
+        echo '</div>';
         echo '<h1>' . esc_html($term->name) . '</h1>';
         if ($term->description) {
           echo '<p class="supporting-text">' . esc_html($term->description) . '</p>';
         }
       } elseif (is_tax('article_tag')) {
         $term = get_queried_object();
-        echo '<span class="page-tag">Tag</span>';
+        echo '<div class="single-page-tag-wrapper">';
+        echo '<span class="single-page-tag tag-tag">';
+        echo '<i class="fa-duotone fa-tag"></i> Tag';
+        echo '</span>';
+        echo '</div>';
         echo '<h1>' . esc_html($term->name) . '</h1>';
         echo '<p class="supporting-text">Articles tagged with "' . esc_html($term->name) . '"</p>';
       } else {
-        echo '<span class="page-tag">Blog</span>';
+        echo '<div class="single-page-tag-wrapper">';
+        echo '<span class="single-page-tag tag-blog">';
+        echo '<i class="fa-duotone fa-newspaper"></i> Blog';
+        echo '</span>';
+        echo '</div>';
         echo '<h1>Articles & Insights</h1>';
         echo '<p class="supporting-text">Thoughts on web development, technology, and digital solutions.</p>';
       }

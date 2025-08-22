@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   if (primaryInput) {
     primaryInput.addEventListener('input', function() {
-      console.log("Primary color changed to:", this.value);
       document.documentElement.style.setProperty('--primary-color', this.value);
       updateSquaresColor();
     });

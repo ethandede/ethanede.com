@@ -134,12 +134,6 @@ $sidebar_class .= ' ' . $config['sidebar_class'];
                                     <img src="<?php echo esc_url($logo['url']); ?>" alt="<?php echo esc_attr($company->name); ?> logo" class="company-logo">
                                 <?php else : ?>
                                     <?php echo esc_html($company->name); ?>
-                                    <?php if (current_user_can('manage_options')) : ?>
-                                        <!-- Debug info for admins -->
-                                        <small style="display: block; opacity: 0.5; font-size: 10px;">
-                                            Debug: Company ID: <?php echo $company->term_id; ?>, Logo data: <?php echo $logo ? 'exists but invalid' : 'not found'; ?>
-                                        </small>
-                                    <?php endif; ?>
                                 <?php endif; ?>
                             </span>
                         </div>

@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } catch (error) {
-      console.warn('Error setting up mobile contact layout:', error);
+      // Error setting up mobile contact layout
     }
   }
 

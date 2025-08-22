@@ -46,6 +46,7 @@ npm run watch
 - **Font Awesome**: Pro icons loaded via CDN
 - **Google Fonts**: Roboto and Merriweather loaded with FOUC prevention
 - **GSAP (GreenSock)**: JavaScript animation library for card hover effects and arrow animations
+- **Performance APIs**: Intersection Observer, requestIdleCallback, Network Information API
 
 ## Development Guidelines
 
@@ -69,12 +70,15 @@ npm run watch
 ### Critical Functions Location
 - Post type registration: `functions.php:674-1073`
 - Taxonomy registration: `functions.php:696-1033`
-- Asset enqueuing: `functions.php:27-77`
+- Asset enqueuing: `functions.php:27-86`
 - ACF customizations: `functions.php:639-1372`
+- Performance optimizations: `functions.php:1417-1447`
+- Project category admin columns: `functions.php:1453-1504`
 
 ### Card System & Animations
 - **Master Card System**: `assets/scss/components/_card.scss` - Unified card styling with context variants
 - **Card Animations**: `assets/js/portfolio-hover.js` - GSAP-powered hover animations for cards
+- **GIF Lazy Loading**: `assets/js/gif-lazy-loader.js` - Performance-optimized GIF loading system
 - **Blog Sidebar Styling**: `assets/scss/pages/_blog.scss` - Blog-specific sidebar with gradient borders
 - **Animation Dependencies**: GSAP loaded as dependency for portfolio-hover script in `functions.php`
 
@@ -105,14 +109,50 @@ wp core version
 wp term list project_category
 ```
 
+### GIF Hover Functionality & Performance Optimization
+- **Performance-First Design**: Zero impact on Core Web Vitals (TTFB, LCP, FCP)
+- **ACF Integration**: `hover_gif` field in project_category taxonomy for GIF uploads
+- **Lazy Loading System**: `assets/js/gif-lazy-loader.js` with intersection observer and network awareness
+- **Mobile Optimization**: Scroll-triggered and touch-based GIF loading for mobile devices
+- **Caching Strategy**: Map-based GIF caching to prevent duplicate downloads
+- **Resource Management**: DNS prefetch, requestIdleCallback, and proper observer cleanup
+- **Visual Effects**: Grayscale filter with slate blue overlay matching theme aesthetics
+- **Admin Interface**: Visual preview columns showing category images, hover GIFs, and display order
+
+### Homepage Design System
+- **Transparent Header**: Home header has transparent background (override of standard-header mixin)
+- **Portfolio Grid**: Home context cards with special GIF overlay functionality
+- **Context-Aware Styling**: Different card behaviors for home vs. archive vs. sidebar contexts
+- **Performance Monitoring**: Debug logging and performance tracking for GIF loading (WP_DEBUG mode)
+
+## WordPress Admin Enhancements
+
+### Project Category Management
+- **Enhanced Admin Columns**: Visual thumbnails for category images and hover GIFs
+- **Display Order Management**: Sortable display order column for homepage portfolio arrangement
+- **GIF Preview**: 50x50px GIF thumbnails with "GIF" labels for easy identification
+- **Admin Location**: `/wp-admin/edit-tags.php?taxonomy=project_category`
+- **Field Validation**: GIF-only file type restriction for hover_gif field
+- **Fallback Indicators**: "No image" and "No GIF" placeholders for empty fields
+
+### Performance Considerations
+- **Network-Aware Loading**: Only preloads GIFs on 4G+ connections
+- **Mobile-First Strategy**: Longer delays and conservative loading on mobile devices
+- **Debug Mode**: Comprehensive console logging when WP_DEBUG is enabled
+- **Resource Hints**: Automatic DNS prefetch for upload directories on homepage
+- **Cache Management**: Prevents duplicate GIF downloads with intelligent caching
+
 ## Testing Approach
 
 The theme doesn't have automated tests. Manual testing should include:
-- Cross-browser compatibility
+- Cross-browser compatibility (especially mobile Safari and Chrome)
 - Responsive design verification
 - WordPress admin functionality
 - ACF field validation
 - Asset compilation verification
 - Card hover animations (GSAP-powered)
+- GIF loading performance and mobile behavior
 - Sidebar card display and animations
 - Featured image display in blog sidebar cards
+- Core Web Vitals monitoring (LCP, FCP, CLS)
+- Mobile touch interactions and scroll triggers

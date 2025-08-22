@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Early return if gallery elements don't exist
     if (!overlay || !overlayContent || galleryItems.length === 0) {
-        console.log('Gallery elements not found - skipping gallery initialization');
         return;
     }
 
@@ -24,17 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const poster = container.querySelector('.video-poster');
             
             if (playOverlay && video && poster) {
-                // Add debugging function to see what CSS is affecting the overlay
-                window.debugOverlay = function() {
-                    console.log('🔍 OVERLAY DEBUG INFO:');
-                    console.log('Overlay element:', playOverlay);
-                    console.log('Overlay computed styles:', window.getComputedStyle(playOverlay));
-                    console.log('Overlay inline styles:', playOverlay.style.cssText);
-                    console.log('Overlay background:', window.getComputedStyle(playOverlay).background);
-                    console.log('Overlay display:', window.getComputedStyle(playOverlay).display);
-                    console.log('Overlay visibility:', window.getComputedStyle(playOverlay).visibility);
-                    console.log('Overlay opacity:', window.getComputedStyle(playOverlay).opacity);
-                };
                 
                 playOverlay.addEventListener('click', function(e) {
                     // Check if we're on mobile (multiple checks for reliability)
@@ -47,35 +35,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         e.stopPropagation();
                         e.preventDefault();
                         
-                        console.log('📱 iOS VIDEO CLICK DETECTED');
-                        console.log('User agent:', navigator.userAgent);
-                        console.log('Video element:', video);
-                        
                         const videoSource = video.querySelector('source');
-                        if (videoSource) {
-                            console.log('Video src:', videoSource.src);
-                            console.log('Video type:', videoSource.type);
-                        }
                         
                         // Force hide poster and play button immediately
                         poster.style.display = 'none';
                         poster.style.visibility = 'hidden';
                         
-                        // NUCLEAR option: Force hide overlay completely with all possible CSS overrides
-                        console.log('🎯 HIDING OVERLAY INITIALLY');
-                        console.log('Overlay before hide:', playOverlay.style.cssText);
+                        // Force hide overlay completely with all possible CSS overrides
                         playOverlay.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; background: transparent !important; background-image: none !important; pointer-events: none !important;';
-                        console.log('Overlay after hide:', playOverlay.style.cssText);
                         
                         // Double-check after a brief delay and during video events
                         const forceHideOverlay = () => {
-                            console.log('🔥 FORCE HIDING OVERLAY');
-                            console.log('Overlay computed style background:', window.getComputedStyle(playOverlay).background);
-                            console.log('Overlay computed style display:', window.getComputedStyle(playOverlay).display);
                             playOverlay.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; background: transparent !important; background-image: none !important; pointer-events: none !important;';
-                            console.log('Overlay after force hide:', playOverlay.style.cssText);
                             
-                            // NUCLEAR OPTION: Find ANY element in the video container that has a gradient
+                            // Find ANY element in the video container that has a gradient
                             const videoContainer = container;
                             const allElements = videoContainer.querySelectorAll('*');
                             allElements.forEach(el => {
@@ -85,20 +58,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                 
                                 // Check for gradients in background-image
                                 if (computedStyle.backgroundImage && computedStyle.backgroundImage.includes('gradient')) {
-                                    console.log('🎯 FOUND GRADIENT ELEMENT:', el, computedStyle.backgroundImage);
                                     el.style.cssText += 'background-image: none !important; background: transparent !important;';
                                 }
                                 
-                                // Check ::before and ::after for gradients (can't modify directly but can log)
+                                // Check ::before and ::after for gradients
                                 if (beforeStyle.backgroundImage && beforeStyle.backgroundImage.includes('gradient')) {
-                                    console.log('🎯 FOUND GRADIENT ::BEFORE:', el, beforeStyle.backgroundImage);
                                     el.style.cssText += 'position: relative;';
                                     // Add a CSS class to hide ::before
                                     el.classList.add('hide-gradient-before');
                                 }
                                 
                                 if (afterStyle.backgroundImage && afterStyle.backgroundImage.includes('gradient')) {
-                                    console.log('🎯 FOUND GRADIENT ::AFTER:', el, afterStyle.backgroundImage);
                                     el.style.cssText += 'position: relative;';
                                     // Add a CSS class to hide ::after
                                     el.classList.add('hide-gradient-after');
@@ -111,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         setTimeout(forceHideOverlay, 200);
                         
                         // Show video with iOS compatibility
-                        console.log('🎬 Setting up video for mobile...');
                         video.style.display = 'block';
                         video.style.visibility = 'visible';
                         video.controls = true;
@@ -124,46 +93,26 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Ensure video has src attribute (iOS sometimes needs this)
                         if (videoSource && !video.src) {
                             video.src = videoSource.src;
-                            console.log('📼 Set video.src to:', video.src);
                         }
-                        
-                        console.log('📼 Video setup complete:');
-                        console.log('- src:', video.src);
-                        console.log('- controls:', video.controls);
-                        console.log('- playsinline:', video.hasAttribute('playsinline'));
-                        console.log('- webkit-playsinline:', video.hasAttribute('webkit-playsinline'));
                         
                         // Optional control restrictions
                         video.setAttribute('controlsList', 'nodownload nofullscreen noremoteplayback');
                         video.setAttribute('disablePictureInPicture', '');
                         
                         // Load and play video with comprehensive error handling
-                        console.log('🎬 Loading video...');
                         video.load(); // Ensure video is loaded with new attributes
                         
                         // Wait for video to be ready and then attempt play
                         const attemptPlay = () => {
-                            console.log('🎬 Attempting to play video...');
-                            console.log('Video readyState:', video.readyState);
-                            console.log('Video networkState:', video.networkState);
-                            console.log('Video canPlayType for this format:', video.canPlayType(video.querySelector('source')?.type || ''));
-                            
                             video.play().then(() => {
-                                console.log('✅ Video play SUCCESS');
+                                // Video play successful
                             }).catch(e => {
-                                console.error('❌ Video play FAILED:', e);
-                                console.log('Error name:', e.name);
-                                console.log('Error message:', e.message);
-                                console.log('Video error state:', video.error);
-                                console.log('🔍 Video can play?', video.canPlayType(videoSource?.type || ''));
-                                
                                 // For iOS, this is expected - just show the video with controls
                             });
                         };
                         
                         // iOS Strategy: Show video with controls, let user play manually
                         if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                            console.log('🍎 iOS detected - showing video with controls for manual play');
                             // For iOS, just show the video and let user tap to play
                             // iOS is very restrictive about autoplay
                         } else {
@@ -172,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             // Fallback: try again when video can play
                             video.addEventListener('canplay', () => {
-                                console.log('🎬 Video canplay event fired');
                                 if (video.paused) {
                                     attemptPlay();
                                 }
@@ -181,26 +129,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Add event listeners to force hide overlay during video events
                         video.addEventListener('play', () => {
-                            console.log('📹 VIDEO PLAY EVENT');
                             forceHideOverlay();
                         });
                         video.addEventListener('playing', () => {
-                            console.log('📹 VIDEO PLAYING EVENT');
                             forceHideOverlay();
                         });
                         video.addEventListener('timeupdate', () => {
-                            // Only log occasionally to avoid spam
+                            // Only check occasionally to avoid performance issues
                             if (Math.floor(video.currentTime) % 2 === 0) {
-                                console.log('📹 VIDEO TIMEUPDATE:', video.currentTime);
                                 forceHideOverlay();
                             }
                         });
                         video.addEventListener('loadstart', () => {
-                            console.log('📹 VIDEO LOADSTART');
                             forceHideOverlay();
                         });
                         video.addEventListener('canplay', () => {
-                            console.log('📹 VIDEO CANPLAY');
                             forceHideOverlay();
                         });
                         
@@ -289,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Auto-play video in carousel
                         carouselVideo.play().catch(e => {
-                            console.log('Auto-play failed:', e);
+                            // Auto-play failed - user interaction required
                         });
                     }
                 }
@@ -404,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Auto-play video in carousel
                     carouselVideo.play().catch(e => {
-                        console.log('Auto-play failed:', e);
+                        // Auto-play failed - user interaction required
                     });
                 }
             }

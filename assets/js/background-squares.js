@@ -1,13 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-  console.log("backgroundSquares.js loaded");
-  console.log("Device info:", {
-    userAgent: navigator.userAgent,
-    viewport: {
-      width: window.innerWidth,
-      height: window.innerHeight
-    },
-    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-  });
 
   // Helper function to convert hex to RGB string
   function hexToRgbString(hex) {
@@ -143,8 +134,6 @@ document.addEventListener("DOMContentLoaded", function() {
       // Also update squares or any other elements as needed
       updateSquaresColor();
     });
-  } else {
-    console.log("Primary input not found.");
   }
 
   if (secondaryInput) {
@@ -159,7 +148,6 @@ document.addEventListener("DOMContentLoaded", function() {
   
   if (resetButton) {
     resetButton.addEventListener('click', function() {
-      console.log("Resetting colors to default.");
       document.documentElement.style.setProperty('--primary-color', defaultPrimaryColor);
       document.documentElement.style.setProperty('--secondary-color', defaultSecondaryColor);
       document.documentElement.style.setProperty('--primary-color-light', defaultPrimaryColorLight);
@@ -181,9 +169,6 @@ document.addEventListener("DOMContentLoaded", function() {
   const fallbackColor = '#45748C';
   const effectivePrimaryHex = primaryHex || fallbackColor;
   
-  console.log('Primary color from CSS:', primaryHex);
-  console.log('Effective primary color:', effectivePrimaryHex);
-  
   const primaryRGB = hexToRgb(effectivePrimaryHex);
 
   // Select the SVG element that contains the animated squares
@@ -191,7 +176,6 @@ document.addEventListener("DOMContentLoaded", function() {
   
   // Only proceed if SVG element exists
   if (!svg) {
-    console.log('Background animation SVG not found - skipping animation');
     return;
   }
   
@@ -242,17 +226,11 @@ document.addEventListener("DOMContentLoaded", function() {
       ease: "sine.inOut"
     });
   }
-  
-  console.log(`Created ${numSquares} background squares`);
-  console.log('Primary color used:', effectivePrimaryHex);
-  console.log('SVG element:', svg);
-  console.log('Squares in SVG:', svg.querySelectorAll('rect').length);
 
   // Function to update the fill colors of the squares based on the current primary color
   function updateSquaresColor() {
     const primaryHex = getComputedStyle(document.documentElement)
                         .getPropertyValue('--primary-color').trim();
-    console.log('New primary color:', primaryHex);
     const primaryRGB = hexToRgb(primaryHex);
     const variation = 50;
   
@@ -261,7 +239,6 @@ document.addEventListener("DOMContentLoaded", function() {
       const g = Math.max(0, Math.min(255, primaryRGB.g + Math.floor((Math.random() - 0.5) * variation)));
       const b = Math.max(0, Math.min(255, primaryRGB.b + Math.floor((Math.random() - 0.5) * variation)));
       rect.setAttribute("fill", `rgba(${r}, ${g}, ${b}, 0.1)`);
-      console.log('Updated square fill:', rect.getAttribute("fill"));
     });
   }
 });

@@ -19,14 +19,6 @@ class GifLazyLoader {
     this.isMobile = this.detectMobile();
     this.mobileTriggerObserver = null;
     
-    console.log('📱 Device Detection:', {
-      isMobile: this.isMobile,
-      isNetworkGood: this.isNetworkGood,
-      userAgent: navigator.userAgent,
-      touchSupport: 'ontouchstart' in window,
-      maxTouchPoints: navigator.maxTouchPoints,
-      windowWidth: window.innerWidth
-    });
     
     this.init();
   }
@@ -57,12 +49,6 @@ class GifLazyLoader {
     const isSmallScreen = window.innerWidth <= 768;
     const isMobile = isMobileUA || hasTouch || isSmallScreen;
     
-    console.log('📱 Mobile Detection Details:', {
-      userAgent: isMobileUA,
-      touchSupport: hasTouch,
-      smallScreen: isSmallScreen,
-      finalResult: isMobile
-    });
     
     return isMobile;
   }
@@ -122,23 +108,14 @@ class GifLazyLoader {
           const card = entry.target;
           const gifOverlay = card.querySelector('.card__gif-overlay[data-gif-src]');
           
-          console.log('📱 Mobile intersection detected:', {
-            card: card,
-            gifOverlay: gifOverlay,
-            hasDataSrc: gifOverlay?.dataset?.gifSrc,
-            isLoaded: gifOverlay?.classList?.contains('loaded'),
-            isLoading: gifOverlay?.classList?.contains('loading')
-          });
           
           if (gifOverlay && !gifOverlay.classList.contains('loaded') && !gifOverlay.classList.contains('loading')) {
             // Auto-load GIF when scrolled into view on mobile
-            console.log('📱 Mobile scroll trigger: Loading GIF', gifOverlay.dataset.gifSrc);
             this.loadGif(gifOverlay, true);
             
             // Also show the overlay immediately on mobile
             setTimeout(() => {
               if (gifOverlay.classList.contains('loaded')) {
-                console.log('📱 Mobile: Showing GIF overlay');
                 gifOverlay.style.opacity = '1';
               }
             }, 800);
@@ -148,11 +125,9 @@ class GifLazyLoader {
     }, mobileOptions);
 
     // Observe all cards for mobile scroll triggers
-    console.log('📱 Setting up mobile scroll triggers for', cardsWithGifs.length, 'cards');
     cardsWithGifs.forEach((gifOverlay, index) => {
       const card = gifOverlay.closest('.card');
       if (card) {
-        console.log(`📱 Observing card ${index + 1}:`, card);
         this.mobileTriggerObserver.observe(card);
       }
     });
@@ -170,9 +145,7 @@ class GifLazyLoader {
       
       // Touch start - immediate loading
       card.addEventListener('touchstart', () => {
-        console.log('📱 Touch detected on card');
         if (!gifOverlay.classList.contains('loaded') && !gifOverlay.classList.contains('loading')) {
-          console.log('📱 Loading GIF on touch');
           this.loadGif(gifOverlay, true);
           
           // Show immediately on mobile
@@ -186,10 +159,8 @@ class GifLazyLoader {
 
       // Click handler for navigation delay
       card.addEventListener('click', (e) => {
-        console.log('📱 Click detected on card');
         if (!gifOverlay.classList.contains('loaded') && !gifOverlay.classList.contains('loading')) {
           e.preventDefault();
-          console.log('📱 Loading GIF on click');
           this.loadGif(gifOverlay, true);
           
           // Show overlay and then navigate
@@ -198,7 +169,6 @@ class GifLazyLoader {
               gifOverlay.style.opacity = '1';
               // Navigate after showing GIF
               setTimeout(() => {
-                console.log('📱 Navigating to:', card.href);
                 if (card.href) {
                   window.location.href = card.href;
                 }
@@ -237,10 +207,8 @@ class GifLazyLoader {
       const img = new Image();
       img.onload = () => {
         this.gifCache.set(gifSrc, img);
-        console.log(`✅ GIF preloaded: ${gifSrc.split('/').pop()}`);
       };
       img.onerror = () => {
-        console.warn(`❌ Failed to preload GIF: ${gifSrc.split('/').pop()}`);
       };
       img.src = gifSrc;
     }, { timeout: 5000 });
@@ -310,12 +278,10 @@ class GifLazyLoader {
     gifOverlay.classList.add('loaded');
     this.loadedGifs.add(gifSrc);
     
-    console.log(`✅ GIF loaded and displayed: ${gifSrc.split('/').pop()}`);
   }
 
   onGifError(gifOverlay, gifSrc) {
     gifOverlay.classList.remove('loading');
-    console.warn(`❌ Failed to load GIF: ${gifSrc.split('/').pop()}`);
     
     // Optional: Show error state or fallback
     const placeholder = gifOverlay.querySelector('.card__gif-placeholder');
@@ -348,35 +314,27 @@ class GifLazyLoader {
 if (window.IntersectionObserver && window.requestIdleCallback) {
   document.addEventListener('DOMContentLoaded', () => {
     const hasGifs = document.querySelector('.card__gif-overlay[data-gif-src]');
-    console.log('🔍 GIF Lazy Loader: Checking for GIFs...', hasGifs);
     if (hasGifs) {
-      console.log('✅ GIF Lazy Loader: Initializing...');
       new GifLazyLoader();
     } else {
-      console.log('❌ GIF Lazy Loader: No GIFs found');
     }
   });
 } else {
   // Fallback for older browsers - simple touch/hover loading
-  console.warn('GIF lazy loading not supported, using fallback');
   document.addEventListener('DOMContentLoaded', () => {
     const cards = document.querySelectorAll('.card__gif-overlay[data-gif-src]');
-    console.log('📱 Fallback: Found', cards.length, 'cards with GIFs');
     
     cards.forEach((gifOverlay, index) => {
       const card = gifOverlay.closest('.card');
-      console.log(`📱 Fallback: Setting up card ${index + 1}`);
       
       // Mobile-first approach: touch and click
       const loadGifFallback = () => {
         if (!gifOverlay.dataset.loaded) {
-          console.log('📱 Fallback: Loading GIF');
           const img = document.createElement('img');
           img.src = gifOverlay.dataset.gifSrc;
           img.className = 'card__gif loaded';
           img.alt = 'Animated GIF';
           img.onload = () => {
-            console.log('📱 Fallback: GIF loaded');
             gifOverlay.style.opacity = '1';
           };
           gifOverlay.appendChild(img);
@@ -395,7 +353,6 @@ if (window.IntersectionObserver && window.requestIdleCallback) {
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
-              console.log('📱 Fallback: Intersection detected');
               loadGifFallback();
               observer.unobserve(card);
             }

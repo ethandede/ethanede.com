@@ -1,10 +1,4 @@
 <?php
-// Debug information
-error_log('Single Deliverable Template Loaded');
-error_log('Post ID: ' . get_the_ID());
-error_log('Post Type: ' . get_post_type());
-error_log('Post Status: ' . get_post_status());
-
 get_header(); ?>
 
 <main id="deliverable">

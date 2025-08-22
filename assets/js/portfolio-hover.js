@@ -1,11 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
   // Check if GSAP is loaded
   if (typeof gsap === 'undefined') {
-    console.log('GSAP not loaded');
     return;
   }
-  
-  console.log('Portfolio hover script loaded');
   
   // Handle main portfolio/project/deliverable cards (35px movement)
   // Support both old classes and new master card system
@@ -29,9 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // Combine both arrays
   const portfolioItems = [...Array.from(wrapperItems), ...standaloneCardsFiltered];
   
-  console.log('Main portfolio items found:', portfolioItems.length);
   portfolioItems.forEach(function(item, index) {
-    console.log(`Main portfolio item ${index}:`, item.className);
     // Support both old and new arrow selectors
     const arrow = item.querySelector(`
       .portfolio-arrow i, 
@@ -265,9 +260,7 @@ document.addEventListener("DOMContentLoaded", function() {
     .card--sidebar
   `);
   
-  console.log('Sidebar items found:', sidebarItems.length);
   sidebarItems.forEach(function(item, index) {
-    console.log(`Sidebar item ${index}:`, item.className);
     // Support both old and new arrow selectors
     const arrow = item.querySelector(`
       .portfolio-arrow i,

@@ -57,11 +57,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 filters.search = this.value.toLowerCase().trim();
                 applyFilters();
                 
-                // Debug: Log search term and results count
-                if (filters.search) {
-                    const visibleCards = document.querySelectorAll('.card--work[style*="display: block"]');
-                    console.log(`Search for "${filters.search}" found ${visibleCards.length} results`);
-                }
             }, 300);
         });
     }
