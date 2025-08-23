@@ -40,7 +40,6 @@
 @mixin standard-header {
   @include page-padding;
   @include hero-padding;
-  background-color: var(--color-background-alt);
   
   .container {
     @include container;

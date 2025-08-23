@@ -199,7 +199,6 @@
           overflow: hidden;
           border-radius: 0.5rem;
           aspect-ratio: 16/10; // Consistent aspect ratio for thumbnails
-          background-color: var(--color-background-alt);
           transition: transform 0.3s ease, box-shadow 0.3s ease;
 
           // Desktop hover effects only - strictly desktop only
