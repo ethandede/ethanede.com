@@ -1,27 +1,121 @@
 <?php
 
-// Development mode toggle for easier cache busting
+// =============================================================================
+// SECURITY UTILITIES
+// =============================================================================
+
+/**
+ * Validate user permissions for admin actions
+ */
+function ee_validate_admin_permission($capability = 'manage_options') {
+    if (!current_user_can($capability)) {
+        wp_die(__('You do not have sufficient permissions to access this page.'), __('Forbidden'), array('response' => 403));
+    }
+}
+
+/**
+ * Validate nonce and user permissions for AJAX actions
+ */
+function ee_validate_ajax_security($nonce_action, $capability = 'edit_posts') {
+    // Check nonce
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], $nonce_action)) {
+        wp_send_json_error(__('Security check failed'), 403);
+        return false;
+    }
+    
+    // Check user capability
+    if (!current_user_can($capability)) {
+        wp_send_json_error(__('Insufficient permissions'), 403);
+        return false;
+    }
+    
+    return true;
+}
+
+/**
+ * Sanitize and validate integer input
+ */
+function ee_sanitize_int($value, $min = null, $max = null) {
+    $value = intval($value);
+    
+    if ($min !== null && $value < $min) {
+        return $min;
+    }
+    
+    if ($max !== null && $value > $max) {
+        return $max;
+    }
+    
+    return $value;
+}
+
+/**
+ * Generate secure random string for API keys
+ */
+function ee_generate_api_key($length = 32) {
+    return wp_generate_password($length, false, false);
+}
+
+// Environment-based configuration
 function is_development_mode() {
-    // Set to true when actively developing to force cache busting
-    return true; // Change to false when done developing
+    // Check for development indicators in order of preference
+    if (defined('WP_ENVIRONMENT_TYPE')) {
+        return WP_ENVIRONMENT_TYPE === 'development' || WP_ENVIRONMENT_TYPE === 'local';
+    }
+    
+    // Fallback to WP_DEBUG if environment type not set
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        return true;
+    }
+    
+    // Check for local development domains
+    $local_domains = ['localhost', '.local', '.test', '.dev'];
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    foreach ($local_domains as $domain) {
+        if (strpos($host, $domain) !== false) {
+            return true;
+        }
+    }
+    
+    // Default to production mode
+    return false;
 }
 
 function disable_cache_headers() {
-    // Only apply cache headers on front-end, non-REST API requests
-    if (!is_admin() && !defined('REST_REQUEST')) {
+    // Only disable caching in development mode and on front-end, non-REST API requests
+    if (is_development_mode() && !is_admin() && !defined('REST_REQUEST')) {
         header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
-        
-        // Add Safari-specific cache headers
-        if (is_development_mode()) {
-            header("Cache-Control: no-cache, no-store, must-revalidate");
-            header("Pragma: no-cache");
-            header("Expires: 0");
-        }
+        header("Expires: 0");
     }
 }
 add_action('send_headers', 'disable_cache_headers');
+
+/**
+ * Add security headers
+ */
+function ee_add_security_headers() {
+    if (!is_admin() && !defined('REST_REQUEST')) {
+        // Prevent clickjacking
+        header('X-Frame-Options: SAMEORIGIN');
+        
+        // Prevent MIME type sniffing
+        header('X-Content-Type-Options: nosniff');
+        
+        // XSS Protection
+        header('X-XSS-Protection: 1; mode=block');
+        
+        // Referrer Policy
+        header('Referrer-Policy: strict-origin-when-cross-origin');
+        
+        // Only add HSTS in production
+        if (!is_development_mode() && is_ssl()) {
+            header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+        }
+    }
+}
+add_action('send_headers', 'ee_add_security_headers');
 
 // Add theme support and enqueue styles
 function ee_enqueue_assets() {
@@ -56,7 +150,7 @@ function ee_enqueue_assets() {
         true
     );
 
-    // Enqueue Font Awesome Pro
+    // Enqueue Font Awesome Pro with security attributes
     wp_enqueue_script(
         'font-awesome-pro',
         'https://kit.fontawesome.com/297056f51e.js',
@@ -65,7 +159,7 @@ function ee_enqueue_assets() {
         false
     );
     
-    // Enqueue duotone Font Awesome kit
+    // Enqueue duotone Font Awesome kit with security attributes  
     wp_enqueue_script(
         'fontawesome-duotone',
         'https://kit.fontawesome.com/529c155b03.js',
@@ -73,6 +167,9 @@ function ee_enqueue_assets() {
         null,
         false
     );
+    
+    // Add crossorigin attribute to external scripts
+    add_filter('script_loader_tag', 'ee_add_script_attributes', 10, 3);
     
     // Enqueue GIF lazy loader for performance optimization
     wp_enqueue_script(
@@ -84,6 +181,21 @@ function ee_enqueue_assets() {
     );
 }
 add_action('wp_enqueue_scripts', 'ee_enqueue_assets');
+
+/**
+ * Add security attributes to external scripts
+ */
+function ee_add_script_attributes($tag, $handle, $src) {
+    // Add crossorigin for external scripts
+    $external_handles = array('font-awesome-pro', 'fontawesome-duotone');
+    
+    if (in_array($handle, $external_handles)) {
+        // Add crossorigin attribute for external scripts
+        $tag = str_replace(' src=', ' crossorigin="anonymous" src=', $tag);
+    }
+    
+    return $tag;
+}
 
 // =============================================================================
 // GOOGLE FONTS WITH FOUC PREVENTION
@@ -1263,9 +1375,9 @@ add_action('admin_enqueue_scripts', 'enqueue_acf_admin_scripts');
 
 // AJAX handler to get attachment data for video selector
 function get_attachment_data_ajax() {
-    // Verify nonce for security
-    if (!wp_verify_nonce($_POST['nonce'], 'acf_nonce')) {
-        wp_die('Security check failed');
+    // Enhanced security validation
+    if (!ee_validate_ajax_security('acf_nonce', 'upload_files')) {
+        return; // ee_validate_ajax_security handles the error response
     }
     
     $attachment_ids = isset($_POST['attachment_ids']) ? $_POST['attachment_ids'] : [];
@@ -1640,63 +1752,97 @@ add_action('rest_api_init', function () {
     ));
 
     // Get all content with modification dates for syncing
-    register_rest_route('n8n/v1', '/sync/content', array(
-        'methods' => 'GET',
-        'callback' => function ($request) {
-            $post_type = $request->get_param('post_type') ?: 'post';
-            $modified_after = $request->get_param('modified_after');
-            
-            // Use direct database query to bypass ALL WordPress caching
-            global $wpdb;
-            
-            $where_conditions = array(
-                $wpdb->prepare("post_type = %s", $post_type),
-                "post_status IN ('publish', 'draft', 'private')"
+register_rest_route('n8n/v1', '/sync/content', array(
+    'methods' => 'GET',
+    'callback' => function ($request) {
+        // Prevent HTTP caching
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        // Clear caches
+        wp_cache_flush();
+        if (function_exists('wp_cache_clear_cache')) {
+            wp_cache_clear_cache();
+        }
+        if (function_exists('w3tc_flush_all')) {
+            w3tc_flush_all();
+        }
+        if (function_exists('rocket_clean_domain')) {
+            rocket_clean_domain();
+        }
+
+        global $wpdb;
+        $wpdb->flush(); // Clear database query cache
+
+        $post_type = $request->get_param('post_type') ?: 'post';
+        $modified_after = $request->get_param('modified_after');
+
+        $where_conditions = array(
+            $wpdb->prepare("post_type = %s", $post_type),
+            "post_status IN ('publish', 'draft', 'private')"
+        );
+
+        if ($modified_after) {
+            $where_conditions[] = $wpdb->prepare("post_modified > %s", $modified_after);
+        }
+
+        $where_clause = implode(' AND ', $where_conditions);
+        $sql = "SELECT * FROM {$wpdb->posts} WHERE {$where_clause} ORDER BY post_modified DESC";
+        error_log("SQL Query: $sql"); // Log query for debugging
+        $posts = $wpdb->get_results($sql);
+        error_log("Posts Retrieved: " . print_r($posts, true)); // Log results
+
+        $data = array();
+        foreach ($posts as $post) {
+            // Fetch meta directly
+            $meta_query = $wpdb->get_results(
+                $wpdb->prepare("SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id = %d", $post->ID)
             );
-            
-            if ($modified_after) {
-                $where_conditions[] = $wpdb->prepare("post_modified > %s", $modified_after);
+            $meta = [];
+            foreach ($meta_query as $meta_row) {
+                $meta[$meta_row->meta_key] = maybe_unserialize($meta_row->meta_value);
             }
-            
-            $where_clause = implode(' AND ', $where_conditions);
-            
-            $sql = "SELECT * FROM {$wpdb->posts} WHERE {$where_clause} ORDER BY post_modified DESC";
-            $posts = $wpdb->get_results($sql);
-            $data = array();
-            
-            foreach ($posts as $post) {
-                $meta = get_post_meta($post->ID);
-                $data[] = array(
-                    'id' => (int) $post->ID,
-                    'title' => $post->post_title,
-                    'content' => $post->post_content,
-                    'excerpt' => $post->post_excerpt,
-                    'slug' => $post->post_name,
-                    'status' => $post->post_status,
-                    'type' => $post->post_type,
-                    'date' => $post->post_date,
-                    'modified' => $post->post_modified,
-                    'meta' => $meta,
-                    'featured_image' => get_the_post_thumbnail_url($post->ID, 'full')
+
+            // Fetch featured image directly
+            $featured_image_id = $wpdb->get_var(
+                $wpdb->prepare("SELECT meta_value FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = '_thumbnail_id'", $post->ID)
+            );
+            $featured_image_url = '';
+            if ($featured_image_id) {
+                $featured_image_url = $wpdb->get_var(
+                    $wpdb->prepare("SELECT guid FROM {$wpdb->posts} WHERE ID = %d", $featured_image_id)
                 );
             }
-            
-            return new WP_REST_Response(array(
-                'posts' => $data,
-                'count' => count($data),
-                'site' => get_bloginfo('name'),
-                'timestamp' => current_time('c')
-            ), 200);
-        },
-        'permission_callback' => function () {
-            // Require authentication for sync endpoint
-            $api_key = isset($_SERVER['HTTP_X_API_KEY']) ? $_SERVER['HTTP_X_API_KEY'] : '';
-            $valid_key = defined('N8N_API_KEY') ? N8N_API_KEY : 'your-secure-api-key-here';
-            
-            // Check for API key or WordPress authentication
-            return $api_key === $valid_key || current_user_can('edit_posts');
+
+            $data[] = array(
+                'id' => (int) $post->ID,
+                'title' => $post->post_title,
+                'content' => $post->post_content,
+                'excerpt' => $post->post_excerpt,
+                'slug' => $post->post_name,
+                'status' => $post->post_status,
+                'type' => $post->post_type,
+                'date' => $post->post_date,
+                'modified' => $post->post_modified,
+                'meta' => $meta,
+                'featured_image' => $featured_image_url
+            );
         }
-    ));
+
+        return new WP_REST_Response(array(
+            'posts' => $data,
+            'count' => count($data),
+            'site' => get_bloginfo('name'),
+            'timestamp' => current_time('c')
+        ), 200);
+    },
+    'permission_callback' => function () {
+        $api_key = isset($_SERVER['HTTP_X_API_KEY']) ? $_SERVER['HTTP_X_API_KEY'] : '';
+        $valid_key = defined('N8N_API_KEY') ? N8N_API_KEY : '';
+        return $api_key === $valid_key || current_user_can('edit_posts');
+    }
+));
 
     // Import/update content from sync
     register_rest_route('n8n/v1', '/sync/import', array(
@@ -2137,9 +2283,9 @@ add_action('wp_enqueue_scripts', 'enqueue_excel_embed_frontend');
 
 // AJAX handler for fetching Google Sheets data
 function fetch_google_sheets_data() {
-    // Verify nonce
-    if (!wp_verify_nonce($_POST['nonce'], 'excel_embed_nonce')) {
-        wp_die('Security check failed');
+    // Enhanced security validation
+    if (!ee_validate_ajax_security('excel_embed_nonce', 'edit_posts')) {
+        return; // ee_validate_ajax_security handles the error response
     }
     
     $sheet_url = sanitize_url($_POST['sheet_url']);
@@ -2516,11 +2662,16 @@ add_action('admin_menu', 'add_google_sheets_admin_menu');
 
 // Render the admin page
 function render_google_sheets_admin_page() {
+    // Validate admin permissions
+    ee_validate_admin_permission('manage_options');
+    
     if (isset($_POST['submit'])) {
         if (wp_verify_nonce($_POST['google_sheets_nonce'], 'google_sheets_settings')) {
             $api_key = sanitize_text_field($_POST['google_sheets_api_key']);
             update_option('google_sheets_api_key', $api_key);
             echo '<div class="notice notice-success"><p>Google Sheets API key updated successfully!</p></div>';
+        } else {
+            echo '<div class="notice notice-error"><p>Security check failed. Please try again.</p></div>';
         }
     }
     
@@ -2660,3 +2811,130 @@ function ee_login_logo_url_title() {
     return get_bloginfo('name');
 }
 add_filter('login_headertext', 'ee_login_logo_url_title');
+
+// =============================================================================
+// CUSTOM LOGIN URL SECURITY
+// =============================================================================
+
+/**
+ * Custom login URL functionality to hide wp-admin and wp-login.php
+ * This improves security by obscuring the default login endpoints
+ */
+
+// Define custom login slug - change this to your preferred URL
+define('EE_CUSTOM_LOGIN_SLUG', 'secure-admin-access');
+
+/**
+ * Hide default login URLs and redirect to custom URL
+ */
+function ee_hide_default_login() {
+    global $pagenow;
+    
+    // Don't interfere with AJAX requests or if user is already logged in
+    if (defined('DOING_AJAX') && DOING_AJAX) return;
+    if (is_user_logged_in() && !isset($_GET['action'])) return;
+    
+    // Hide wp-login.php unless custom parameter is present
+    if ($pagenow == 'wp-login.php' && !isset($_GET['custom_login'])) {
+        ee_redirect_to_404();
+    }
+    
+    // Hide wp-admin for non-logged-in users
+    if ($pagenow == 'wp-admin' && !is_user_logged_in()) {
+        ee_redirect_to_404();
+    }
+}
+add_action('init', 'ee_hide_default_login', 1);
+
+/**
+ * Handle custom login URL
+ */
+function ee_handle_custom_login() {
+    $request_uri = $_SERVER['REQUEST_URI'];
+    $custom_login_url = '/' . EE_CUSTOM_LOGIN_SLUG . '/';
+    
+    // Check if accessing custom login URL
+    if (strpos($request_uri, $custom_login_url) !== false) {
+        // Redirect to wp-login.php with custom parameter
+        $redirect_url = wp_login_url();
+        $redirect_url = add_query_arg('custom_login', '1', $redirect_url);
+        
+        // Preserve any additional parameters
+        if (!empty($_GET)) {
+            foreach ($_GET as $key => $value) {
+                $redirect_url = add_query_arg($key, $value, $redirect_url);
+            }
+        }
+        
+        wp_redirect($redirect_url);
+        exit;
+    }
+}
+add_action('init', 'ee_handle_custom_login');
+
+/**
+ * Redirect to 404 for blocked login attempts
+ */
+function ee_redirect_to_404() {
+    status_header(404);
+    include(get_404_template());
+    exit;
+}
+
+/**
+ * Add custom login URL to rewrite rules
+ */
+function ee_add_custom_login_rewrite() {
+    add_rewrite_rule(
+        '^' . EE_CUSTOM_LOGIN_SLUG . '/?$',
+        'index.php?custom_login=1',
+        'top'
+    );
+}
+add_action('init', 'ee_add_custom_login_rewrite');
+
+/**
+ * Add custom query var
+ */
+function ee_add_custom_login_query_var($vars) {
+    $vars[] = 'custom_login';
+    return $vars;
+}
+add_filter('query_vars', 'ee_add_custom_login_query_var');
+
+/**
+ * Flush rewrite rules on theme activation
+ */
+function ee_flush_custom_login_rules() {
+    ee_add_custom_login_rewrite();
+    flush_rewrite_rules();
+}
+add_action('after_setup_theme', 'ee_flush_custom_login_rules');
+
+/**
+ * Update login redirect to use custom URL
+ */
+function ee_custom_login_redirect($redirect_to, $request, $user) {
+    // Only redirect if no specific redirect is set and user is valid
+    if (empty($request) && !is_wp_error($user)) {
+        return admin_url();
+    }
+    return $redirect_to;
+}
+add_filter('login_redirect', 'ee_custom_login_redirect', 10, 3);
+
+/**
+ * Block direct access to xmlrpc.php (common attack vector)
+ */
+function ee_block_xmlrpc_access() {
+    if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'xmlrpc.php') !== false) {
+        status_header(403);
+        exit('XML-RPC services are disabled on this site.');
+    }
+}
+add_action('init', 'ee_block_xmlrpc_access');
+
+/**
+ * Remove generator meta tag (hide WordPress version)
+ */
+remove_action('wp_head', 'wp_generator');
