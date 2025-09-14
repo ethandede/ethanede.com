@@ -30,7 +30,7 @@
     justify-content: center;
 
     @media (max-width: 768px) {
-      background: var(--surface-dark); // Solid background on mobile, no transparency
+      background: var(--bg-surface-dark); // Solid background on mobile, no transparency
       align-items: flex-start;
       padding: 0;
       overflow: hidden; // Prevent any scrolling on the overlay
@@ -59,7 +59,7 @@
       height: 100vh; // Use full viewport height
       max-height: none; // Remove height constraint
       padding: 0; // Reduced top/bottom padding
-      background: var(--surface-dark); // Solid background on mobile
+      background: var(--bg-surface-dark); // Solid background on mobile
       border: none;
       border-radius: 0;
       box-shadow: none;
@@ -117,7 +117,7 @@
         font-style: italic;
         text-align: left;
         padding-left: 1rem;
-        border-left: 4px solid var(--primary-color);
+        border-left: 4px solid var(--color-primary);
         margin-bottom: 2.5rem;
 
         @media (max-width: 768px) {
@@ -134,7 +134,7 @@
         background: none;
         border: none;
         font-size: 2rem;
-        color: var(--primary-color);
+        color: var(--color-primary);
         cursor: pointer;
         padding: 0;
         line-height: 1;
@@ -142,8 +142,8 @@
 
         .fa-duotone {
           // --fa-secondary-opacity: 1;
-          --fa-primary-color: var(--secondary-color);
-          --fa-secondary-color: var(--secondary-color);
+          --fa-primary-color: var(--color-secondary);
+          --fa-secondary-color: var(--color-secondary);
         }
 
         @media (max-width: 768px) {
@@ -151,7 +151,7 @@
         }
 
         &:hover {
-          color: var(--primary-color);
+          color: var(--color-primary);
         }
       }
     }
@@ -204,7 +204,7 @@
           }
 
           &:focus {
-            border-color: var(--primary-color);
+            border-color: var(--color-primary);
             background: rgba(255, 255, 255, 0.3);
             outline: none;
           }
@@ -261,7 +261,7 @@
         justify-content: center;
         background: transparent;
         border: 2px solid rgba(255, 255, 255, 0.5); // Match brand border styling
-        color: var(--primary-color); // Match brand text color
+        color: var(--color-primary); // Match brand text color
         font-family: vars.$body-font;
         font-size: 1rem;
         font-weight: 500;
@@ -289,8 +289,8 @@
         // Style for the cloned cancel button
         &.cancel-btn {
           background: rgba(255, 255, 255, 0.05); // Very low opacity white background
-          border: 1px solid var(--primary-color); // Match cta-button border
-          color: var(--primary-color);
+          border: 1px solid var(--color-primary); // Match cta-button border
+          color: var(--color-primary);
           font-family: vars.$header-font; // Match cta-button font
           font-size: 1rem;
           font-weight: normal; // Match cta-button weight
@@ -316,8 +316,8 @@
             transition: transform 0.3s ease-in-out; // Match cta-button transition
             
             // Duotone icon styling
-            // --fa-primary-color: var(--primary-color);
-            // --fa-secondary-color: var(--secondary-color);
+            // --fa-primary-color: var(--color-primary);
+            // --fa-secondary-color: var(--color-secondary);
             // --fa-secondary-opacity: 0.8;
           }
           
@@ -410,7 +410,7 @@
 
     // CF7 Error Message Branding  
     .wpcf7-not-valid-tip {
-      color: var(--secondary-color); // Using secondary (magenta) for errors
+      color: var(--color-secondary); // Using secondary (magenta) for errors
       font-family: vars.$body-font;
       font-size: 0.875rem;
       font-weight: 500;
@@ -434,7 +434,7 @@
       form.unaccepted .wpcf7-response-output,
       form.payment-required .wpcf7-response-output,
       form.failed .wpcf7-response-output {
-        color: var(--secondary-color);
+        color: var(--color-secondary);
         font-family: vars.$body-font;
         font-weight: 500;
         background: rgba(255, 107, 107, 0.1);
@@ -452,7 +452,7 @@
 
       // Success state branding
       form.sent .wpcf7-response-output {
-        color: var(--tertiary-color);
+        color: var(--color-tertiary);
         font-family: vars.$body-font;
         font-weight: 500;
         background: rgba(76, 175, 80, 0.1);
@@ -470,12 +470,12 @@
 
       // Input field error states
       .wpcf7-form-control.wpcf7-not-valid {
-        border-color: var(--secondary-color) !important;
+        border-color: var(--color-secondary) !important;
         background: rgba(255, 107, 107, 0.05) !important;
         box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.1) !important;
         
         &:focus {
-          border-color: var(--secondary-color) !important;
+          border-color: var(--color-secondary) !important;
           background: rgba(255, 107, 107, 0.1) !important;
           box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2) !important;
         }
@@ -483,7 +483,7 @@
 
       // Spam protection styling
       form.spam .wpcf7-response-output {
-        color: var(--quaternary-color);
+        color: var(--color-quaternary);
         font-family: vars.$body-font;
         font-weight: 500;
         background: rgba(255, 152, 0, 0.1);
@@ -563,7 +563,7 @@
 // Contact Trigger Buttons
 .contact-trigger {
   @include cta-button-styles;
-  background-color: rgba(var(--secondary-color-rgb), 0.1);
+  background-color: rgba(var(--color-secondary-rgb), 0.1);
   display: inline-flex;
   align-items: center;
   gap: 8px;

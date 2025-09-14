@@ -2938,3 +2938,80 @@ add_action('init', 'ee_block_xmlrpc_access');
  * Remove generator meta tag (hide WordPress version)
  */
 remove_action('wp_head', 'wp_generator');
+
+/**
+ * SEO Enhancements for better indexing
+ */
+function ee_seo_enhancements() {
+    // Add canonical URL to all pages
+    if (!function_exists('yoast_seo_canonical') && !class_exists('WPSEO_Options')) {
+        echo '<link rel="canonical" href="' . esc_url(get_permalink()) . '" />' . "\n";
+    }
+    
+    // Add dynamic meta descriptions if Yoast isn't handling it
+    if (!function_exists('_yoast_wpseo_metadesc')) {
+        $description = '';
+        
+        if (is_home() || is_front_page()) {
+            $description = 'Ethan Ede - Digital strategist with 20+ years experience in web development, digital marketing, and AI-driven innovation. Partner with industry leaders like Experian, Staples, and NBA.';
+        } elseif (is_singular()) {
+            global $post;
+            if (has_excerpt()) {
+                $description = wp_strip_all_tags(get_the_excerpt());
+            } else {
+                $description = wp_trim_words(wp_strip_all_tags($post->post_content), 30);
+            }
+        } elseif (is_tax() || is_category() || is_tag()) {
+            $description = wp_strip_all_tags(term_description());
+            if (empty($description)) {
+                $term = get_queried_object();
+                $description = 'Browse ' . $term->name . ' on Ethan Ede\'s portfolio';
+            }
+        } elseif (is_archive()) {
+            $description = 'Archive of web development projects and digital solutions by Ethan Ede';
+        }
+        
+        if (!empty($description)) {
+            echo '<meta name="description" content="' . esc_attr($description) . '" />' . "\n";
+        }
+    }
+    
+    // Add Open Graph tags for better social sharing (helps with discovery)
+    echo '<meta property="og:title" content="' . esc_attr(wp_get_document_title()) . '" />' . "\n";
+    echo '<meta property="og:url" content="' . esc_url(get_permalink()) . '" />' . "\n";
+    echo '<meta property="og:site_name" content="' . esc_attr(get_bloginfo('name')) . '" />' . "\n";
+    echo '<meta property="og:type" content="website" />' . "\n";
+    
+    if (has_post_thumbnail()) {
+        $image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
+        if ($image) {
+            echo '<meta property="og:image" content="' . esc_url($image[0]) . '" />' . "\n";
+        }
+    }
+}
+add_action('wp_head', 'ee_seo_enhancements', 5);
+
+/**
+ * Add structured data for better Google understanding
+ */
+function ee_add_structured_data() {
+    if (is_singular('project') || is_singular('deliverable')) {
+        ?>
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "CreativeWork",
+            "name": "<?php echo esc_js(get_the_title()); ?>",
+            "author": {
+                "@type": "Person",
+                "name": "Ethan Ede"
+            },
+            "datePublished": "<?php echo esc_js(get_the_date('c')); ?>",
+            "dateModified": "<?php echo esc_js(get_the_modified_date('c')); ?>",
+            "url": "<?php echo esc_js(get_permalink()); ?>"
+        }
+        </script>
+        <?php
+    }
+}
+add_action('wp_head', 'ee_add_structured_data');

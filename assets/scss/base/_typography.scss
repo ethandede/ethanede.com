@@ -58,7 +58,7 @@ h1 {
   line-height: $line-height-tight;  // Tighter for large headings
   margin-bottom: 0.5rem;
   
-  @media (max-width: 1024px) {
+  @include breakpoints.lg {
     font-size: 2.25rem;
     line-height: 1.15;  // Slightly looser on mobile for readability
   }
@@ -69,7 +69,7 @@ h2 {
   line-height: $line-height-heading;  // Use variable
   margin-bottom: 0.5rem;
   
-  @media (max-width: 1024px) {
+  @include breakpoints.lg {
     font-size: 1.875rem;
     line-height: 1.25;  // Slightly looser on mobile
   }
@@ -80,7 +80,7 @@ h3 {
   line-height: $line-height-heading;  // Use variable
   margin-bottom: 0.4rem;
   
-  @media (max-width: 1024px) {
+  @include breakpoints.lg {
     font-size: 1.5rem;
     line-height: 1.3;  // Slightly looser on mobile
   }
@@ -145,7 +145,7 @@ ul:not(nav ul):not(.menu):not(.nav):not([class*="nav"]):not([class*="menu"]):not
       position: absolute;
       left: 0.83rem; // Fine-tuned positioning
       top: 0.2em;
-      color: var(--primary-color);
+      color: var(--color-primary);
       font-size: 0.8em;
     }
   }
@@ -163,7 +163,7 @@ ol:not(nav ol):not(.menu ol):not(.nav ol):not([class*="nav"] ol):not([class*="me
     font-weight: 400;
     
     &::marker {
-      color: var(--primary-color);
+      color: var(--color-primary);
       font-weight: 600;
     }
   }
@@ -174,7 +174,7 @@ ol:not(nav ol):not(.menu ol):not(.nav ol):not([class*="nav"] ol):not([class*="me
   font-style: italic;
   text-align: left;
   padding-left: 1rem;
-  border-left: 4px solid var(--primary-color);
+  border-left: 4px solid var(--color-primary);
   margin-bottom: 2.5rem;
   max-width: 650px;
 }
@@ -192,14 +192,14 @@ li a,
 blockquote a,
 .home-header .home-header__content a:not(.cta-button):not(.contact-trigger),
 .supporting-text a {
-  color: var(--secondary-color);
+  color: var(--color-secondary);
   text-decoration: none;
-  border-bottom: 1px dashed var(--secondary-color);
+  border-bottom: 1px dashed var(--color-secondary);
   transition: all 0.3s ease;
   
   &:hover {
-    color: var(--secondary-color-light);
-    border-bottom-color: var(--secondary-color-light);
+    color: var(--color-secondary-light);
+    border-bottom-color: var(--color-secondary-light);
     border-bottom-style: solid;
   }
   
@@ -236,7 +236,7 @@ nav a,
 
 // But preserve the list item borders in mobile menu
 .mobile-menu__links li {
-  border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.3) !important;
+  border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.3) !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
   padding-bottom: 5px !important;
   
@@ -282,16 +282,16 @@ p .link-button,
 li .link-button {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background: var(--secondary-color);
+  background: var(--color-secondary);
   color: white;
-  border: 1px solid var(--secondary-color);
+  border: 1px solid var(--color-secondary);
   border-radius: 4px;
   text-decoration: none;
   transition: all 0.3s ease;
   
   &:hover {
-    background: var(--secondary-color-light);
-    border-color: var(--secondary-color-light);
+    background: var(--color-secondary-light);
+    border-color: var(--color-secondary-light);
     color: white;
     transform: translateY(-1px);
   }
@@ -342,7 +342,7 @@ li .link-inverted {
     margin-bottom: 1rem;
     max-width: 50%;
     
-    @media (max-width: 768px) {
+    @include breakpoints.sm {
       float: none;
       margin-right: 0;
       margin-bottom: 1.5rem;
@@ -358,7 +358,7 @@ li .link-inverted {
     margin-bottom: 1rem;
     max-width: 50%;
     
-    @media (max-width: 768px) {
+    @include breakpoints.sm {
       float: none;
       margin-left: 0;
       margin-bottom: 1.5rem;
@@ -387,7 +387,7 @@ li .link-inverted {
       margin-bottom: 1rem;
       max-width: 50%;
       
-      @media (max-width: 768px) {
+      @include breakpoints.sm {
         float: none;
         margin-right: 0;
         margin-bottom: 1.5rem;
@@ -402,7 +402,7 @@ li .link-inverted {
       margin-bottom: 1rem;
       max-width: 50%;
       
-      @media (max-width: 768px) {
+      @include breakpoints.sm {
         float: none;
         margin-left: 0;
         margin-bottom: 1.5rem;

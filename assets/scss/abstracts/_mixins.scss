@@ -1,10 +1,12 @@
+@use "breakpoints" as *;
+
 // Container Mixins
 @mixin container {
   max-width: 1300px;
   margin: 0 auto;
   width: 100%;
 
-  @media screen and (max-width: 1370px) {
+  @include xxl {
     max-width: 90vw;
   }
 }
@@ -13,7 +15,7 @@
 @mixin page-padding {
   padding-top: 80px; // Account for fixed navigation on desktop
   
-  @media (max-width: 1024px) {
+  @include lg {
     padding-top: 0; // Remove padding on mobile since nav is at bottom
   }
 }
@@ -22,7 +24,7 @@
 @mixin hero-padding {
   padding: 4rem 0 2rem; // Standard hero padding
   
-  @media (max-width: 768px) {
+  @include sm {
     padding: 2rem 0 1rem; // Reduced padding on mobile
   }
 }
@@ -31,7 +33,7 @@
 @mixin page-header-padding {
   padding: 6rem 0 4rem; // Larger padding for page headers
   
-  @media (max-width: 768px) {
+  @include sm {
     padding: 4rem 0 3rem; // Reduced padding on mobile
   }
 }
@@ -47,14 +49,27 @@
   
   h1 {
     font-weight: 800;
-    color: var(--color-text);
+    color: var(--text-primary);
     margin: 0;
     margin-top: 0.25rem;
     text-align: left;
   }
 }
 
-// Card Grid Mixins - Standardize grid layouts across the theme
+/**
+ * RESPONSIVE CARD GRID SYSTEM
+ * 
+ * Responsive card grid layout with automatic column sizing
+ * 
+ * @param {length} $min-width - Minimum card width for auto-fit (default: 320px)
+ * @param {length} $gap - Desktop grid gap (default: 24px)  
+ * @param {length} $mobile-gap - Mobile grid gap (default: 16px)
+ * @param {length} $max-width - Maximum card width (default: 400px)
+ * 
+ * Usage:
+ * .grid { @include card-grid(); }                    // Standard grid
+ * .grid { @include card-grid(300px, 20px, 12px); }   // Custom spacing
+ */
 @mixin card-grid($min-width: 320px, $gap: 24px, $mobile-gap: 16px, $max-width: 400px) {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
@@ -66,7 +81,7 @@
     justify-self: start; // Align cards to the start of their grid cell
   }
 
-  @media (max-width: 768px) {
+  @include sm {
     grid-template-columns: 1fr;
     gap: $mobile-gap;
     
@@ -76,25 +91,28 @@
   }
 }
 
-// Standard deliverables grid mixin
-@mixin deliverables-grid {
-  @include card-grid(320px, 24px, 16px);
+/**
+ * CONTENT GRID VARIANTS
+ * 
+ * Standardized grid layouts for different content contexts.
+ * All use consistent parameters but named for clarity.
+ */
+
+// Standard content grid (deliverables, portfolio, work)
+@mixin content-grid($variant: 'standard') {
+  @if $variant == 'small' {
+    @include card-grid(320px, 20px, 16px); // Tighter spacing for home/AI tools
+  } @else {
+    @include card-grid(320px, 24px, 16px); // Standard spacing
+  }
 }
 
-// Portfolio grid mixin
-@mixin portfolio-grid {
-  @include card-grid(320px, 24px, 16px);
-}
-
-// Work grid mixin
-@mixin work-grid {
-  @include card-grid(320px, 24px, 16px);
-}
-
-// Small grid mixin (for home page, AI tools)
-@mixin small-grid {
-  @include card-grid(320px, 20px, 16px);
-}
+// Legacy mixins - maintained for backward compatibility
+// TODO: Replace usage with content-grid() mixin
+@mixin deliverables-grid { @include content-grid(); }
+@mixin portfolio-grid { @include content-grid(); }
+@mixin work-grid { @include content-grid(); }
+@mixin small-grid { @include content-grid('small'); }
 
 // Apply container mixin to .container class
 .container {

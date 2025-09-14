@@ -81,7 +81,7 @@
           padding: 0;
 
           &:hover {
-            color: var(--primary-color);
+            color: var(--color-primary);
             background: none;
             border: none;
           }
@@ -103,7 +103,7 @@
             &:hover {
               background: none;
               border: none;
-              color: var(--primary-color);
+              color: var(--color-primary);
 
               i {
                 transform: translateX(5px);

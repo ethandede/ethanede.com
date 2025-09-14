@@ -1,41 +1,75 @@
-// Abstracts
+// =============================================================================
+// ETHAN EDE WORDPRESS THEME - MAIN STYLESHEET
+// =============================================================================
+/*
+ * Architecture: ITCSS-inspired structure with modern Sass modules
+ * 
+ * Layer Order (specificity ascending):
+ * 1. Abstracts - Variables, mixins, functions (no CSS output)
+ * 2. Base - Resets, typography, global styles
+ * 3. Components - UI components (cards, buttons, tags) 
+ * 4. Layout - Page structure (header, footer, navigation)
+ * 5. Pages - Page-specific styles
+ * 6. Utilities - Helper classes and overrides
+ * 
+ * Key Systems:
+ * - Master Card System: Unified card styling with context variants
+ * - Tag System: Semantic color-coded taxonomy tags  
+ * - GIF Hover System: Performance-optimized category GIF overlays
+ * - Responsive Grid System: Mobile-first layout approach
+ */
+
+// =============================================================================
+// ABSTRACTS - Variables, mixins, functions (no CSS output)
+// =============================================================================
 @use 'abstracts/variables';
-@use 'abstracts/mixins';
+@use 'abstracts/mixins'; 
 @use 'abstracts/breakpoints';
 
-// Base
+// =============================================================================
+// BASE - Resets, typography, global styles
+// =============================================================================
 @use 'base/reset';
 @use 'base/typography';
 
-// Components
-@use 'components/card';
-@use 'components/tags';
-@use 'components/buttons';
+// =============================================================================  
+// COMPONENTS - UI components with reusable patterns
+// =============================================================================
+@use 'components/card';        // Master card system with context variants
+@use 'components/tags';        // Unified taxonomy tag styling
+@use 'components/buttons';     // CTA and interactive buttons  
 @use 'components/color-controls';
-@use 'components/sidebar';
+@use 'components/sidebar';     // Sidebar-specific components
 @use 'components/decorative-squares';
-@use 'components/work-filter';
+@use 'components/work-filter'; // Portfolio filtering interface
 
-// Layout
-@use 'layout/header';
-@use 'layout/footer';
-@use 'layout/site-nav';
-@use 'layout/mobile-menu';
-@use 'layout/background-animation';
+// =============================================================================
+// LAYOUT - Page structure and navigation
+// =============================================================================
+@use 'layout/header';           // Site header and hero sections
+@use 'layout/footer';           // Site footer 
+@use 'layout/site-nav';         // Main navigation (desktop)
+@use 'layout/mobile-menu';      // Mobile navigation drawer
+@use 'layout/background-animation'; // Animated background elements
 
-// Pages
-@use 'pages/home';
-@use 'pages/about';
-@use 'pages/portfolio';
-@use 'pages/contact';
-@use 'pages/blog';
-@use 'pages/ai-tools';
-@use 'pages/single';
-@use 'pages/single-project';
-@use 'pages/single-deliverable';
-@use 'pages/work-archive';
+// =============================================================================
+// PAGES - Template-specific styles
+// =============================================================================
+@use 'pages/home';              // Homepage with GIF hover system
+@use 'pages/about';             // About page layout
+@use 'pages/portfolio';         // Portfolio archive 
+@use 'pages/contact';           // Contact form page
+@use 'pages/blog';              // Blog archive and sidebar
+@use 'pages/ai-tools';          // AI tools showcase
+@use 'pages/single';            // Single post template
+@use 'pages/single-project';    // Project detail pages
+@use 'pages/single-deliverable'; // Deliverable detail pages
+@use 'pages/work-archive';      // Work archive with filtering
 
-// Tailwind
+// =============================================================================
+// UTILITIES - Tailwind integration and helper classes
+// =============================================================================
+// NOTE: Tailwind is integrated here but consider separating for better performance
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -6,7 +6,10 @@
     "scss": "npx gulp styles",
     "tailwind": "npx tailwindcss -i ./assets/css/tailwind.css -o ./assets/css/tailwind-output.css --minify",
     "build": "npm run scss && npm run tailwind",
-    "watch": "gulp watch"
+    "build:dev": "npm run scss && npx tailwindcss -i ./assets/css/tailwind.css -o ./assets/css/tailwind-output.css",
+    "watch": "gulp watch",
+    "analyze": "npx tailwindcss -i ./assets/css/tailwind.css -o ./assets/css/tailwind-output.css --minify --verbose",
+    "update-browserslist": "npx update-browserslist-db@latest"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.17",

@@ -1,3 +1,4 @@
+@use "sass:map";
 @use "../abstracts/variables" as vars;
 @use "../abstracts/mixins";
 @use "../abstracts/breakpoints";
@@ -33,14 +34,14 @@
 @mixin tag-style($style) {
   @if $style == 'homepage' or $style == 'card' {
     // Homepage/card style - using secondary color with opacity
-    background: rgba(var(--secondary-color-rgb), 0.5);
-    border: 1px solid rgba(var(--secondary-color-rgb), 0.7);
+    background: rgba(var(--color-secondary-rgb), 0.5);
+    border: 1px solid rgba(var(--color-secondary-rgb), 0.7);
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     color: var(--text-primary);
     
     &:hover {
-      background: rgba(var(--secondary-color-rgb), 0.85);
-      border-color: rgba(var(--secondary-color-rgb), 0.9);
+      background: rgba(var(--color-secondary-rgb), 0.85);
+      border-color: rgba(var(--color-secondary-rgb), 0.9);
     }
   } @else if $style == 'sidebar' {
     // Sidebar style - subtle background with border
@@ -72,155 +73,88 @@
   }
 }
 
-// Tag color variants - All colors now use CSS variables from _variables.scss
-// Color mapping with new brand system (swapped project/deliverable):
-// - project/project-category: --tag-project-color (magenta #BF3978)
-// - deliverable/deliverable-type: --tag-deliverable-color (amber #f59e0b)
-// - technology/tool: --tag-technology-color (blue-gray #45748C)
-// - skill: --tag-skill-color (teal-green #10b981)
-// - company: --primary-color (blue-gray #45748C)
-@mixin tag-color($color-type) {
+/**
+ * UNIFIED TAG COLOR SYSTEM
+ * 
+ * Generates consistent tag styling across all contexts with brand colors.
+ * 
+ * Color mapping:
+ * - project/project-category: --tag-project-color (magenta #BF3978)
+ * - deliverable/deliverable-type: --tag-deliverable-color (amber #f59e0b)
+ * - technology/tool: --tag-technology-color (blue-gray #45748C)
+ * - skill: --tag-skill-color (teal-green #10b981)
+ * - company: --primary-color (blue-gray #45748C)
+ * - article: --tag-article-color (teal variant)
+ * 
+ * Usage:
+ * @include tag-color-variant('project'); // Generates all contexts for project tags
+ * @include tag-color-variant('deliverable'); // Generates all contexts for deliverable tags
+ */
+
+// Master tag color variant generator
+@mixin tag-color-variant($color-type, $custom-settings: ()) {
+  $color-var: null;
+  $special-sidebar-settings: ();
+  
+  // Map color types to CSS variables
   @if $color-type == 'project' or $color-type == 'project-category' {
-    // Magenta for projects/categories using project color
-    &.tag-style-homepage,
-    &.tag-style-card {
-      background: rgba(var(--tag-project-color-rgb), .3);
-      border-color: rgba(var(--tag-project-color-rgb), .5);
-      
-      &:hover {
-        background: rgba(var(--tag-project-color-rgb), 0.85);
-      }
-    }
-    
-    &.tag-style-sidebar {
-      background-color: rgba(var(--tag-project-color-rgb), .1);
-      border-color: rgba(var(--tag-project-color-rgb), .2);
-      color: rgba(var(--tag-project-color-rgb), 0.7);
-      
-      &:hover {
-        background-color: var(--tag-project-color);
-        border-color: var(--tag-project-color);
-        color: var(--text-primary);
-      }
-    }
+    $color-var: --tag-project-color;
   } @else if $color-type == 'deliverable' or $color-type == 'deliverable-type' {
-    // Amber for deliverables using tag-deliverable-color
-    &.tag-style-homepage,
-    &.tag-style-card {
-      background: rgba(var(--tag-deliverable-color-rgb), 0.5);
-      border-color: rgba(var(--tag-deliverable-color-rgb), 0.7);
-      
-      &:hover {
-        background: rgba(var(--tag-deliverable-color-rgb), 0.85);
-      }
-    }
-    
-    &.tag-style-sidebar {
-      background-color: rgba(var(--tag-deliverable-color-rgb), .1);
-      border-color: rgba(var(--tag-deliverable-color-rgb), .2);
-      color: rgba(var(--tag-deliverable-color-rgb), 0.7);
-      
-      &:hover {
-        background-color: var(--tag-deliverable-color);
-        border-color: var(--tag-deliverable-color);
-        color: var(--text-primary);
-      }
-    }
+    $color-var: --tag-deliverable-color;
   } @else if $color-type == 'technology' or $color-type == 'tool' {
-    // Blue for technology/tools using tag-technology-color
-    &.tag-style-homepage,
-    &.tag-style-card {
-      background: rgba(var(--tag-technology-color-rgb), 0.5);
-      border-color: rgba(var(--tag-technology-color-rgb), 0.7);
-      
-      &:hover {
-        background: rgba(var(--tag-technology-color-rgb), 0.85);
-      }
-    }
-    
-    &.tag-style-sidebar {
-      background-color: rgba(var(--tag-technology-color-rgb), .1);
-      border-color: rgba(var(--tag-technology-color-rgb), .2);
-      color: rgba(var(--tag-technology-color-rgb), 0.7);
-      
-      &:hover {
-        background-color: var(--tag-technology-color);
-        border-color: var(--tag-technology-color);
-        color: var(--text-primary);
-      }
-    }
+    $color-var: --tag-technology-color;
   } @else if $color-type == 'skill' {
-    // Green for skills using tag-skill-color
-    &.tag-style-homepage,
-    &.tag-style-card {
-      background: rgba(var(--tag-skill-color-rgb), 0.5);
-      border-color: rgba(var(--tag-skill-color-rgb), 0.7);
-      
-      &:hover {
-        background: rgba(var(--tag-skill-color-rgb), 0.85);
-      }
-    }
-    
-    &.tag-style-sidebar {
-      background-color: rgba(var(--tag-skill-color-rgb), 0.25);
-      border-color: rgba(var(--tag-skill-color-rgb), 0.75);
-      color: rgba(var(--tag-skill-color-rgb), 1);
-      opacity: 0.55;
-      
-      &:hover {
-        background-color: var(--tag-skill-color);
-        border-color: var(--tag-skill-color);
-        color: var(--text-primary);
-        opacity: 0.75;
-      }
-    }
+    $color-var: --tag-skill-color;
+    $special-sidebar-settings: (opacity: 0.55, hover-opacity: 0.75, bg-opacity: 0.25, border-opacity: 0.75, color-opacity: 1);
   } @else if $color-type == 'company' {
-    // Blue-gray for companies using primary color
-    &.tag-style-homepage,
-    &.tag-style-card {
-      background: rgba(var(--primary-color-rgb), 0.5);
-      border-color: rgba(var(--primary-color-rgb), 0.7);
-      
-      &:hover {
-        background: rgba(var(--primary-color-rgb), 0.85);
-      }
-    }
-    
-    &.tag-style-sidebar {
-      background-color: rgba(var(--primary-color-rgb), .1);
-      border-color: rgba(var(--primary-color-rgb), .2);
-      color: rgba(var(--primary-color-rgb), 0.7);
-      
-      &:hover {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-        color: var(--text-primary);
-      }
-    }
+    $color-var: --color-primary;
   } @else if $color-type == 'article' or $color-type == 'article-category' {
-    // Distinct color for articles using tag-article-color
-    &.tag-style-homepage,
-    &.tag-style-card {
-      background: rgba(var(--tag-article-color-rgb), 0.5);
-      border-color: rgba(var(--tag-article-color-rgb), 0.7);
-      
-      &:hover {
-        background: rgba(var(--tag-article-color-rgb), 0.85);
-      }
+    $color-var: --tag-article-color;
+  }
+  
+  // Generate homepage/card styles
+  &.tag-style-homepage,
+  &.tag-style-card {
+    background: rgba(var(#{$color-var}-rgb), 0.5);
+    border-color: rgba(var(#{$color-var}-rgb), 0.7);
+    
+    &:hover {
+      background: rgba(var(#{$color-var}-rgb), 0.85);
+    }
+  }
+  
+  // Generate sidebar styles
+  &.tag-style-sidebar {
+    $bg-opacity: if(map.has-key($special-sidebar-settings, bg-opacity), map.get($special-sidebar-settings, bg-opacity), 0.1);
+    $border-opacity: if(map.has-key($special-sidebar-settings, border-opacity), map.get($special-sidebar-settings, border-opacity), 0.2);
+    $color-opacity: if(map.has-key($special-sidebar-settings, color-opacity), map.get($special-sidebar-settings, color-opacity), 0.7);
+    $base-opacity: if(map.has-key($special-sidebar-settings, opacity), map.get($special-sidebar-settings, opacity), 1);
+    
+    background-color: rgba(var(#{$color-var}-rgb), $bg-opacity);
+    border-color: rgba(var(#{$color-var}-rgb), $border-opacity);
+    color: rgba(var(#{$color-var}-rgb), $color-opacity);
+    
+    @if $base-opacity != 1 {
+      opacity: $base-opacity;
     }
     
-    &.tag-style-sidebar {
-      background-color: rgba(var(--tag-article-color-rgb), .1);
-      border-color: rgba(var(--tag-article-color-rgb), .2);
-      color: rgba(var(--tag-article-color-rgb), 0.7);
+    &:hover {
+      $hover-opacity: if(map.has-key($special-sidebar-settings, hover-opacity), map.get($special-sidebar-settings, hover-opacity), 1);
       
-      &:hover {
-        background-color: var(--tag-article-color);
-        border-color: var(--tag-article-color);
-        color: var(--text-primary);
+      background-color: var(#{$color-var});
+      border-color: var(#{$color-var});
+      color: var(--text-primary);
+      
+      @if $hover-opacity != 1 {
+        opacity: $hover-opacity;
       }
     }
   }
+}
+
+// Legacy mixin for backward compatibility - now uses consolidated implementation
+@mixin tag-color($color-type) {
+  @include tag-color-variant($color-type);
 }
 
 // Tag state modifiers
@@ -389,36 +323,36 @@
     transition: all 0.2s ease;
 
     // Default styling
-    background: rgba(var(--secondary-color-rgb), 0.15);
-    border: 1px solid rgba(var(--secondary-color-rgb), 0.3);
-    color: var(--secondary-color);
+    background: rgba(var(--color-secondary-rgb), 0.15);
+    border: 1px solid rgba(var(--color-secondary-rgb), 0.3);
+    color: var(--color-secondary);
 
     // Project-specific styling
     &.tag-project {
-      background: rgba(var(--primary-color-rgb), .3);
-      border: 1px solid rgba(var(--primary-color-rgb), .5);
-      color: var(--primary-color);
+      background: rgba(var(--color-primary-rgb), .3);
+      border: 1px solid rgba(var(--color-primary-rgb), .5);
+      color: var(--color-primary);
     }
 
     // Deliverable-specific styling
     &.tag-deliverable {
-      background: rgba(var(--quaternary-color-rgb), .3);
-      border: 1px solid rgba(var(--quaternary-color-rgb), .5);
-      color: var(--quaternary-color);
+      background: rgba(var(--color-quaternary-rgb), .3);
+      border: 1px solid rgba(var(--color-quaternary-rgb), .5);
+      color: var(--color-quaternary);
     }
 
     // Service Area-specific styling (blog posts)
     &.tag-service-area {
-      background: rgba(var(--tertiary-color-rgb), .3);
-      border: 1px solid rgba(var(--tertiary-color-rgb), .5);
-      color: var(--tertiary-color);
+      background: rgba(var(--color-tertiary-rgb), .3);
+      border: 1px solid rgba(var(--color-tertiary-rgb), .5);
+      color: var(--color-tertiary);
     }
 
     // Work Area-specific styling (work archive page)
     &.tag-work-area {
-      background: rgba(var(--primary-color-rgb), .3);
-      border: 1px solid rgba(var(--primary-color-rgb), .5);
-      color: var(--primary-color);
+      background: rgba(var(--color-primary-rgb), .3);
+      border: 1px solid rgba(var(--color-primary-rgb), .5);
+      color: var(--color-primary);
     }
 
     // Icon styling for tags with icons

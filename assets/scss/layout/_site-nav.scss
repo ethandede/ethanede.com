@@ -13,15 +13,17 @@
   overflow-x: hidden; // Prevent horizontal overflow
 
   .container {
+    // Apply container mixin first, then override specific properties
     @include mixins.container;
+    
+    // Flexbox properties
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 0;
     height: 100%;
-    display: flex;
-    align-items: center;
-
+    
+    // Media query should come after regular declarations
     @media screen and (max-width: 1370px) {
       max-width: 90vw;
     }
@@ -49,7 +51,7 @@
       transition: color 0.3s ease;
 
       &:hover {
-        color: var(--primary-color);
+        color: var(--color-primary);
       }
     }
   }
@@ -99,7 +101,7 @@
       border-bottom: none; // Explicitly remove bottom borders
 
       &:hover {
-        color: var(--primary-color);
+        color: var(--color-primary);
       }
 
       &.contact-trigger {
@@ -121,7 +123,7 @@
         &:hover {
           background: none;
           border: none;
-          color: var(--primary-color);
+          color: var(--color-primary);
 
           i {
             transform: translateX(5px);
@@ -172,7 +174,7 @@
       padding: 10px;
       
       .bar {
-        background: var(--surface-light);
+        background: var(--bg-surface-light);
         width: 25px;
         height: 3px;
         margin: 5px 0;

@@ -4,7 +4,6 @@
 <head>
   <meta charset="<?php bloginfo('charset'); ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Ethan Ede - Digital strategist with 20+ years experience in web development, digital marketing, and AI-driven innovation. Partner with industry leaders like Experian, Staples, and NBA to build web experiences that deliver results.">
   <?php wp_head(); ?>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-89QXYH3QB8"></script>

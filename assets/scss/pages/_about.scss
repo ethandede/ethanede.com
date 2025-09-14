@@ -2,7 +2,7 @@
 @use "../abstracts/mixins" as mixins;
 
 .about {
-  background-color: var(--surface-light);
+  background-color: var(--bg-surface-light);
   text-align: left;
   padding: 50px 20px;
 }

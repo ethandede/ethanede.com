@@ -1,5 +1,57 @@
 @use "sass:color";
+@use "sass:math";
 @use "breakpoints" as *;
+
+// =============================================================================
+// SASS VARIABLES DOCUMENTATION
+// =============================================================================
+/*
+ * COLOR SYSTEM ARCHITECTURE
+ * ========================
+ * - Primary: #45748C (Brand blue-gray) - Main brand color, navigation, primary buttons
+ * - Secondary: #BF3978 (Brand magenta) - Accent color, links, highlights  
+ * - Tertiary: #10b981 (Teal-green) - Success states, skill tags
+ * - Quaternary: #f59e0b (Amber) - Warning states, deliverable tags
+ * 
+ * TAG COLOR MAPPING
+ * ================
+ * - Projects/Categories: Secondary (magenta)
+ * - Deliverables: Quaternary (amber) 
+ * - Technologies: Primary (blue-gray)
+ * - Skills: Tertiary (teal-green)
+ * - Companies: Primary (blue-gray)
+ * - Articles: Tertiary variant (adjusted hue)
+ * 
+ * USAGE EXAMPLES
+ * ==============
+ * 
+ * Solid colors:
+ *   color: var(--color-primary);
+ *   background: var(--color-secondary);
+ * 
+ * Transparent backgrounds:
+ *   background: rgba(var(--color-primary-rgb), 0.1);  // 10% opacity
+ *   background: rgba(var(--color-secondary-rgb), 0.3); // 30% opacity
+ * 
+ * Borders with transparency:
+ *   border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+ *   border-left: 4px solid var(--color-tertiary);
+ * 
+ * Tag styling patterns:
+ *   background: rgba(var(--tag-project-color-rgb), 0.3);
+ *   border: 1px solid rgba(var(--tag-project-color-rgb), 0.5);
+ * 
+ * Gray system with black/white base:
+ *   color: rgba(var(--black), 0.8);           // Primary text on light
+ *   color: rgba(var(--white), 0.9);          // Primary text on dark
+ *   background: rgba(var(--black), 0.05);    // Very light gray
+ *   border: rgba(var(--white), 0.2);         // 20% white border
+ * 
+ * Text color variants:
+ *   color: var(--text-primary);     // Main text on dark backgrounds
+ *   color: var(--text-secondary);   // Secondary text on dark backgrounds
+ *   color: var(--text-on-light);    // Text on light backgrounds
+ */
 
 // Global Colors - Brand-focused hierarchy
 $primary-color: #45748C;        // Brand blue-gray (was accent)
@@ -7,19 +59,12 @@ $secondary-color: #BF3978;      // Brand magenta (was highlight)
 $tertiary-color: #10b981;       // Brand teal-green (complementary to magenta)
 $quaternary-color: #f59e0b;     // Brand amber (triadic harmony)
 $primary-color-light: color.adjust($primary-color, $lightness: 10%);
-$initial-color: #999;   // Gray for initial numbers (renamed from $solved-color)
-
-// Tag-specific colors aligned with brand system
-$tag-technology-color: $primary-color;      // Blue-gray for technology/tools  
-$tag-skill-color: $tertiary-color;          // Teal-green for skills
-$tag-deliverable-color: $quaternary-color;  // Amber for deliverables (swapped)
-$tag-project-color: $secondary-color;       // Magenta for projects (swapped)
 
 // Accessible/lightened tag colors for better contrast
-$tag-technology-color-light: color.adjust($tag-technology-color, $lightness: 15%);
-$tag-skill-color-light: color.adjust($tag-skill-color, $lightness: 12%);
-$tag-deliverable-color-light: color.adjust($tag-deliverable-color, $lightness: 8%);
-$tag-project-color-light: color.adjust($tag-project-color, $lightness: 18%);
+$tag-technology-color-light: color.adjust($primary-color, $lightness: 15%);
+$tag-skill-color-light: color.adjust($tertiary-color, $lightness: 12%);
+$tag-deliverable-color-light: color.adjust($quaternary-color, $lightness: 8%);
+$tag-project-color-light: color.adjust($secondary-color, $lightness: 18%);
 $tag-article-color: color.adjust($tertiary-color, $hue: 30deg, $lightness: 10%); // Distinct color for articles
 
 // Output as CSS variables for runtime use
@@ -44,48 +89,33 @@ $tag-article-color: color.adjust($tertiary-color, $hue: 30deg, $lightness: 10%);
    */
   
   // Brand color system
-  --primary-color: #{$primary-color};
-  --primary-color-rgb: #{color.channel($primary-color, "red", $space: rgb)}, #{color.channel($primary-color, "green", $space: rgb)}, #{color.channel($primary-color, "blue", $space: rgb)};
-  --primary-color-light: #{$primary-color-light};
-  --secondary-color: #{$secondary-color};
-  --secondary-color-rgb: #{color.channel($secondary-color, "red", $space: rgb)}, #{color.channel($secondary-color, "green", $space: rgb)}, #{color.channel($secondary-color, "blue", $space: rgb)};
-  --tertiary-color: #{$tertiary-color};
-  --tertiary-color-rgb: #{color.channel($tertiary-color, "red", $space: rgb)}, #{color.channel($tertiary-color, "green", $space: rgb)}, #{color.channel($tertiary-color, "blue", $space: rgb)};
-  --quaternary-color: #{$quaternary-color};
-  --quaternary-color-rgb: #{color.channel($quaternary-color, "red", $space: rgb)}, #{color.channel($quaternary-color, "green", $space: rgb)}, #{color.channel($quaternary-color, "blue", $space: rgb)};
+  --color-primary: #{$primary-color};
+  --color-primary-rgb: #{color.channel($primary-color, "red", $space: rgb)}, #{color.channel($primary-color, "green", $space: rgb)}, #{color.channel($primary-color, "blue", $space: rgb)};
+  --color-primary-light: #{$primary-color-light};
+  --color-primary-dark: #{color.adjust($primary-color, $lightness: -15%)};
+  --color-secondary: #{$secondary-color};
+  --color-secondary-rgb: #{color.channel($secondary-color, "red", $space: rgb)}, #{color.channel($secondary-color, "green", $space: rgb)}, #{color.channel($secondary-color, "blue", $space: rgb)};
+  --color-secondary-light: #{color.adjust($secondary-color, $lightness: 15%)};
+  --color-tertiary: #{$tertiary-color};
+  --color-tertiary-rgb: #{color.channel($tertiary-color, "red", $space: rgb)}, #{color.channel($tertiary-color, "green", $space: rgb)}, #{color.channel($tertiary-color, "blue", $space: rgb)};
+  --color-quaternary: #{$quaternary-color};
+  --color-quaternary-rgb: #{color.channel($quaternary-color, "red", $space: rgb)}, #{color.channel($quaternary-color, "green", $space: rgb)}, #{color.channel($quaternary-color, "blue", $space: rgb)};
   
-  // Surface colors using RGBA system
-  --surface-light: rgba(var(--white), 0.95);    // Light backgrounds
-  --surface-dark: rgba(var(--black), 0.85);      // Dark backgrounds  
+  // Text colors
   --text-primary: rgba(var(--white), 0.9);      // Primary text on dark
   --text-secondary: rgba(var(--white), 0.7);    // Secondary text on dark
-  --text-dark: rgba(var(--black), 0.8);         // Primary text on light
-  --text-muted: rgba(var(--black), 0.6);        // Secondary text on light
-  --initial-color: #{$initial-color}; // New variable for initial numbers
-  --initial-color-rgb: #{color.channel($initial-color, "red", $space: rgb)}, #{color.channel($initial-color, "green", $space: rgb)}, #{color.channel($initial-color, "blue", $space: rgb)};
+  --text-on-light: rgba(var(--black), 0.8);     // Primary text on light
+  --text-heading: rgba(var(--white), 0.9);      // Heading text
   
-  // Legacy/alias variables for backward compatibility
-  --accent-color: var(--primary-color);         // Alias for primary color
-  --text-color: var(--text-primary);            // Alias for primary text
-  --card-background: rgba(var(--white), 0.08);  // Card background
-  --card-bg: var(--card-background);            // Card background alias
-  --heading-color: var(--text-primary);         // Heading color
+  // Background colors
+  --bg-primary: rgba(var(--black), 0.95);       // Main background
+  --bg-secondary: rgba(var(--black), 0.9);      // Secondary background
+  --bg-surface-light: rgba(var(--white), 0.95); // Light surface
+  --bg-surface-dark: rgba(var(--black), 0.85);  // Dark surface
+  --bg-card: rgba(var(--white), 0.08);          // Card background
+  
+  // Border colors
   --border-color: rgba(var(--white), 0.2);      // Border color
-  --secondary-color-light: #{color.adjust($secondary-color, $lightness: 15%)}; // Lighter secondary color
-  --text-light: var(--text-secondary);          // Alias for secondary text
-  --primary-color-dark: #{color.adjust($primary-color, $lightness: -15%)}; // Darker primary color
-  
-  // Additional legacy variables
-  --background-color: rgba(var(--black), 0.95); // Main background
-  --background-secondary: rgba(var(--black), 0.9); // Secondary background
-  --color-accent: var(--primary-color);         // Color accent alias
-  --color-background-alt: var(--surface-dark);  // Alt background
-  --color-heading: var(--text-primary);         // Heading color alias
-  --color-primary: var(--primary-color);        // Primary color alias
-  --color-text: var(--text-primary);            // Text color alias
-  --dark-bg: rgba(var(--black), 0.95);          // Dark background
-  --dark-bg-secondary: rgba(var(--black), 0.9); // Secondary dark background
-  --surface-color: var(--surface-light);        // Surface color alias
   
   // Typography variables
   --font-family-heading: "Merriweather", serif; // Heading font family

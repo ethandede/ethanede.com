@@ -1,5 +1,6 @@
 const gulp = require('gulp');
 const sass = require('gulp-sass')(require('sass'));
+const { pathToFileURL } = require('url');
 const cleanCSS = require('gulp-clean-css');
 const sourcemaps = require('gulp-sourcemaps');
 const { exec } = require('child_process');
@@ -10,14 +11,37 @@ const execAsync = promisify(exec);
 function styles() {
   return gulp.src('assets/scss/main.scss')
     .pipe(sourcemaps.init())
-    .pipe(sass().on('error', sass.logError))
+    .pipe(sass({
+      api: 'modern-compiler', // Use modern Sass API to avoid deprecation warnings
+      silenceDeprecations: ['mixed-decls', 'legacy-js-api'], // Temporarily silence while we fix
+      verbose: true
+    }).on('error', sass.logError))
     .pipe(cleanCSS({
       sourceMap: true,
-      compatibility: '*'
+      compatibility: '*',
+      level: {
+        1: {
+          removeEmpty: true,
+          removeWhitespace: true,
+          removeQuotes: true,
+          removeUrlQuotes: true,
+          normalizeUrls: true
+        },
+        2: {
+          mergeMedia: true,
+          removeDuplicateRules: true,
+          removeUnusedAtRules: false,
+          mergeNonAdjacentRules: true,
+          reduceNonAdjacentRules: true,
+          removeDuplicateFontRules: true,
+          removeDuplicateMediaBlocks: true
+        }
+      }
     }))
     .pipe(sourcemaps.write('./', {
       includeContent: false,
-      sourceRoot: '../scss'
+      sourceRoot: '../scss',
+      addComment: process.env.NODE_ENV !== 'production'
     }))
     .pipe(gulp.dest('assets/css'));
 }
