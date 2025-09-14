@@ -3187,6 +3187,8 @@ function ee_add_structured_data() {
                     "@type": "Place",
                     "address": {
                         "@type": "PostalAddress",
+                        "addressLocality": "Portland",
+                        "addressRegion": "OR",
                         "addressCountry": "US"
                     }
                 }
@@ -3211,7 +3213,15 @@ function ee_add_structured_data() {
                 "name": "Ethan Ede",
                 "jobTitle": "Web Developer & Digital Marketing Specialist"
             },
-            "areaServed": "US",
+            "areaServed": {
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "Portland",
+                    "addressRegion": "OR",
+                    "addressCountry": "US"
+                }
+            },
             "serviceType": [
                 "WordPress Development",
                 "Website Management",
