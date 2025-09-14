@@ -2829,16 +2829,16 @@ define('EE_CUSTOM_LOGIN_SLUG', 'secure-admin-access');
  */
 function ee_hide_default_login() {
     global $pagenow;
-    
+
     // Don't interfere with AJAX requests or if user is already logged in
     if (defined('DOING_AJAX') && DOING_AJAX) return;
     if (is_user_logged_in() && !isset($_GET['action'])) return;
-    
-    // Hide wp-login.php unless custom parameter is present
-    if ($pagenow == 'wp-login.php' && !isset($_GET['custom_login'])) {
+
+    // Hide wp-login.php unless custom parameter is present (check both GET and POST)
+    if ($pagenow == 'wp-login.php' && !isset($_GET['custom_login']) && !isset($_POST['custom_login'])) {
         ee_redirect_to_404();
     }
-    
+
     // Hide wp-admin for non-logged-in users
     if ($pagenow == 'wp-admin' && !is_user_logged_in()) {
         ee_redirect_to_404();
@@ -2923,6 +2923,49 @@ function ee_login_form_action($url) {
 add_filter('login_url', 'ee_login_form_action');
 add_filter('lostpassword_url', 'ee_login_form_action');
 add_filter('registration_url', 'ee_login_form_action');
+
+/**
+ * Start output buffering on login page to modify form action
+ */
+function ee_start_login_ob() {
+    if (isset($_GET['custom_login']) || isset($_POST['custom_login'])) {
+        ob_start('ee_modify_login_form_action');
+    }
+}
+add_action('login_init', 'ee_start_login_ob', 0);
+
+/**
+ * Flush output buffer on login footer
+ */
+function ee_end_login_ob() {
+    if (isset($_GET['custom_login']) || isset($_POST['custom_login'])) {
+        if (ob_get_level()) {
+            ob_end_flush();
+        }
+    }
+}
+add_action('login_footer', 'ee_end_login_ob', 999);
+
+/**
+ * Modify the login form action URL to include custom_login parameter
+ */
+function ee_modify_login_form_action($buffer) {
+    if (isset($_GET['custom_login']) || isset($_POST['custom_login'])) {
+        // Simply replace wp-login.php with wp-login.php?custom_login=1
+        $buffer = str_replace(
+            'action="http://ethanede.local/wp-login.php"',
+            'action="http://ethanede.local/wp-login.php?custom_login=1"',
+            $buffer
+        );
+        // Also handle HTTPS and different domains
+        $buffer = preg_replace(
+            '/action="(https?:\/\/[^\/]+\/wp-login\.php)"/',
+            'action="$1?custom_login=1"',
+            $buffer
+        );
+    }
+    return $buffer;
+}
 
 /**
  * Add hidden field to login form to maintain custom_login parameter
