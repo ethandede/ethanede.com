@@ -3208,6 +3208,12 @@ function ee_add_structured_data() {
             "name": "Ethan Ede - Web Development & Digital Marketing",
             "description": "WordPress & Marketing Website Management for Growth",
             "url": "<?php echo esc_js(home_url()); ?>",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Portland",
+                "addressRegion": "OR",
+                "addressCountry": "US"
+            },
             "provider": {
                 "@type": "Person",
                 "name": "Ethan Ede",
@@ -3215,12 +3221,7 @@ function ee_add_structured_data() {
             },
             "areaServed": {
                 "@type": "Place",
-                "address": {
-                    "@type": "PostalAddress",
-                    "addressLocality": "Portland",
-                    "addressRegion": "OR",
-                    "addressCountry": "US"
-                }
+                "name": "Portland, OR"
             },
             "serviceType": [
                 "WordPress Development",
