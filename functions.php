@@ -2912,6 +2912,41 @@ function ee_flush_custom_login_rules() {
 add_action('after_setup_theme', 'ee_flush_custom_login_rules');
 
 /**
+ * Maintain custom_login parameter in login form action
+ */
+function ee_login_form_action($url) {
+    if (isset($_GET['custom_login']) || isset($_POST['custom_login'])) {
+        $url = add_query_arg('custom_login', '1', $url);
+    }
+    return $url;
+}
+add_filter('login_url', 'ee_login_form_action');
+add_filter('lostpassword_url', 'ee_login_form_action');
+add_filter('registration_url', 'ee_login_form_action');
+
+/**
+ * Add hidden field to login form to maintain custom_login parameter
+ */
+function ee_add_custom_login_field() {
+    if (isset($_GET['custom_login']) || isset($_POST['custom_login'])) {
+        echo '<input type="hidden" name="custom_login" value="1" />';
+    }
+}
+add_action('login_form', 'ee_add_custom_login_field');
+add_action('register_form', 'ee_add_custom_login_field');
+add_action('lostpassword_form', 'ee_add_custom_login_field');
+
+/**
+ * Preserve custom_login parameter through POST requests
+ */
+function ee_preserve_custom_login_post() {
+    if (isset($_POST['custom_login'])) {
+        $_GET['custom_login'] = $_POST['custom_login'];
+    }
+}
+add_action('login_init', 'ee_preserve_custom_login_post', 1);
+
+/**
  * Update login redirect to use custom URL
  */
 function ee_custom_login_redirect($redirect_to, $request, $user) {
