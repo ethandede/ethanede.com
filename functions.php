@@ -3073,20 +3073,182 @@ add_action('wp_head', 'ee_seo_enhancements', 5);
  * Add structured data for better Google understanding
  */
 function ee_add_structured_data() {
+    global $post;
+
+    // Article/BlogPosting Schema
+    if (is_singular('post')) {
+        $excerpt = get_the_excerpt();
+        $image_url = get_the_post_thumbnail_url($post->ID, 'large');
+        ?>
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": "<?php echo esc_js(get_the_title()); ?>",
+            "description": "<?php echo esc_js($excerpt); ?>",
+            "author": {
+                "@type": "Person",
+                "name": "Ethan Ede",
+                "url": "<?php echo esc_js(home_url()); ?>",
+                "jobTitle": "Web Developer & Digital Marketing Specialist",
+                "knowsAbout": ["WordPress", "Web Development", "Digital Marketing", "SEO"]
+            },
+            "publisher": {
+                "@type": "Person",
+                "name": "Ethan Ede",
+                "url": "<?php echo esc_js(home_url()); ?>"
+            },
+            "datePublished": "<?php echo esc_js(get_the_date('c')); ?>",
+            "dateModified": "<?php echo esc_js(get_the_modified_date('c')); ?>",
+            "url": "<?php echo esc_js(get_permalink()); ?>",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "<?php echo esc_js(get_permalink()); ?>"
+            }
+            <?php if ($image_url): ?>,
+            "image": {
+                "@type": "ImageObject",
+                "url": "<?php echo esc_js($image_url); ?>",
+                "width": 1200,
+                "height": 630
+            }
+            <?php endif; ?>
+        }
+        </script>
+        <?php
+    }
+
+    // Enhanced CreativeWork Schema for Projects/Deliverables
     if (is_singular('project') || is_singular('deliverable')) {
+        $excerpt = get_the_excerpt();
+        $image_url = get_the_post_thumbnail_url($post->ID, 'large');
+        $technologies = get_the_terms($post->ID, 'technology');
+        $skills = get_the_terms($post->ID, 'skill');
         ?>
         <script type="application/ld+json">
         {
             "@context": "https://schema.org",
             "@type": "CreativeWork",
             "name": "<?php echo esc_js(get_the_title()); ?>",
-            "author": {
+            "description": "<?php echo esc_js($excerpt); ?>",
+            "creator": {
                 "@type": "Person",
-                "name": "Ethan Ede"
+                "name": "Ethan Ede",
+                "url": "<?php echo esc_js(home_url()); ?>",
+                "jobTitle": "Web Developer & Digital Marketing Specialist"
             },
             "datePublished": "<?php echo esc_js(get_the_date('c')); ?>",
             "dateModified": "<?php echo esc_js(get_the_modified_date('c')); ?>",
             "url": "<?php echo esc_js(get_permalink()); ?>"
+            <?php if ($image_url): ?>,
+            "image": {
+                "@type": "ImageObject",
+                "url": "<?php echo esc_js($image_url); ?>"
+            }
+            <?php endif; ?>
+            <?php if ($technologies && !is_wp_error($technologies)): ?>,
+            "keywords": [<?php
+                $tech_names = array_map(function($term) { return '"' . esc_js($term->name) . '"'; }, $technologies);
+                echo implode(', ', $tech_names);
+            ?>]
+            <?php endif; ?>
+        }
+        </script>
+        <?php
+    }
+
+    // Person Schema for About/Contact pages
+    if (is_page('about') || is_page('contact')) {
+        ?>
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "Ethan Ede",
+            "jobTitle": "Web Developer & Digital Marketing Specialist",
+            "description": "WordPress & Marketing Website Management for Growth",
+            "url": "<?php echo esc_js(home_url()); ?>",
+            "sameAs": [
+                "https://linkedin.com/in/ethanede",
+                "https://github.com/ethanede"
+            ],
+            "knowsAbout": [
+                "WordPress Development",
+                "Digital Marketing",
+                "SEO Optimization",
+                "Web Performance",
+                "User Experience Design",
+                "Content Strategy"
+            ],
+            "hasOccupation": {
+                "@type": "Occupation",
+                "name": "Web Developer",
+                "occupationLocation": {
+                    "@type": "Place",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "addressCountry": "US"
+                    }
+                }
+            }
+        }
+        </script>
+        <?php
+    }
+
+    // Service Provider Schema for Homepage
+    if (is_front_page()) {
+        ?>
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "ProfessionalService",
+            "name": "Ethan Ede - Web Development & Digital Marketing",
+            "description": "WordPress & Marketing Website Management for Growth",
+            "url": "<?php echo esc_js(home_url()); ?>",
+            "provider": {
+                "@type": "Person",
+                "name": "Ethan Ede",
+                "jobTitle": "Web Developer & Digital Marketing Specialist"
+            },
+            "areaServed": "US",
+            "serviceType": [
+                "WordPress Development",
+                "Website Management",
+                "Digital Marketing",
+                "SEO Services",
+                "Web Performance Optimization"
+            ],
+            "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Web Development Services",
+                "itemListElement": [
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "WordPress Development",
+                            "description": "Custom WordPress theme and plugin development"
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Website Management",
+                            "description": "Ongoing website maintenance and optimization"
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Digital Marketing",
+                            "description": "SEO, content strategy, and performance marketing"
+                        }
+                    }
+                ]
+            }
         }
         </script>
         <?php
