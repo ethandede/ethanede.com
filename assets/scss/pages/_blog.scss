@@ -28,6 +28,9 @@
   
   h1,
   .article-title {
+    font-size: $font-xxxl;
+    font-weight: 800;
+    color: var(--text-primary);
     margin-bottom: 24px;
     text-align: left;
   }
